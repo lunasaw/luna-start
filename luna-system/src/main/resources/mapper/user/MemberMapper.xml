@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.user.mapper.MemberMapper">
+    
+    <resultMap type="MemberDO" id="MemberDOResult">
+        <result property="userId"    column="user_id"    />
+        <result property="username"    column="username"    />
+        <result property="qqOpenId"    column="qq_open_id"    />
+        <result property="qqNumber"    column="qq_number"    />
+        <result property="password"    column="password"    />
+        <result property="email"    column="email"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="sex"    column="sex"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="education"    column="education"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="introduce"    column="introduce"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMemberDOVo">
+        select user_id, username, qq_open_id, qq_number, password, email, is_active, sex, telephone, education, hobby, introduce, status, del_flag, create_time, update_time from tb_member
+    </sql>
+
+    <select id="selectMemberDOList" parameterType="MemberDO" resultMap="MemberDOResult">
+        <include refid="selectMemberDOVo"/>
+        <where>  
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="qqOpenId != null  and qqOpenId != ''"> and qq_open_id = #{qqOpenId}</if>
+            <if test="qqNumber != null  and qqNumber != ''"> and qq_number = #{qqNumber}</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="isActive != null  and isActive != ''"> and is_active = #{isActive}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone}</if>
+            <if test="education != null  and education != ''"> and education = #{education}</if>
+            <if test="hobby != null  and hobby != ''"> and hobby like concat('%', #{hobby}, '%')</if>
+            <if test="introduce != null  and introduce != ''"> and introduce like concat('%', #{introduce}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectMemberByUserId" parameterType="Long" resultMap="MemberDOResult">
+        <include refid="selectMemberDOVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertMemberDO" parameterType="MemberDO" useGeneratedKeys="true" keyProperty="userId">
+        insert into tb_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">username,</if>
+            <if test="qqOpenId != null">qq_open_id,</if>
+            <if test="qqNumber != null">qq_number,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="email != null">email,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="telephone != null and telephone != ''">telephone,</if>
+            <if test="education != null">education,</if>
+            <if test="hobby != null">hobby,</if>
+            <if test="introduce != null">introduce,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="qqOpenId != null">#{qqOpenId},</if>
+            <if test="qqNumber != null">#{qqNumber},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="email != null">#{email},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="telephone != null and telephone != ''">#{telephone},</if>
+            <if test="education != null">#{education},</if>
+            <if test="hobby != null">#{hobby},</if>
+            <if test="introduce != null">#{introduce},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMemberDO" parameterType="MemberDO">
+        update tb_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="qqOpenId != null">qq_open_id = #{qqOpenId},</if>
+            <if test="qqNumber != null">qq_number = #{qqNumber},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="telephone != null and telephone != ''">telephone = #{telephone},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="hobby != null">hobby = #{hobby},</if>
+            <if test="introduce != null">introduce = #{introduce},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteMemberByUserId" parameterType="Long">
+        delete from tb_member where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteMemberByUserIds" parameterType="String">
+        delete from tb_member where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

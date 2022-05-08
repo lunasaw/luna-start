@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.BrandMapper">
+
+    <resultMap type="Brand" id="BrandResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="firstLetter" column="first_letter"/>
+        <result property="sort" column="sort"/>
+        <result property="factoryStatus" column="factory_status"/>
+        <result property="showStatus" column="show_status"/>
+        <result property="productCount" column="product_count"/>
+        <result property="productCommentCount" column="product_comment_count"/>
+        <result property="logo" column="logo"/>
+        <result property="bigPic" column="big_pic"/>
+        <result property="brandStory" column="brand_story"/>
+    </resultMap>
+
+    <sql id="selectBrandVo">
+        select id,
+               name,
+               first_letter,
+               sort,
+               factory_status,
+               show_status,
+               product_count,
+               product_comment_count,
+               logo,
+               big_pic,
+               brand_story
+        from tb_pms_brand
+    </sql>
+
+    <select id="selectBrandList" parameterType="Brand" resultMap="BrandResult">
+        <include refid="selectBrandVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="firstLetter != null  and firstLetter != ''">and first_letter = #{firstLetter}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="factoryStatus != null ">and factory_status = #{factoryStatus}</if>
+            <if test="showStatus != null  and showStatus != ''">and show_status = #{showStatus}</if>
+            <if test="productCount != null ">and product_count = #{productCount}</if>
+            <if test="productCommentCount != null ">and product_comment_count = #{productCommentCount}</if>
+        </where>
+    </select>
+
+    <select id="selectBrandById" parameterType="Long" resultMap="BrandResult">
+        <include refid="selectBrandVo"/>
+        where id = #{id} limit 1
+    </select>
+
+    <insert id="insertBrand" parameterType="Brand" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_brand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="firstLetter != null">first_letter,</if>
+            <if test="sort != null">sort,</if>
+            <if test="factoryStatus != null">factory_status,</if>
+            <if test="showStatus != null and showStatus != ''">show_status,</if>
+            <if test="productCount != null">product_count,</if>
+            <if test="productCommentCount != null">product_comment_count,</if>
+            <if test="logo != null">logo,</if>
+            <if test="bigPic != null">big_pic,</if>
+            <if test="brandStory != null">brand_story,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="firstLetter != null">#{firstLetter},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="factoryStatus != null">#{factoryStatus},</if>
+            <if test="showStatus != null and showStatus != ''">#{showStatus},</if>
+            <if test="productCount != null">#{productCount},</if>
+            <if test="productCommentCount != null">#{productCommentCount},</if>
+            <if test="logo != null">#{logo},</if>
+            <if test="bigPic != null">#{bigPic},</if>
+            <if test="brandStory != null">#{brandStory},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBrand" parameterType="Brand">
+        update tb_pms_brand
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="firstLetter != null">first_letter = #{firstLetter},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="factoryStatus != null">factory_status = #{factoryStatus},</if>
+            <if test="showStatus != null and showStatus != ''">show_status = #{showStatus},</if>
+            <if test="productCount != null">product_count = #{productCount},</if>
+            <if test="productCommentCount != null">product_comment_count = #{productCommentCount},</if>
+            <if test="logo != null">logo = #{logo},</if>
+            <if test="bigPic != null">big_pic = #{bigPic},</if>
+            <if test="brandStory != null">brand_story = #{brandStory},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBrandById" parameterType="Long">
+        delete
+        from tb_pms_brand
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteBrandByIds" parameterType="String">
+        delete from tb_pms_brand where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

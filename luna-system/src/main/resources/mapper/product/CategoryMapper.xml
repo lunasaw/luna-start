@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.CategoryMapper">
+    
+    <resultMap type="Category" id="CategoryResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="name"    column="name"    />
+        <result property="level"    column="level"    />
+        <result property="productCount"    column="product_count"    />
+        <result property="productUnit"    column="product_unit"    />
+        <result property="navStatus"    column="nav_status"    />
+        <result property="showStatus"    column="show_status"    />
+        <result property="sort"    column="sort"    />
+        <result property="icon"    column="icon"    />
+        <result property="keywords"    column="keywords"    />
+        <result property="description"    column="description"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCategoryVo">
+        select id, parent_id, name, level, product_count, product_unit, nav_status, show_status, sort, icon, keywords, description, create_by, create_time, update_by, update_time, remark from tb_pms_category
+    </sql>
+
+    <select id="selectCategoryList" parameterType="Category" resultMap="CategoryResult">
+        <include refid="selectCategoryVo"/>
+        <where>  
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="level != null "> and level = #{level}</if>
+            <if test="productCount != null "> and product_count = #{productCount}</if>
+            <if test="productUnit != null  and productUnit != ''"> and product_unit = #{productUnit}</if>
+            <if test="navStatus != null "> and nav_status = #{navStatus}</if>
+            <if test="showStatus != null "> and show_status = #{showStatus}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="keywords != null  and keywords != ''"> and keywords like concat('%', #{keywords}, '%')</if>
+            <if test="description != null  and description != ''"> and description like concat('%', #{description}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCategoryById" parameterType="Long" resultMap="CategoryResult">
+        <include refid="selectCategoryVo"/>
+        where id = #{id}
+    limit 1
+    </select>
+
+    <insert id="insertCategory" parameterType="Category" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="name != null">name,</if>
+            <if test="level != null">level,</if>
+            <if test="productCount != null">product_count,</if>
+            <if test="productUnit != null">product_unit,</if>
+            <if test="navStatus != null">nav_status,</if>
+            <if test="showStatus != null">show_status,</if>
+            <if test="sort != null">sort,</if>
+            <if test="icon != null">icon,</if>
+            <if test="keywords != null">keywords,</if>
+            <if test="description != null">description,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="level != null">#{level},</if>
+            <if test="productCount != null">#{productCount},</if>
+            <if test="productUnit != null">#{productUnit},</if>
+            <if test="navStatus != null">#{navStatus},</if>
+            <if test="showStatus != null">#{showStatus},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="keywords != null">#{keywords},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCategory" parameterType="Category">
+        update tb_pms_category
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="productCount != null">product_count = #{productCount},</if>
+            <if test="productUnit != null">product_unit = #{productUnit},</if>
+            <if test="navStatus != null">nav_status = #{navStatus},</if>
+            <if test="showStatus != null">show_status = #{showStatus},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="keywords != null">keywords = #{keywords},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCategoryById" parameterType="Long">
+        delete from tb_pms_category where id = #{id}
+    </delete>
+
+    <delete id="deleteCategoryByIds" parameterType="String">
+        delete from tb_pms_category where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
