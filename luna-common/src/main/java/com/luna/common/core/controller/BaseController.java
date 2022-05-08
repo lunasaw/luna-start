@@ -3,6 +3,12 @@ package com.luna.common.core.controller;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.luna.common.constant.SqlConstants;
+import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
@@ -56,6 +62,37 @@ public class BaseController
     }
 
     /**
+     * 设置请求分页数据
+     */
+    protected Page startPageList() {
+        Page<T> page = new Page<>();
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        String orderBy = pageDomain.getOrderBy();
+        String orderColumn = pageDomain.getOrderByColumn();
+        String isAsc = pageDomain.getIsAsc();
+
+        if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize)) {
+            page.setCurrent(pageNum);
+            page.setSize(pageSize);
+            page.setOptimizeCountSql(false);
+            page.setMaxLimit(500L);
+        }
+
+        //排序
+        if (StringUtils.isNotBlank(orderColumn)) {
+            if (SqlConstants.ASC.equalsIgnoreCase(isAsc)) {
+                page.addOrder(OrderItem.asc(orderColumn));
+            } else {
+                page.addOrder(OrderItem.desc(orderColumn));
+            }
+        }
+
+        return page;
+    }
+
+    /**
      * 设置请求排序数据
      */
     protected void startOrderBy()
@@ -89,6 +126,22 @@ public class BaseController
         rspData.setTotal(new PageInfo(list).getTotal());
         return rspData;
     }
+
+
+    /**
+     * 响应请求分页数据
+     *
+     * @param page
+     */
+    protected TableDataInfo getDataTable(IPage<?> page) {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
+        rspData.setRows(page.getRecords());
+        rspData.setTotal(page.getTotal());
+        return rspData;
+    }
+
 
     /**
      * 返回成功

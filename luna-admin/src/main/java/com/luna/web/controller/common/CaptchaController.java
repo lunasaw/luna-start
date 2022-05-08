@@ -20,8 +20,7 @@ import com.luna.common.utils.uuid.IdUtils;
  * @author luna
  */
 @RestController
-public class CaptchaController
-{
+public class CaptchaController {
 
     @Autowired
     private RedisCache redisCache;
@@ -34,8 +33,7 @@ public class CaptchaController
      * 生成验证码
      */
     @GetMapping("/captchaImage")
-    public AjaxResult getCode() throws IOException
-    {
+    public AjaxResult getCode() throws IOException {
         // 保存验证码信息
         String uuid = IdUtils.simpleUUID();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
@@ -45,14 +43,11 @@ public class CaptchaController
         AjaxResult ajax = AjaxResult.success();
         ajax.put("uuid", uuid);
         // 生成验证码
-        if ("math".equals(captchaType))
-        {
+        if ("math".equals(captchaType)) {
             ArithmeticCaptcha captcha = new ArithmeticCaptcha(111, 36, 2);
             code = captcha.text();
             ajax.put("img", captcha.toBase64());
-        }
-        else if ("char".equals(captchaType))
-        {
+        } else if ("char".equals(captchaType)) {
             SpecCaptcha captcha = new SpecCaptcha(111, 36, 4);
             code = captcha.text();
             ajax.put("img", captcha.toBase64());
