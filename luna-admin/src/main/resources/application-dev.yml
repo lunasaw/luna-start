@@ -1,4 +1,4 @@
-ruoyi:
+luna:
     # 文件路径 示例（ Windows配置D:/luna/uploadPath，Linux配置 /home/luna/uploadPath）
     profile: /Users/luna/Document/project/luna/uploadPath
 
