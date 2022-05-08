@@ -9,7 +9,7 @@ export default {
   name: 'RuoYiDoc',
   data() {
     return {
-      url: 'http://doc.ruoyi.vip/luna-vue'
+      url: 'http://doc.luna.vip/luna-vue'
     }
   },
   methods: {

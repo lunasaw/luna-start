@@ -81,7 +81,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     default-executor-type: SIMPLE
   #type-aliases-package: com.luna.**.domain,;com.d3code.**.domain
-  type-aliases-package: com.ruoyi.**.domain
+  type-aliases-package: com.luna.**.domain
 
 # PageHelper分页插件
 pagehelper: 

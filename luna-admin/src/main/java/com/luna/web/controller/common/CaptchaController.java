@@ -27,7 +27,7 @@ public class CaptchaController
     private RedisCache redisCache;
 
     // 验证码类型
-    @Value("${ruoyi.captchaType}")
+    @Value("${luna.captchaType}")
     private String captchaType;
 
     /**

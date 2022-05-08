@@ -43,10 +43,18 @@ export function importTable(data) {
   })
 }
 
-// 预览生成代码
-export function previewTable(tableId) {
+// 预览模式
+export function previewVmIds() {
   return request({
-    url: '/tool/gen/preview/' + tableId,
+    url: '/tool/gen/vmTypes',
+    method: 'get'
+  })
+}
+
+// 预览生成代码
+export function previewTable(tableId, vmId) {
+  return request({
+    url: '/tool/gen/preview/' + tableId + '/' + vmId,
     method: 'get'
   })
 }
@@ -60,9 +68,9 @@ export function delTable(tableId) {
 }
 
 // 生成代码（自定义路径）
-export function genCode(tableName) {
+export function genCode(tableName, vmId) {
   return request({
-    url: '/tool/gen/genCode/' + tableName,
+    url: '/tool/gen/genCode/' + tableName + "/" + vmId,
     method: 'get'
   })
 }

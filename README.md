@@ -18,7 +18,7 @@
 1. 修复生成代码中部分逻辑bug
 2. 插入式对软删除deleted字段的维护由手工变为自动
 3. 更换了验证码生成器【easy-captcha】,样式更美观。并且修复了后续jdk中不包含ScriptEngine以致无法使用的问题
-4. 采用配置来对不同包名下的mapper文件进行扫描，不用再去系统里更改代码了。详细可参考`application.yml`中的`ruoyi.auto-scan-mapper`与`ruoyi.auto-scan-package`配置
+4. 采用配置来对不同包名下的mapper文件进行扫描，不用再去系统里更改代码了。详细可参考`application.yml`中的`luna.auto-scan-mapper`与`luna.auto-scan-package`配置
 5. 调整了SecurityConfig类，采用内部类来定义拦截策略。以后有新的需要权限验证的子系统可以直接在此类扩展
 
 ### 2021/02/15  
@@ -62,7 +62,7 @@
 * 提供了单应用版本[RuoYi-Vue-fast](https://github.com/yangzongzhuan/RuoYi-Vue-fast)，Oracle版本[RuoYi-Vue-Oracle](https://github.com/yangzongzhuan/RuoYi-Vue-Oracle)，保持同步更新。
 * 不分离版本，请移步[RuoYi](https://gitee.com/y_project/RuoYi)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
 * 特别鸣谢：[element](https://github.com/ElemeFE/element)，[vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)，[eladmin-web](https://github.com/elunez/eladmin-web)。
-* 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
+* 阿里云折扣场：[点我进入](http://aly.luna.vip)，腾讯云秒杀场：[点我进入](http://txy.luna.vip)&nbsp;&nbsp;
 * 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
 
 ## 内置功能
@@ -91,8 +91,8 @@
 - admin/admin123  
 - 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
 
-演示地址：http://vue.ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+演示地址：http://vue.luna.vip  
+文档地址：http://doc.luna.vip
 
 ## 演示图
 
