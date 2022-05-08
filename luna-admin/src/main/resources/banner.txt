@@ -1,0 +1,2 @@
+Application Version: ${luna.version}
+Spring Boot Version: ${spring-boot.version}
