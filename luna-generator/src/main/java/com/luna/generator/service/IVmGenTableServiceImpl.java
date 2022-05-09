@@ -249,10 +249,7 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
 
     public static String getGenPath(GenTable table, String template, Integer vmId) {
         String genPath = table.getGenPath();
-        if (StringUtils.containsAny(template,  "index.vue.vm", "index-tree.vue.vm")){
-            genPath = table.getGenVuePath();
-        }
-        if (StringUtils.contains(template,  "api.js.vm")){
+        if (StringUtils.containsAny(template, "index.vue.vm", "index-tree.vue.vm", "api.js.vm")) {
             genPath = table.getGenVuePath();
         }
         if (StringUtils.equals(genPath, "/")) {
