@@ -15,4 +15,5 @@ public class LunaStartApplication {
         System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(LunaStartApplication.class, args);
     }
+
 }

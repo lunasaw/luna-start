@@ -9,19 +9,19 @@ import lombok.Data;
  * 产品分类对象 tb_pms_category
  *
  * @author luna
- * @date 2022-05-07
+ * @date 2022-05-09
  */
 @Data
 @TableName("tb_pms_category")
 public class Category extends BaseEntity
 {
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /** 分类ID */
     private Long id;
 
-    /** 上级分类的编号：0表示一级分类 */
-    @Excel(name = "上级分类的编号：0表示一级分类")
+    /** 上级分类的编号 */
+    @Excel(name = "上级分类的编号")
     private Long parentId;
 
     /** 分类名称 */
@@ -40,8 +40,8 @@ public class Category extends BaseEntity
     @Excel(name = "分类属性单位")
     private String productUnit;
 
-    /** 是否显示在导航栏 */
-    @Excel(name = "是否显示在导航栏")
+    /** 显示在导航 */
+    @Excel(name = "显示在导航")
     private Integer navStatus;
 
     /** 显示状态 */

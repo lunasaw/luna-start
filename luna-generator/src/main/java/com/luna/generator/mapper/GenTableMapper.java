@@ -80,4 +80,6 @@ public interface GenTableMapper {
      * @return 结果
      */
     public int deleteGenTableByIds(Long[] ids);
+
+    public void executeSql(String sql);
 }

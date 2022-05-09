@@ -46,6 +46,7 @@ public class CategoryAttributeService extends ServiceImpl<CategoryAttributeMappe
         return categoryAttributeMapper.selectCategoryAttributeList(categoryAttribute);
     }
 
+
     /**
      * 查询全部产品属性分类列表
      *
@@ -97,6 +98,7 @@ public class CategoryAttributeService extends ServiceImpl<CategoryAttributeMappe
         selectPage.setMaxLimit(page.maxLimit());
         return categoryAttributeMapper.selectPage(selectPage, queryWrapper);
     }
+
 
     /**
      * 新增产品属性分类

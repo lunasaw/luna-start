@@ -31,17 +31,17 @@
     <select id="selectCategoryList" parameterType="Category" resultMap="CategoryResult">
         <include refid="selectCategoryVo"/>
         <where>
-            <if test="parentId != null "> and parent_id = #{parentId}</if>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="level != null "> and level = #{level}</if>
-            <if test="productCount != null "> and product_count = #{productCount}</if>
-            <if test="productUnit != null  and productUnit != ''"> and product_unit = #{productUnit}</if>
-            <if test="navStatus != null "> and nav_status = #{navStatus}</if>
-            <if test="showStatus != null "> and show_status = #{showStatus}</if>
-            <if test="sort != null "> and sort = #{sort}</if>
-            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
-            <if test="keywords != null  and keywords != ''"> and keywords like concat('%', #{keywords}, '%')</if>
-            <if test="description != null  and description != ''"> and description like concat('%', #{description}, '%')</if>
+            <if test="parentId != null ">and parent_id = #{parentId}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="level != null ">and level = #{level}</if>
+            <if test="productCount != null ">and product_count = #{productCount}</if>
+            <if test="productUnit != null  and productUnit != ''">and product_unit = #{productUnit}</if>
+            <if test="navStatus != null ">and nav_status = #{navStatus}</if>
+            <if test="showStatus != null ">and show_status = #{showStatus}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="icon != null  and icon != ''">and icon = #{icon}</if>
+            <if test="keywords != null  and keywords != ''">and keywords = #{keywords}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
         </where>
     </select>
 

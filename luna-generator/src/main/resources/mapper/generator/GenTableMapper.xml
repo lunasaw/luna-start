@@ -300,6 +300,7 @@
             <if test="functionAuthor != null and functionAuthor != ''">function_author = #{functionAuthor},</if>
             <if test="genType != null and genType != ''">gen_type = #{genType},</if>
             <if test="genPath != null and genPath != ''">gen_path = #{genPath},</if>
+            <if test="genVuePath != null and genVuePath != ''">gen_vue_path = #{genVuePath},</if>
             <if test="tplCategory != null and tplCategory != ''">tpl_category = #{tplCategory},</if>
             <if test="packageName != null and packageName != ''">package_name = #{packageName},</if>
             <if test="moduleName != null and moduleName != ''">module_name = #{moduleName},</if>
@@ -320,4 +321,7 @@
         </foreach>
     </delete>
 
+    <select id="executeSql" parameterType="String">
+        ${sql}
+    </select>
 </mapper>

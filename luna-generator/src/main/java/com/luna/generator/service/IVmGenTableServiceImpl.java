@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,9 +144,11 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
             tpl.merge(context, sw);
             try {
                 String path = getGenPath(table, template, vmId);
-                if (StringUtils.contains(path,  ".sql")){
+                if (StringUtils.contains(path, "sql")) {
                     // 执行SQL
-
+                    for (String readAllLine : Files.readAllLines(Paths.get(path))) {
+                        genTableMapper.executeSql(readAllLine);
+                    }
                 }
                 FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8, true);
             } catch (IOException e) {

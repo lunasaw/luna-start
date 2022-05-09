@@ -40,15 +40,15 @@ export function get${BusinessName}(${pkColumn.javaField}) {
 
 // 新增${functionName}
 export function add${BusinessName}(data) {
-  return request({
-    url: '/${moduleName}/${businessName}',
-    method: 'post',
-    data: data
-  })
+    return request({
+        url: '/${moduleName}/${businessName}',
+        method: 'post',
+        data: data
+    })
 }
 
 // 批量新增${functionName}
-export function add${BusinessName}(data) {
+export function addList${BusinessName}(data) {
     return request({
         url: '/${moduleName}/${businessName}/addList',
         method: 'post',
@@ -58,15 +58,15 @@ export function add${BusinessName}(data) {
 
 // 修改${functionName}
 export function update${BusinessName}(data) {
-  return request({
-    url: '/${moduleName}/${businessName}',
-    method: 'put',
-    data: data
-  })
+    return request({
+        url: '/${moduleName}/${businessName}',
+        method: 'put',
+        data: data
+    })
 }
 
 // 批量修改${functionName}
-export function update${BusinessName}(data) {
+export function updateList${BusinessName}(data) {
     return request({
         url: '/${moduleName}/${businessName}/editList',
         method: 'put',

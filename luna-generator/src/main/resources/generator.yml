@@ -9,6 +9,6 @@ gen:
   # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
   tablePrefix: sys_
   # 默认部署目录
-  javaPath: luna-system.src
-  # 默认部署前端页面目录
-  vuePath: luna-ui.src
+  javaPath: luna-system/src
+  # 默认部署前端页面目录 绝对路径
+  vuePath: ～/project/luna-start/na-ui/src

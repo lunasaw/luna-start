@@ -97,6 +97,11 @@
           >
             生成代码
           </el-button>
+          <el-button type="text" size="small" icon="el-icon-download" @click="handleAutoGenTable(scope.row)"
+                     v-hasPermi="['tool:gen:code']"
+          >
+            一键部署
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -211,25 +216,36 @@ export default {
     /** 搜索按钮操作 */
     handleQuery () {
       this.queryParams.pageNum = 1
-      this.getList ()
+      this.getList()
     },
     /** 生成代码操作 */
-    handleGenTable (row) {
+    handleGenTable(row) {
       const tableNames = row.tableName || this.tableNames
       if (tableNames === '') {
-        this.$modal.msgError ('请选择要生成的数据')
+        this.$modal.msgError('请选择要生成的数据')
+        return
+      }
+      genCode(row.tableName, this.vmType).then(response => {
+        this.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath)
+      })
+    },
+    /** 生成代码操作 */
+    handleAutoGenTable(row) {
+      const tableNames = row.tableName || this.tableNames
+      if (tableNames === '') {
+        this.$modal.msgError('请选择要生成的数据')
         return
       }
       if (row.genType === '1') {
-        genCode (row.tableName, this.vmType).then (response => {
-          this.$modal.msgSuccess ('成功生成到自定义路径：' + row.genPath)
+        genCode(row.tableName, this.vmType).then(response => {
+          this.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath)
         })
       } else {
-        this.$download.zip ('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, 'luna')
+        this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, 'luna')
       }
     },
     /** 同步数据库操作 */
-    handleSynchDb (row) {
+    handleSynchDb(row) {
       const tableName = row.tableName
       this.$modal.confirm ('确认要强制同步"' + tableName + '"表结构吗？').then (function() {
         return synchDb (tableName)

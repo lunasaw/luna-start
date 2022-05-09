@@ -1,20 +1,20 @@
 package com.luna.product.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.luna.product.domain.Category;
-
 import java.util.List;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.product.domain.Category;
 
 /**
  * 产品分类Mapper接口
- *
+ * 
  * @author luna
- * @date 2022-05-07
+ * @date 2022-05-09
  */
 public interface CategoryMapper extends BaseMapper<Category> {
     /**
      * 查询产品分类
-     *
+     * 
      * @param id 产品分类主键
      * @return 产品分类
      */
@@ -22,7 +22,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 查询产品分类列表
-     *
+     * 
      * @param category 产品分类
      * @return 产品分类集合
      */
@@ -30,7 +30,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 新增产品分类
-     *
+     * 
      * @param category 产品分类
      * @return 结果
      */
@@ -38,7 +38,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 修改产品分类
-     *
+     * 
      * @param category 产品分类
      * @return 结果
      */
@@ -46,7 +46,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 删除产品分类
-     *
+     * 
      * @param id 产品分类主键
      * @return 结果
      */
@@ -54,7 +54,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 批量删除产品分类
-     *
+     * 
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */

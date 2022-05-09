@@ -75,6 +75,15 @@ export function genCode(tableName, vmId) {
   })
 }
 
+// 生成代码（自动部署）
+export function genCodeAuto(tableName, vmId) {
+  return request({
+    url: '/tool/gen/genCodeAuto/' + tableName + "/" + vmId,
+    method: 'get'
+  })
+}
+
+
 // 同步数据库
 export function synchDb(tableName) {
   return request({
