@@ -12,6 +12,10 @@ import ${import};
 import com.luna.common.annotation.Excel;
 #if($table.crud || $table.sub)
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.luna.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 #elseif($table.tree)
 #end
 
@@ -22,24 +26,25 @@ import com.baomidou.mybatisplus.annotation.TableField;
  * @date ${datetime}
  */
 #if($table.crud || $table.sub)
-#set($Entity="BaseEntity")
+    #set($Entity="BaseEntity")
 #elseif($table.tree)
-#set($Entity="TreeEntity")
+    #set($Entity="TreeEntity")
 #end
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("${tableName}")
 public class ${ClassName} extends ${Entity} {
-    private static final long serialVersionUID = 1L;
+private static final long serialVersionUID=1L;
 
 #foreach ($column in $columns)
-#if(!$table.isSuperColumn($column.javaField))
+    #if(!$table.isSuperColumn($column.javaField))
     /** $column.columnComment */
-#if($column.list)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #if($column.list)
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
 #else
 #set($comment=$column.columnComment)
 #end
