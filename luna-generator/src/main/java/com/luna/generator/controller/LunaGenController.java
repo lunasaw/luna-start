@@ -97,7 +97,7 @@ public class LunaGenController {
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCodeAuto/{tableName}/{vmId}")
     public AjaxResult genCodeAuto(@PathVariable("tableName") String tableName, @PathVariable("vmId") Integer vmId) {
-        iVmGenTableService.generatorCode(tableName, vmId);
+        iVmGenTableService.generatorCodeAuto(tableName, vmId);
         return AjaxResult.success();
     }
 

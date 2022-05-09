@@ -142,6 +142,10 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
             tpl.merge(context, sw);
             try {
                 String path = getGenPath(table, template, vmId);
+                if (StringUtils.contains(path,  ".sql")){
+                    // 执行SQL
+
+                }
                 FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8, true);
             } catch (IOException e) {
                 throw new ServiceException("渲染模板失败，表名：" + table.getTableName());

@@ -23,6 +23,9 @@ public class VelocityUtils {
     /** 项目空间路径 */
     private static final String PROJECT_PATH           = "main/java";
 
+    /** controller 模块 */
+    private static final String CONTROLLER_PATH        = "luna-admin";
+
     /** mybatis空间路径 */
     private static final String MYBATIS_PATH           = "main/resources/mapper";
 
