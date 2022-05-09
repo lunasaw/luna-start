@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.alibaba.fastjson.JSON;
 import com.luna.generator.config.GenConfig;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -33,6 +37,7 @@ import com.luna.generator.domain.VmTypeEnum;
 import com.luna.generator.mapper.GenTableMapper;
 import com.luna.generator.util.VelocityInitializer;
 import com.luna.generator.util.VelocityUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 业务 服务层实现
@@ -137,6 +142,8 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
         VelocityContext context = VelocityUtils.prepareContext(table);
         // 获取模板列表
         List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory(), VmTypeEnum.getById(vmId));
+
+        ArrayList<String> paths = Lists.newArrayList();
         for (String template : templates) {
             // 渲染模板
             StringWriter sw = new StringWriter();
@@ -144,16 +151,34 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
             tpl.merge(context, sw);
             try {
                 String path = getGenPath(table, template, vmId);
-                if (StringUtils.contains(path, "sql")) {
-                    // 执行SQL
-                    for (String readAllLine : Files.readAllLines(Paths.get(path))) {
-                        genTableMapper.executeSql(readAllLine);
+                paths.add(path);
+                FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8, true);
+                executeSql(path);
+            } catch (Exception e) {
+                for (String path : paths) {
+                    try {
+                        FileUtils.delete(new File(path));
+                    } catch (IOException ex) {
+                        log.warn("generatorCodeAuto::delete = {}, path = {}", tableName, path);
                     }
                 }
-                FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8, true);
-            } catch (IOException e) {
-                throw new ServiceException("渲染模板失败，表名：" + table.getTableName());
+                log.error("generatorCodeAuto::tableName = {}, vmId = {} ", tableName, vmId, e);
+                throw new ServiceException("渲染模板失败，表名： " + table.getTableName());
             }
+        }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    private void executeSql(String path) throws IOException {
+        if (StringUtils.contains(path, "sql")) {
+            // 执行SQL
+            for (String line : Files.readAllLines(Paths.get(path))) {
+                if (StringUtils.isEmpty(line)) {
+                    continue;
+                }
+                genTableMapper.executeSql(line);
+            }
+            FileUtils.delete(new File(path));
         }
     }
 
