@@ -32,10 +32,10 @@ export function ${businessName}ListByIds(ids) {
 
 // 查询${functionName}详细
 export function get${BusinessName}(${pkColumn.javaField}) {
-  return request({
-    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
-    method: 'get'
-  })
+    return request({
+        url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
+        method: 'get'
+    })
 }
 
 // 新增${functionName}

@@ -68,7 +68,7 @@ public class GenTable extends BaseEntity
     private String genPath;
 
     /** 生成Vue路径（不填默认项目路径） */
-    private String genVuePath;
+    private String               genVuePath;
 
     /** 主键信息 */
     private GenTableColumn pkColumn;

@@ -51,7 +51,7 @@ public class GenConfig {
     }
 
     @Value("${javaPath}")
-    public  void setJavaPath(String javaPath) {
+    public void setJavaPath(String javaPath) {
         GenConfig.javaPath = javaPath;
     }
 

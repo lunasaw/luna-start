@@ -167,7 +167,7 @@ public class GenTableServiceImpl implements IGenTableService
                 String tableName = table.getTableName();
                 GenUtils.initTable(table, operName);
                 GenTable genTable = genTableMapper.selectGenTableByName(tableName);
-                if (genTable != null){
+                if (genTable != null) {
                     throw new ServiceException("导入失败：表格已经存在!");
                 }
                 int row = genTableMapper.insertGenTable(table);
@@ -530,11 +530,9 @@ public class GenTableServiceImpl implements IGenTableService
      * @param template 模板文件路径
      * @return 生成地址
      */
-    public static String getGenVuePath(GenTable table, String template)
-    {
+    public static String getGenVuePath(GenTable table, String template) {
         String genPath = table.getGenVuePath();
-        if (StringUtils.equals(genPath, "/"))
-        {
+        if (StringUtils.equals(genPath, "/")) {
             return System.getProperty("user.dir") + File.separator + "src" + File.separator + VelocityUtils.getFileName(template, table);
         }
         return genPath + File.separator + VelocityUtils.getFileName(template, table);
