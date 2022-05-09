@@ -140,24 +140,24 @@
       <el-table-column label="分类ID" align="center" prop="id"/>
       <el-table-column label="上级分类的编号" align="center" prop="parentId"/>
       <el-table-column label="分类名称" align="center" prop="name"/>
-      <el-table-column label="分类级别" align="center" prop="level">
+      <el-table-column label="分类级别" align="center" prop="level" sortable>
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_level" :value="scope.row.level"/>
         </template>
       </el-table-column>
-      <el-table-column label="产品数量" align="center" prop="productCount"/>
+      <el-table-column label="产品数量" align="center" prop="productCount" sortable/>
       <el-table-column label="分类属性单位" align="center" prop="productUnit"/>
-      <el-table-column label="显示在导航" align="center" prop="navStatus">
+      <el-table-column label="显示在导航" align="center" prop="navStatus" sortable>
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_status" :value="scope.row.navStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="显示状态" align="center" prop="showStatus">
+      <el-table-column label="显示状态" align="center" prop="showStatus" sortable>
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_status" :value="scope.row.showStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort"/>
+      <el-table-column label="排序" align="center" prop="sort" sortable/>
       <el-table-column label="图标" align="center" prop="icon" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.icon" :width="50" :height="50"/>

@@ -236,7 +236,7 @@ export default {
         this.$modal.msgError('请选择要生成的数据')
         return
       }
-      this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, 'luna')
+      this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, tableNames)
     },
     /** 同步数据库操作 */
     handleSynchDb(row) {
