@@ -156,7 +156,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @param tableList 导入表列表
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public void importGenTable(List<GenTable> tableList)
     {
         String operName = SecurityUtils.getUsername();
@@ -166,6 +166,10 @@ public class GenTableServiceImpl implements IGenTableService
             {
                 String tableName = table.getTableName();
                 GenUtils.initTable(table, operName);
+                GenTable genTable = genTableMapper.selectGenTableByName(tableName);
+                if (genTable != null){
+                    throw new ServiceException("导入失败：表格已经存在!");
+                }
                 int row = genTableMapper.insertGenTable(table);
                 if (row > 0)
                 {
@@ -282,7 +286,7 @@ public class GenTableServiceImpl implements IGenTableService
      * @param tableName 表名称
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public void synchDb(String tableName)
     {
         GenTable table = genTableMapper.selectGenTableByName(tableName);
@@ -512,6 +516,23 @@ public class GenTableServiceImpl implements IGenTableService
     public static String getGenPath(GenTable table, String template)
     {
         String genPath = table.getGenPath();
+        if (StringUtils.equals(genPath, "/"))
+        {
+            return System.getProperty("user.dir") + File.separator + "src" + File.separator + VelocityUtils.getFileName(template, table);
+        }
+        return genPath + File.separator + VelocityUtils.getFileName(template, table);
+    }
+
+    /**
+     * 获取前端代码生成地址
+     *
+     * @param table 业务表信息
+     * @param template 模板文件路径
+     * @return 生成地址
+     */
+    public static String getGenVuePath(GenTable table, String template)
+    {
+        String genPath = table.getGenVuePath();
         if (StringUtils.equals(genPath, "/"))
         {
             return System.getProperty("user.dir") + File.separator + "src" + File.separator + VelocityUtils.getFileName(template, table);

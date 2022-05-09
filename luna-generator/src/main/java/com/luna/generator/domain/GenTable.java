@@ -67,6 +67,9 @@ public class GenTable extends BaseEntity
     /** 生成路径（不填默认项目路径） */
     private String genPath;
 
+    /** 生成Vue路径（不填默认项目路径） */
+    private String genVuePath;
+
     /** 主键信息 */
     private GenTableColumn pkColumn;
 
@@ -94,6 +97,14 @@ public class GenTable extends BaseEntity
 
     /** 上级菜单名称字段 */
     private String parentMenuName;
+
+    public String getGenVuePath() {
+        return genVuePath;
+    }
+
+    public void setGenVuePath(String genVuePath) {
+        this.genVuePath = genVuePath;
+    }
 
     public Long getTableId()
     {

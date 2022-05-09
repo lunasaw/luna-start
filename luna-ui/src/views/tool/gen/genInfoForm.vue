@@ -5,9 +5,9 @@
         <el-form-item prop="tplCategory">
           <span slot="label">生成模板</span>
           <el-select v-model="info.tplCategory" @change="tplSelectChange">
-            <el-option label="单表（增删改查）" value="crud" />
-            <el-option label="树表（增删改查）" value="tree" />
-            <el-option label="主子表（增删改查）" value="sub" />
+            <el-option label="单表（增删改查）" value="crud"/>
+            <el-option label="树表（增删改查）" value="tree"/>
+            <el-option label="主子表（增删改查）" value="sub"/>
           </el-select>
         </el-form-item>
       </el-col>
@@ -19,7 +19,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-input v-model="info.packageName" />
+          <el-input v-model="info.packageName"/>
         </el-form-item>
       </el-col>
 
@@ -31,7 +31,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-input v-model="info.moduleName" />
+          <el-input v-model="info.moduleName"/>
         </el-form-item>
       </el-col>
 
@@ -43,7 +43,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-input v-model="info.businessName" />
+          <el-input v-model="info.businessName"/>
         </el-form-item>
       </el-col>
 
@@ -55,7 +55,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <el-input v-model="info.functionName" />
+          <el-input v-model="info.functionName"/>
         </el-form-item>
       </el-col>
 
@@ -94,7 +94,7 @@
       <el-col :span="24" v-if="info.genType == '1'">
         <el-form-item prop="genPath">
           <span slot="label">
-            自定义路径
+            JAVA自定义路径
             <el-tooltip content="填写磁盘绝对路径，若不填写，则生成到当前Web项目下" placement="top">
               <i class="el-icon-question"></i>
             </el-tooltip>
@@ -107,6 +107,27 @@
               </el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="info.genPath = '/'">恢复默认的生成基础路径</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-input>
+        </el-form-item>
+
+
+        <el-form-item prop="genVuePath">
+          <span slot="label">
+            VUE自定义路径
+            <el-tooltip content="填写磁盘绝对路径，若不填写，则生成到当前Web项目下" placement="top">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
+          <el-input v-model="info.genVuePath">
+            <el-dropdown slot="append">
+              <el-button type="primary">
+                最近路径快速选择
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="info.genVuePath = '/'">恢复默认的生成基础路径</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-input>
@@ -218,7 +239,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
-  components: { Treeselect },
+  components: {Treeselect},
   props: {
     info: {
       type: Object,
@@ -238,26 +259,27 @@ export default {
       subColumns: [],
       rules: {
         tplCategory: [
-          { required: true, message: "请选择生成模板", trigger: "blur" }
+          {required: true, message: "请选择生成模板", trigger: "blur"}
         ],
         packageName: [
-          { required: true, message: "请输入生成包路径", trigger: "blur" }
+          {required: true, message: "请输入生成包路径", trigger: "blur"}
         ],
         moduleName: [
-          { required: true, message: "请输入生成模块名", trigger: "blur" }
+          {required: true, message: "请输入生成模块名", trigger: "blur"}
         ],
         businessName: [
-          { required: true, message: "请输入生成业务名", trigger: "blur" }
+          {required: true, message: "请输入生成业务名", trigger: "blur"}
         ],
         functionName: [
-          { required: true, message: "请输入生成功能名", trigger: "blur" }
+          {required: true, message: "请输入生成功能名", trigger: "blur"}
         ],
       }
     };
   },
-  created() {},
+  created() {
+  },
   watch: {
-    'info.subTableName': function(val) {
+    'info.subTableName': function (val) {
       this.setSubTableColumns(val);
     }
   },
@@ -279,7 +301,7 @@ export default {
     },
     /** 选择生成模板触发 */
     tplSelectChange(value) {
-      if(value !== 'sub') {
+      if (value !== 'sub') {
         this.info.subTableName = '';
         this.info.subTableFkName = '';
       }

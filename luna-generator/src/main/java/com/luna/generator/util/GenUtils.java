@@ -1,6 +1,8 @@
 package com.luna.generator.util;
 
 import java.util.Arrays;
+
+import com.luna.generator.domain.GenPathEnum;
 import org.apache.commons.lang3.RegExUtils;
 import com.luna.common.constant.GenConstants;
 import com.luna.common.utils.StringUtils;
@@ -26,6 +28,8 @@ public class GenUtils
         genTable.setBusinessName(getBusinessName(genTable.getTableName()));
         genTable.setFunctionName(replaceText(genTable.getTableComment()));
         genTable.setFunctionAuthor(GenConfig.getAuthor());
+        genTable.setGenPath(GenPathEnum.JAVA.getGenPath());
+        genTable.setGenVuePath(GenPathEnum.VUE.getGenPath());
         genTable.setCreateBy(operName);
     }
 
