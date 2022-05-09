@@ -236,13 +236,7 @@ export default {
         this.$modal.msgError('请选择要生成的数据')
         return
       }
-      if (row.genType === '1') {
-        genCode(row.tableName, this.vmType).then(response => {
-          this.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath)
-        })
-      } else {
-        this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, 'luna')
-      }
+      this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, 'luna')
     },
     /** 同步数据库操作 */
     handleSynchDb(row) {

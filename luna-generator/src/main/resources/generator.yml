@@ -11,4 +11,4 @@ gen:
   # 默认部署目录
   javaPath: luna-system/src
   # 默认部署前端页面目录 绝对路径
-  vuePath: ～/project/luna-start/na-ui/src
+  vuePath: luna-ui/src
