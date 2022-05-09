@@ -151,6 +151,11 @@ public class IVmGenTableServiceImpl implements IVmGenTableService {
             tpl.merge(context, sw);
             try {
                 String path = getGenPath(table, template, vmId);
+                try {
+                    FileUtils.delete(new File(path));
+                } catch (IOException ex) {
+                    log.warn("generatorCodeAuto::delete = {}, path = {}, e = {}", tableName, path, ex.getMessage());
+                }
                 paths.add(path);
                 FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetKit.UTF_8, true);
                 executeSql(path);

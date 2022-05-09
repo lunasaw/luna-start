@@ -17,13 +17,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="分类级别：1:一级；2:二级" prop="level">
-        <el-input
-          v-model="queryParams.level"
-          placeholder="请输入分类级别：1:一级；2:二级"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="分类级别" prop="level">
+        <el-select v-model="queryParams.level" placeholder="请选择分类级别" clearable>
+          <el-option
+            v-for="dict in dict.type.tb_product_level"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="产品数量" prop="productCount">
         <el-input
@@ -138,7 +140,7 @@
       <el-table-column label="分类ID" align="center" prop="id"/>
       <el-table-column label="上级分类的编号" align="center" prop="parentId"/>
       <el-table-column label="分类名称" align="center" prop="name"/>
-      <el-table-column label="分类级别：1:一级；2:二级" align="center" prop="level">
+      <el-table-column label="分类级别" align="center" prop="level">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_level" :value="scope.row.level"/>
         </template>
@@ -203,8 +205,15 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入分类名称"/>
         </el-form-item>
-        <el-form-item label="分类级别：1:一级；2:二级" prop="level">
-          <el-input v-model="form.level" placeholder="请输入分类级别：1:一级；2:二级"/>
+        <el-form-item label="分类级别" prop="level">
+          <el-select v-model="form.level" placeholder="请选择分类级别">
+            <el-option
+              v-for="dict in dict.type.tb_product_level"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="产品数量" prop="productCount">
           <el-input v-model="form.productCount" placeholder="请输入产品数量"/>
@@ -261,7 +270,7 @@ import {listCategory, getCategory, delCategory, addCategory, updateCategory} fro
 
 export default {
   name: "Category",
-  dicts: ['tb_product_status'],
+  dicts: ['tb_product_status', 'tb_product_level'],
   data() {
     return {
       // 遮罩层

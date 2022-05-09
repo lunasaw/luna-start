@@ -46,6 +46,7 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         return categoryMapper.selectCategoryList(category);
     }
 
+
     /**
      * 查询全部产品分类列表
      *
@@ -97,6 +98,7 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         selectPage.setMaxLimit(page.maxLimit());
         return categoryMapper.selectPage(selectPage, queryWrapper);
     }
+
 
     /**
      * 新增产品分类

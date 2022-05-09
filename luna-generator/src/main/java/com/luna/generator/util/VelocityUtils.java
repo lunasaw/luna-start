@@ -192,7 +192,6 @@ public class VelocityUtils {
 
         String javaPath = PROJECT_PATH + "/" + StringUtils.replace(packageName, ".", "/");
         String mybatisPath = MYBATIS_PATH + "/" + moduleName;
-        String vuePath = "";
 
         VmTypeEnum vmTypeEnum = VmTypeEnum.getById(vmId);
 

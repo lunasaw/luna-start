@@ -60,4 +60,5 @@ public interface CategoryMapper extends BaseMapper<Category> {
      */
     public int deleteCategoryByIds(Long[] ids);
 
+
 }

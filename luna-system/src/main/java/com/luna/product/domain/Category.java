@@ -27,8 +27,8 @@ public class Category extends BaseEntity {
     @Excel(name = "分类名称")
     private String            name;
 
-    /** 分类级别：1:一级；2:二级 */
-    @Excel(name = "分类级别：1:一级；2:二级")
+    /** 分类级别 */
+    @Excel(name = "分类级别")
     private Integer           level;
 
     /** 产品数量 */
