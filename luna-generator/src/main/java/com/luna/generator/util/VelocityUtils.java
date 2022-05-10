@@ -295,7 +295,7 @@ public class VelocityUtils {
         for (GenTableColumn column : columns) {
             if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType()) && StringUtils.equalsAny(
                 column.getHtmlType(),
-                new String[] {GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
+                new String[] {GenConstants.HTML_SELECT, GenConstants.HTML_SWITCH, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
                 dicts.add("'" + column.getDictType() + "'");
             }
         }

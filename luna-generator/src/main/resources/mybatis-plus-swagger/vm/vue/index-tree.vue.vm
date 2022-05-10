@@ -20,28 +20,28 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <el-option
-            v-for="dict in dict.type.${dictType}"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "switch") && "" != $dictType)
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+      <el-option
+          v-for="dict in dict.type.${dictType}"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+      />
+    </el-select>
+  </el-form-item>
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "switch") && $dictType)
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+      <el-option label="请选择字典生成" value=""/>
+    </el-select>
+  </el-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-date-picker clearable
-          v-model="queryParams.${column.javaField}"
-          type="date"
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-date-picker clearable
+                    v-model="queryParams.${column.javaField}"
+                    type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择${comment}">
         </el-date-picker>

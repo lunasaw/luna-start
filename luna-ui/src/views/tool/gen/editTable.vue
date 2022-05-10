@@ -88,7 +88,7 @@
                 <el-option label="文本框" value="input" />
                 <el-option label="文本域" value="textarea" />
                 <el-option label="下拉框" value="select" />
-                <el-option label="开关 1开 0关" value="switch" />
+                <el-option label="开关" value="switch"/>
                 <el-option label="单选框" value="radio" />
                 <el-option label="复选框" value="checkbox" />
                 <el-option label="日期控件" value="datetime" />

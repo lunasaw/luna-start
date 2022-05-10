@@ -46,7 +46,7 @@
       <el-form-item label="显示在导航" prop="navStatus">
         <el-select v-model="queryParams.navStatus" placeholder="请选择显示在导航" clearable>
           <el-option
-            v-for="dict in dict.type.tb_product_status"
+            v-for="dict in dict.type.tb_normal_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -56,7 +56,7 @@
       <el-form-item label="显示状态" prop="showStatus">
         <el-select v-model="queryParams.showStatus" placeholder="请选择显示状态" clearable>
           <el-option
-            v-for="dict in dict.type.tb_product_status"
+            v-for="dict in dict.type.tb_normal_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -140,24 +140,30 @@
       <el-table-column label="分类ID" align="center" prop="id"/>
       <el-table-column label="上级分类的编号" align="center" prop="parentId"/>
       <el-table-column label="分类名称" align="center" prop="name"/>
-      <el-table-column label="分类级别" align="center" prop="level" sortable>
+      <el-table-column label="分类级别" align="center" prop="level">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_level" :value="scope.row.level"/>
         </template>
       </el-table-column>
-      <el-table-column label="产品数量" align="center" prop="productCount" sortable/>
+      <el-table-column label="产品数量" align="center" prop="productCount"/>
       <el-table-column label="分类属性单位" align="center" prop="productUnit"/>
-      <el-table-column label="显示在导航" align="center" prop="navStatus" sortable>
+      <el-table-column label="显示在导航" align="center" prop="navStatus" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.tb_product_status" :value="scope.row.navStatus"/>
+          <el-switch v-model="scope.row.navStatus" :active-value="getActiveValue(true)"
+                     :inactive-value="getActiveValue(false)"
+                     @change="navStatusSwitchChange(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="显示状态" align="center" prop="showStatus" sortable>
+      <el-table-column label="显示状态" align="center" prop="showStatus" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.tb_product_status" :value="scope.row.showStatus"/>
+          <el-switch v-model="scope.row.showStatus" active-value="getActiveValue(true)"
+                     :inactive-value="getActiveValue(false)"
+                     @change="showStatusSwitchChange(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort" sortable/>
+      <el-table-column label="排序" align="center" prop="sort"/>
       <el-table-column label="图标" align="center" prop="icon" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.icon" :width="50" :height="50"/>
@@ -221,25 +227,15 @@
         <el-form-item label="分类属性单位" prop="productUnit">
           <el-input v-model="form.productUnit" placeholder="请输入分类属性单位"/>
         </el-form-item>
-        <el-form-item label="显示在导航">
-          <el-radio-group v-model="form.navStatus">
-            <el-radio
-              v-for="dict in dict.type.tb_product_status"
-              :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{ dict.label }}
-            </el-radio>
-          </el-radio-group>
+        <el-form-item label="显示在导航" prop="navStatus">
+          <el-switch v-model="form.remark" :active-value=0 :inactive-value=0
+                     @change="navStatusSwitchChange(form)"
+          ></el-switch>
         </el-form-item>
-        <el-form-item label="显示状态">
-          <el-radio-group v-model="form.showStatus">
-            <el-radio
-              v-for="dict in dict.type.tb_product_status"
-              :key="dict.value"
-              :label="parseInt(dict.value)"
-            >{{ dict.label }}
-            </el-radio>
-          </el-radio-group>
+        <el-form-item label="显示状态" prop="showStatus">
+          <el-switch v-model="form.remark" :active-value=0 :inactive-value=0
+                     @change="showStatusSwitchChange(form)"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入排序"/>
@@ -267,10 +263,12 @@
 
 <script>
 import {listCategory, getCategory, delCategory, addCategory, updateCategory} from "@/api/product/category";
+import {navStatusSwitchChange} from "@/api/product/category";
+import {showStatusSwitchChange} from "@/api/product/category";
 
 export default {
   name: "Category",
-  dicts: ['tb_product_status', 'tb_product_level'],
+  dicts: ['tb_product_level', 'tb_normal_status'],
   data() {
     return {
       // 遮罩层
@@ -353,8 +351,8 @@ export default {
         level: null,
         productCount: null,
         productUnit: null,
-        navStatus: 0,
-        showStatus: 0,
+        navStatus: null,
+        showStatus: null,
         sort: null,
         icon: null,
         keywords: null,
@@ -382,6 +380,37 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
+    },
+    // 状态修改
+    navStatusSwitchChange(row) {
+      let text = row.navStatus === '1' ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return navStatusSwitchChange(row.id, row.navStatus)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.navStatus = row.navStatus === '1' ? '0' : '1'
+      })
+    },
+    getActiveValue(value) {
+      let statusZero = this.dict.type.tb_normal_status[0]
+      let statusOne = this.dict.type.tb_normal_status[1]
+      if (value) {
+        return Number(statusZero.value)
+      } else {
+        return Number(statusOne.value)
+      }
+    },
+    // 状态修改
+    showStatusSwitchChange(row) {
+      let text = row.showStatus === '1' ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return showStatusSwitchChange(row.id, row.showStatus)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.showStatus = row.showStatus === '1' ? '0' : '1'
+      })
     },
     /** 新增按钮操作 */
     handleAdd() {

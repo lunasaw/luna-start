@@ -111,6 +111,10 @@ public class GenUtils
         {
             column.setHtmlType(GenConstants.HTML_RADIO);
         }
+        // 状态字段设置开关
+        if (StringUtils.endsWithIgnoreCase(columnName, "switch")) {
+            column.setHtmlType(GenConstants.HTML_SWITCH);
+        }
         // 类型&性别字段设置下拉框
         else if (StringUtils.endsWithIgnoreCase(columnName, "type")
                 || StringUtils.endsWithIgnoreCase(columnName, "sex"))

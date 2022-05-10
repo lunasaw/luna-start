@@ -2,11 +2,11 @@ import request from '@/utils/request'
 
 // 查询${functionName}列表
 export function list${BusinessName}(query) {
-  return request({
-    url: '/${moduleName}/${businessName}/list',
-    method: 'get',
-    params: query
-  })
+    return request({
+        url: '/${moduleName}/${businessName}/list',
+        method: 'get',
+        params: query
+    })
 }
 
 // 查询全部${functionName}列表
@@ -21,7 +21,7 @@ export function ${businessName}ListAll(query) {
 // 查询全部${functionName}列表
 export function ${businessName}ListByIds(ids) {
     let query = {
-        ids : ids
+        ids: ids
     }
     return request({
         url: '/${moduleName}/${businessName}/listByIds',
@@ -56,6 +56,19 @@ export function addList${BusinessName}(data) {
     })
 }
 
+#foreach ($column in $columns)
+    #if($column.htmlType == "switch")
+    // 修改 ${column.columnComment} 状态
+    export function ${column.javaField}SwitchChange(${pkColumn.javaField}, ${column.javaField}) {
+        const data = {
+                ${pkColumn.javaField},
+                ${column.javaField}
+        }
+        return update${BusinessName}(data);
+    }
+    #end
+#end
+
 // 修改${functionName}
 export function update${BusinessName}(data) {
     return request({
@@ -77,9 +90,9 @@ export function updateList${BusinessName}(data) {
 
 // 删除${functionName}
 export function del${BusinessName}(${pkColumn.javaField}) {
-  return request({
-    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
-    method: 'delete'
-  })
+    return request({
+        url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
+        method: 'delete'
+    })
 }
 

@@ -70,6 +70,9 @@ public class GenConstants
     /** 下拉框 */
     public static final String HTML_SELECT = "select";
 
+    /** 开关 */
+    public static final String   HTML_SWITCH          = "switch";
+
     /** 单选框 */
     public static final String HTML_RADIO = "radio";
 

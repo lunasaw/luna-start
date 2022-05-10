@@ -56,6 +56,24 @@ export function addListCategory(data) {
   })
 }
 
+// 修改 显示在导航 状态
+export function navStatusSwitchChange(id, navStatus) {
+  const data = {
+    id,
+    navStatus
+  }
+  return updateCategory(data);
+}
+
+// 修改 显示状态 状态
+export function showStatusSwitchChange(id, showStatus) {
+  const data = {
+    id,
+    showStatus
+  }
+  return updateCategory(data);
+}
+
 // 修改产品分类
 export function updateCategory(data) {
   return request({
