@@ -3,62 +3,42 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="品牌名" prop="name">
         <el-input
-            v-model="queryParams.name"
-            placeholder="请输入品牌名"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.name"
+          placeholder="请输入品牌名"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="首字母" prop="firstLetter">
         <el-input
-            v-model="queryParams.firstLetter"
-            placeholder="请输入首字母"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.firstLetter"
+          placeholder="请输入首字母"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input
-            v-model="queryParams.sort"
-            placeholder="请输入排序"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.sort"
+          placeholder="请输入排序"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="是否品牌制造商" prop="factoryStatus">
-        <el-select v-model="queryParams.factoryStatus" placeholder="请选择是否品牌制造商" clearable>
-          <el-option
-              v-for="dict in dict.type.tb_product_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否展示" prop="showStatus">
-        <el-select v-model="queryParams.showStatus" placeholder="请选择是否展示" clearable>
-          <el-option
-              v-for="dict in dict.type.tb_product_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item label="产品数量" prop="productCount">
         <el-input
-            v-model="queryParams.productCount"
-            placeholder="请输入产品数量"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.productCount"
+          placeholder="请输入产品数量"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="产品评论数量" prop="productCommentCount">
         <el-input
-            v-model="queryParams.productCommentCount"
-            placeholder="请输入产品评论数量"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.productCommentCount"
+          placeholder="请输入产品评论数量"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
@@ -70,44 +50,44 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            v-hasPermi="['product:brand:add']"
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['product:brand:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            plain
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['product:brand:edit']"
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['product:brand:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            v-hasPermi="['product:brand:remove']"
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['product:brand:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
-            plain
-            icon="el-icon-download"
-            size="mini"
-            @click="handleExport"
-            v-hasPermi="['product:brand:export']"
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['product:brand:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -119,14 +99,18 @@
       <el-table-column label="品牌名" align="center" prop="name" />
       <el-table-column label="首字母" align="center" prop="firstLetter" />
       <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="是否品牌制造商" align="center" prop="factoryStatus">
+      <el-table-column label="是否为品牌制造商" align="center" prop="factoryStatus" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.tb_product_status" :value="scope.row.factoryStatus"/>
+          <el-switch v-model="scope.row.factoryStatus" active-value="1" inactive-value="0"
+                     @change="factoryStatusSwitchChange(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="是否展示" align="center" prop="showStatus">
+      <el-table-column label="是否展示" align="center" prop="showStatus" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.tb_product_status" :value="scope.row.showStatus"/>
+          <el-switch v-model="scope.row.showStatus" active-value="1" inactive-value="0"
+                     @change="showStatusSwitchChange(scope.row)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="产品数量" align="center" prop="productCount" />
@@ -141,33 +125,32 @@
           <image-preview :src="scope.row.bigPic" :width="50" :height="50"/>
         </template>
       </el-table-column>
-      <el-table-column label="品牌故事" align="center" prop="brandStory" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['product:brand:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['product:brand:edit']"
           >修改</el-button>
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              v-hasPermi="['product:brand:remove']"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['product:brand:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
     />
 
     <!-- 添加或修改品牌对话框 -->
@@ -182,23 +165,15 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入排序" />
         </el-form-item>
-        <el-form-item label="是否为品牌制造商">
-          <el-radio-group v-model="form.factoryStatus">
-            <el-radio
-                v-for="dict in dict.type.tb_product_status"
-                :key="dict.value"
-                :label="parseInt(dict.value)"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+        <el-form-item label="是否为品牌制造商" prop="factoryStatus">
+          <el-switch v-model="form.brandStory" active-value="1" inactive-value="0"
+                     @change="factoryStatusSwitchChange(form)"
+          ></el-switch>
         </el-form-item>
-        <el-form-item label="是否展示">
-          <el-radio-group v-model="form.showStatus">
-            <el-radio
-                v-for="dict in dict.type.tb_product_status"
-                :key="dict.value"
-                :label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+        <el-form-item label="是否展示" prop="showStatus">
+          <el-switch v-model="form.brandStory" active-value="1" inactive-value="0"
+                     @change="showStatusSwitchChange(form)"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="产品数量" prop="productCount">
           <el-input v-model="form.productCount" placeholder="请输入产品数量" />
@@ -226,6 +201,8 @@
 
 <script>
 import { listBrand, getBrand, delBrand, addBrand, updateBrand } from "@/api/product/brand";
+import { factoryStatusSwitchChange } from "@/api/product/brand";
+import { showStatusSwitchChange } from "@/api/product/brand";
 
 export default {
   name: "Brand",
@@ -297,8 +274,8 @@ export default {
         name: null,
         firstLetter: null,
         sort: null,
-        factoryStatus: 0,
-        showStatus: "0",
+        factoryStatus: null,
+        showStatus: null,
         productCount: null,
         productCommentCount: null,
         logo: null,
@@ -322,6 +299,28 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    // 状态修改
+    factoryStatusSwitchChange (row) {
+      let text = row.factoryStatus === '1' ? '启用' : '停用'
+      this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then (function() {
+        return factoryStatusSwitchChange (row.id, row.factoryStatus)
+      }).then (() => {
+        this.$modal.msgSuccess ('成功')
+      }).catch (function() {
+        row.factoryStatus = row.factoryStatus === '1' ? '0' : '1'
+      })
+    },
+    // 状态修改
+    showStatusSwitchChange (row) {
+      let text = row.showStatus === '1' ? '启用' : '停用'
+      this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then (function() {
+        return showStatusSwitchChange (row.id, row.showStatus)
+      }).then (() => {
+        this.$modal.msgSuccess ('成功')
+      }).catch (function() {
+        row.showStatus = row.showStatus === '1' ? '0' : '1'
+      })
     },
     /** 新增按钮操作 */
     handleAdd() {

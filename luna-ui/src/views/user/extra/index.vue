@@ -3,28 +3,28 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="用户ID" prop="userId">
         <el-input
-            v-model="queryParams.userId"
-            placeholder="请输入用户ID"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.userId"
+          placeholder="请输入用户ID"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="删除标志" prop="delFlag">
         <el-select v-model="queryParams.delFlag" placeholder="请选择删除标志" clearable>
           <el-option
-              v-for="dict in dict.type.tb_member_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+            v-for="dict in dict.type.tb_member_status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="用户头像" prop="headImg">
         <el-input
-            v-model="queryParams.headImg"
-            placeholder="请输入用户头像"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.headImg"
+          placeholder="请输入用户头像"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item>
@@ -36,47 +36,47 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            v-hasPermi="['user:extra:add']"
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['user:extra:add']"
         >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            plain
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['user:extra:edit']"
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['user:extra:edit']"
         >修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            v-hasPermi="['user:extra:remove']"
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['user:extra:remove']"
         >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
-            plain
-            icon="el-icon-download"
-            size="mini"
-            @click="handleExport"
-            v-hasPermi="['user:extra:export']"
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['user:extra:export']"
         >导出
         </el-button>
       </el-col>
@@ -115,19 +115,19 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['user:extra:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['user:extra:edit']"
           >修改
           </el-button>
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              v-hasPermi="['user:extra:remove']"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['user:extra:remove']"
           >删除
           </el-button>
         </template>
@@ -135,11 +135,11 @@
     </el-table>
 
     <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
     />
 
     <!-- 添加或修改会员信息对话框 -->
@@ -151,9 +151,9 @@
         <el-form-item label="删除标志">
           <el-radio-group v-model="form.delFlag">
             <el-radio
-                v-for="dict in dict.type.tb_member_status"
-                :key="dict.value"
-                :label="dict.value"
+              v-for="dict in dict.type.tb_member_status"
+              :key="dict.value"
+              :label="dict.value"
             >{{ dict.label }}
             </el-radio>
           </el-radio-group>
