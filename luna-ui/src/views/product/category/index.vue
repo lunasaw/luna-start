@@ -147,18 +147,18 @@
       </el-table-column>
       <el-table-column label="产品数量" align="center" prop="productCount"/>
       <el-table-column label="分类属性单位" align="center" prop="productUnit"/>
-      <el-table-column label="显示在导航" align="center" prop="navStatus" width="100">
+      <el-table-column label="显示在导航" align="center" prop="navStatus" width="100" sortable>
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.navStatus" :active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
+          <el-switch v-model="scope.row.navStatus" :active-value=getActiveValue(true)
+                     :inactive-value=getActiveValue(false)
                      @change="navStatusSwitchChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="显示状态" align="center" prop="showStatus" width="100">
+      <el-table-column label="显示状态" align="center" prop="showStatus" width="100" sortable>
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.showStatus" active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
+          <el-switch v-model="scope.row.showStatus" :active-value=getActiveValue(true)
+                     :inactive-value=getActiveValue(false)
                      @change="showStatusSwitchChange(scope.row)"
           ></el-switch>
         </template>
@@ -228,12 +228,14 @@
           <el-input v-model="form.productUnit" placeholder="请输入分类属性单位"/>
         </el-form-item>
         <el-form-item label="显示在导航" prop="navStatus">
-          <el-switch v-model="form.remark" :active-value=0 :inactive-value=0
+          <el-switch v-model="form.navStatus" :active-value="getActiveValue(true)"
+                     :inactive-value="getActiveValue(false)"
                      @change="navStatusSwitchChange(form)"
           ></el-switch>
         </el-form-item>
         <el-form-item label="显示状态" prop="showStatus">
-          <el-switch v-model="form.remark" :active-value=0 :inactive-value=0
+          <el-switch v-model="form.showStatus" :active-value="getActiveValue(true)"
+                     :inactive-value="getActiveValue(false)"
                      @change="showStatusSwitchChange(form)"
           ></el-switch>
         </el-form-item>
@@ -392,15 +394,6 @@ export default {
         row.navStatus = row.navStatus === '1' ? '0' : '1'
       })
     },
-    getActiveValue(value) {
-      let statusZero = this.dict.type.tb_normal_status[0]
-      let statusOne = this.dict.type.tb_normal_status[1]
-      if (value) {
-        return Number(statusZero.value)
-      } else {
-        return Number(statusOne.value)
-      }
-    },
     // 状态修改
     showStatusSwitchChange(row) {
       let text = row.showStatus === '1' ? '启用' : '停用'
@@ -411,6 +404,13 @@ export default {
       }).catch(function () {
         row.showStatus = row.showStatus === '1' ? '0' : '1'
       })
+    },
+    getActiveValue(value) {
+      if (value) {
+        return Number("1")
+      } else {
+        return Number("0")
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {

@@ -2,7 +2,7 @@ package com.luna.generator.util;
 
 import java.util.Arrays;
 
-import com.luna.generator.domain.GenPathEnum;
+import com.luna.generator.enums.GenPathEnum;
 import org.apache.commons.lang3.RegExUtils;
 import com.luna.common.constant.GenConstants;
 import com.luna.common.utils.StringUtils;

@@ -1,4 +1,4 @@
-package com.luna.generator.domain;
+package com.luna.generator.enums;
 
 import com.luna.generator.config.GenConfig;
 

@@ -6,7 +6,7 @@ import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.GenTableColumn;
-import com.luna.generator.domain.VmTypeEnum;
+import com.luna.generator.enums.VmTypeEnum;
 import org.apache.velocity.VelocityContext;
 
 import java.util.ArrayList;

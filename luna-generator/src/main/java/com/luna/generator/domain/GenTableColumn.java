@@ -1,6 +1,8 @@
 package com.luna.generator.domain;
 
 import javax.validation.constraints.NotBlank;
+
+import com.alibaba.fastjson.JSONObject;
 import com.luna.common.core.domain.BaseEntity;
 import com.luna.common.utils.StringUtils;
 
@@ -69,6 +71,17 @@ public class GenTableColumn extends BaseEntity
 
     /** 排序 */
     private Integer sort;
+
+    /** 数据扩展 */
+    private String            extend;
+
+    public String getExtend() {
+        return extend;
+    }
+
+    public void setExtend(String extend) {
+        this.extend = extend;
+    }
 
     public void setColumnId(Long columnId)
     {

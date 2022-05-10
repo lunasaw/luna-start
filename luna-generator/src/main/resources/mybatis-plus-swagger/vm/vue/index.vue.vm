@@ -137,16 +137,16 @@
 #if($column.pk)
       <el-table-column label="${comment}" align="center" prop="${javaField}" />
 #elseif($column.list && $column.htmlType == "datetime")
-  <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
+  <el-table-column label="${comment}" align="center" prop="${javaField}" width="180" sortable>
     <template slot-scope="scope">
       <span>{{ parseTime(scope.row.${javaField}, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
     </template>
   </el-table-column>
 #elseif($column.list && $column.htmlType == "switch")
-  <el-table-column label="${comment}" align="center" prop="${javaField}" width="100">
+  <el-table-column label="${comment}" align="center" prop="${javaField}" width="100" sortable>
     <template slot-scope="scope">
-      <el-switch v-model="scope.row.${javaField}" :active-value=get${column.javaField}ActiveValue(true)
-                 :inactive-value=get${column.javaField}ActiveValue(false)
+      <el-switch v-model="scope.row.${javaField}" :active-value=getActiveValue(true)
+                 :inactive-value=getActiveValue(false)
                  @change="${column.javaField}SwitchChange(scope.row)"
       ></el-switch>
     </template>
@@ -249,8 +249,9 @@
   </el-form-item>
 #elseif($column.htmlType == "switch" && "" != $dictType)
   <el-form-item label="${comment}" prop="${field}">
-    <el-switch v-model="form.${javaField}" :active-value=0 :inactive-value=
-        @change="${column.javaField}SwitchChange(form)"
+    <el-switch v-model="form.${field}" :active-value="getActiveValue(true)"
+               :inactive-value="getActiveValue(false)"
+               @change="${column.javaField}SwitchChange(form)"
     ></el-switch>
   </el-form-item>
 #elseif($column.htmlType == "checkbox" && "" != $dictType)
@@ -326,22 +327,23 @@
 #set($comment=$column.columnComment)
 #end
 #if($column.pk || $javaField == ${subTableFkclassName})
-#elseif($column.list && $column.htmlType == "input")
-          <el-table-column label="$comment" prop="${javaField}" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.$javaField" placeholder="请输入$comment" />
-            </template>
-          </el-table-column>
+#elseif($column.list && $column.htmlType == "input" )
+  <el-table-column label="$comment" prop="${javaField}" width="150">
+    <template slot-scope="scope">
+      <el-input v-model="scope.row.$javaField" placeholder="请输入$comment"/>
+    </template>
+  </el-table-column>
 #elseif($column.list && $column.htmlType == "datetime")
   <el-table-column label="$comment" prop="${javaField}" width="240">
     <template slot-scope="scope">
       <el-date-picker clearable v-model="scope.row.$javaField" type="date" value-format="yyyy-MM-dd" placeholder="请选择$comment"/>
     </template>
   </el-table-column>
-#elseif($column.list && $column.htmlType == "switch")
+#elseif($column.list && $column.htmlType == "switch" && "" != $column.dictType)
   <el-table-column label="$comment" prop="${javaField}" width="240">
     <template slot-scope="scope">
-      <el-switch v-model="scope.row.${javaField}" active-value="1" inactive-value="0"
+      <el-switch v-model="scope.row.${javaField}" :active-value="getActiveValue(true)"
+                 :inactive-value="getActiveValue(false)"
                  @change="${column.javaField}SwitchChange(scope.row)"
       ></el-switch>
     </template>
@@ -528,7 +530,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.${pkColumn.javaField})
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
       #foreach ($column in $columns)
@@ -544,18 +546,15 @@ export default {
                 row.${column.javaField} = row.${column.javaField} === '1' ? '0' : '1'
               })
             },
-
-            get${column.javaField}ActiveValue(value) {
-              let statusZero = this.dict.type.${dict}[0]
-              let statusOne = this.dict.type.${dict}[1]
-              if (value) {
-                return Number(statusZero.value)
-              } else {
-                return Number(statusOne.value)
-              }
-            },
           #end
       #end
+    getActiveValue(value) {
+      if (value) {
+        return Number("1")
+      } else {
+        return Number("0")
+      }
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
