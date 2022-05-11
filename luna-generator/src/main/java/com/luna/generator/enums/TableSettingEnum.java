@@ -88,9 +88,9 @@ public enum TableSettingEnum {
         return (VmTypeEnum)getValue(extend, TableSettingEnum.GENERATE_TEMPLATE);
     }
 
-    public static String setSortAble(String extend, VmTypeEnum vmTypeEnum) {
-        if (null != vmTypeEnum) {
-            return ExtendUtils.setFeaturesValue(extend, TableSettingEnum.GENERATE_TEMPLATE.getName(), vmTypeEnum.getType());
+    public static String setTemplate(String extend, Integer typeId) {
+        if (null != typeId) {
+            return ExtendUtils.setFeaturesValue(extend, TableSettingEnum.GENERATE_TEMPLATE.getName(), typeId);
         }
         return extend;
     }

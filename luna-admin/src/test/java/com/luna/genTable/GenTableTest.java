@@ -50,8 +50,9 @@ public class GenTableTest extends AppTest {
         // System.out.println(JSON.toJSONString(genTable2.getColumns()));
 
         List<GenTableColumn> columns1 = genTable2.getColumns();
-        for (GenTableColumn genTableColumn : columns1) {
-            genTableColumnMapper.updateGenTableColumn(genTableColumn);
-        }
+
+        GenTableColumn genTableColumn = columns1.get(0);
+        GenTableColumn genTableColumn1 = genTableColumnMapper.selectGenTableColumnByColumnId(genTableColumn.getColumnId());
+        System.out.println(JSON.toJSONString(genTableColumn1));
     }
 }

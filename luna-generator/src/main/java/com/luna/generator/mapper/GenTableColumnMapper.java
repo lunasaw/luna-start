@@ -4,14 +4,15 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.luna.generator.domain.GenTableColumn;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 业务字段 数据层
  * 
  * @author luna
  */
-public interface GenTableColumnMapper extends BaseMapper<GenTableColumn>
-{
+@Mapper
+public interface GenTableColumnMapper extends BaseMapper<GenTableColumn> {
     /**
      * 根据表名称查询列信息
      * 
@@ -27,6 +28,14 @@ public interface GenTableColumnMapper extends BaseMapper<GenTableColumn>
      * @return 业务字段集合
      */
     public List<GenTableColumn> selectGenTableColumnListByTableId(Long tableId);
+
+    /**
+     * 查询业务字段列表
+     *
+     * @param columnId 业务字段编号
+     * @return 业务字段集合
+     */
+    public GenTableColumn selectGenTableColumnByColumnId(Long columnId);
 
     /**
      * 新增业务字段

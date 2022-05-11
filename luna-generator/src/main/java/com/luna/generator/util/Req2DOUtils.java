@@ -5,6 +5,7 @@ import com.luna.generator.domain.GenTableColumn;
 import com.luna.generator.domain.req.GenTableColumnReq;
 import com.luna.generator.domain.req.GenTableReq;
 import com.luna.generator.enums.ColumnSettingEnum;
+import com.luna.generator.enums.TableSettingEnum;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,6 +94,8 @@ public class Req2DOUtils {
         genTable.setUpdateTime(genTableReq.getUpdateTime());
         genTable.setRemark(genTableReq.getRemark());
         genTable.setParams(genTableReq.getParams());
+
+        genTable.setExtend(TableSettingEnum.setTemplate(genTable.getExtend(), genTableReq.getVmType()));
         return genTable;
     }
 }

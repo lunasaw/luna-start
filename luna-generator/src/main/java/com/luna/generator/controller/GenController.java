@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.luna.generator.domain.req.GenTableColumnReq;
+import com.luna.generator.domain.req.GenTableReq;
 import com.luna.generator.domain.vo.GenTableColumnVO;
 import com.luna.generator.domain.vo.GenTableVO;
 import com.luna.generator.util.DO2VOUtils;
@@ -128,7 +129,7 @@ public class GenController extends BaseController
     @PreAuthorize("@ss.hasPermi('tool:gen:edit')")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult editSave(@Validated @RequestBody GenTable genTable)
+    public AjaxResult editSave(@Validated @RequestBody GenTableReq genTable)
     {
 
         genTableService.validateEdit(genTable);

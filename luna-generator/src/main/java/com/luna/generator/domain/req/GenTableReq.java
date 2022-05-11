@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -21,8 +22,8 @@ public class GenTableReq extends BaseEntity {
     private static final long       serialVersionUID = 1L;
 
     /** 编号 */
+    @NotNull(message = "表ID不能为空")
     private Long                    tableId;
-
     /** 表名称 */
     @NotBlank(message = "表名称不能为空")
     private String                  tableName;
@@ -100,6 +101,17 @@ public class GenTableReq extends BaseEntity {
 
     /** 上级菜单名称字段 */
     private String                  parentMenuName;
+
+    /** 生成模版 */
+    private Integer                 vmType;
+
+    public Integer getVmType() {
+        return vmType;
+    }
+
+    public void setVmType(Integer vmType) {
+        this.vmType = vmType;
+    }
 
     public String getGenVuePath() {
         return genVuePath;

@@ -166,11 +166,13 @@ export default {
   },
   created() {
     const tableId = this.$route.params && this.$route.params.tableId;
+    const vmType = this.$route.query && this.$route.query.vmType;
     if (tableId) {
       // 获取表详细信息
       getGenTable(tableId).then(res => {
         this.columns = res.data.rows;
         this.info = res.data.info;
+        this.info.vmType = vmType;
         this.tables = res.data.tables;
       });
       /** 查询字典下拉列表 */

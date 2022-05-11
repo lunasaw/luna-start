@@ -119,17 +119,21 @@ public class GenTableServiceImpl implements IGenTableService {
      * @return 结果
      */
     @Override
-    @Transactional
-    public void updateGenTable(GenTable genTable)
+    @Transactional(rollbackFor = Exception.class)
+    public void updateGenTable(GenTableReq genTable)
     {
         String options = JSON.toJSONString(genTable.getParams());
         genTable.setOptions(options);
-        int row = genTableMapper.updateGenTable(genTable);
+        GenTable table = genTableMapper.selectGenTableById(genTable.getTableId());
+        GenTable req2GenTable = Req2DOUtils.genTableReq2GenTable(table, genTable);
+        int row = genTableMapper.updateGenTable(req2GenTable);
         if (row > 0)
         {
-            for (GenTableColumn cenTableColumn : genTable.getColumns())
+            for (GenTableColumnReq cenTableColumn : genTable.getColumns())
             {
-                genTableColumnMapper.updateGenTableColumn(cenTableColumn);
+                GenTableColumn genTableColumn = genTableColumnMapper.selectById(cenTableColumn.getColumnId());
+                GenTableColumn req2GenTableColumn = Req2DOUtils.genTableColumnReq2GenTableColumn(genTableColumn, cenTableColumn);
+                genTableColumnMapper.updateGenTableColumn(req2GenTableColumn);
             }
         }
     }
@@ -368,7 +372,7 @@ public class GenTableServiceImpl implements IGenTableService {
      * @param genTable 业务信息
      */
     @Override
-    public void validateEdit(GenTable genTable) {
+    public void validateEdit(GenTableReq genTable) {
         if (GenConstants.TPL_TREE.equals(genTable.getTplCategory())) {
             String options = JSON.toJSONString(genTable.getParams());
             JSONObject paramsObj = JSONObject.parseObject(options);

@@ -63,6 +63,12 @@
         order by sort
     </select>
 
+    <select id="selectGenTableColumnByColumnId" parameterType="Long" resultMap="GenTableColumnResult">
+        <include refid="selectGenTableColumnVo"/>
+        where column_id = #{columnId}
+        limit 1
+    </select>
+
     <select id="selectDbTableColumnsByName" parameterType="String" resultMap="GenTableColumnResult">
         select column_name,
                (case when (is_nullable = 'no' <![CDATA[ && ]]> column_key != 'PRI') then '1' else null end) as is_required,

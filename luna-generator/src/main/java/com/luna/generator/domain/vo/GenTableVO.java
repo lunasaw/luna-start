@@ -108,6 +108,14 @@ public class GenTableVO extends BaseEntity {
     /** 模版编号 */
     private VmTypeVO               vmTypeVO;
 
+    public VmTypeVO getVmTypeVO() {
+        return vmTypeVO;
+    }
+
+    public void setVmTypeVO(VmTypeVO vmTypeVO) {
+        this.vmTypeVO = vmTypeVO;
+    }
+
     public String getGenVuePath() {
         return genVuePath;
     }
