@@ -3,9 +3,12 @@ package com.luna.generator.util;
 import com.luna.common.utils.ExtendUtils;
 import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.GenTableColumn;
+import com.luna.generator.domain.VmTypeVO;
 import com.luna.generator.domain.vo.GenTableColumnVO;
 import com.luna.generator.domain.vo.GenTableVO;
 import com.luna.generator.enums.ColumnSettingEnum;
+import com.luna.generator.enums.TableSettingEnum;
+import com.luna.generator.enums.VmTypeEnum;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +60,8 @@ public class DO2VOUtils {
         genTableVO.setUpdateTime(genTable.getUpdateTime());
         genTableVO.setRemark(genTable.getRemark());
         genTableVO.setParams(genTable.getParams());
+        VmTypeEnum template = TableSettingEnum.getTemplate(genTable.getExtend());
+        genTableVO.setVmTypeVO(new VmTypeVO(template.getType(), template.getDesc()));
         return genTableVO;
     }
 

@@ -72,8 +72,8 @@
                 <el-option label=">=" value="GTE" />
                 <el-option label="<" value="LT" />
                 <el-option label="<=" value="LTE" />
-                <el-option label="LIKE" value="LIKE" />
-                <el-option label="BETWEEN" value="BETWEEN" />
+                <el-option label="LIKE" value="LIKE"/>
+                <el-option label="BETWEEN" value="BETWEEN"/>
               </el-select>
             </template>
           </el-table-column>
@@ -82,16 +82,21 @@
               <el-checkbox true-label="1" v-model="scope.row.isRequired"></el-checkbox>
             </template>
           </el-table-column>
+          <el-table-column label="排序" min-width="5%">
+            <template slot-scope="scope">
+              <el-checkbox true-label="1" v-model="scope.row.sortAble"></el-checkbox>
+            </template>
+          </el-table-column>
           <el-table-column label="显示类型" min-width="12%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.htmlType">
-                <el-option label="文本框" value="input" />
-                <el-option label="文本域" value="textarea" />
-                <el-option label="下拉框" value="select" />
+                <el-option label="文本框" value="input"/>
+                <el-option label="文本域" value="textarea"/>
+                <el-option label="下拉框" value="select"/>
                 <el-option label="开关" value="switch"/>
-                <el-option label="单选框" value="radio" />
-                <el-option label="复选框" value="checkbox" />
-                <el-option label="日期控件" value="datetime" />
+                <el-option label="单选框" value="radio"/>
+                <el-option label="复选框" value="checkbox"/>
+                <el-option label="日期控件" value="datetime"/>
                 <el-option label="图片上传" value="imageUpload" />
                 <el-option label="文件上传" value="fileUpload" />
                 <el-option label="富文本控件" value="editor" />

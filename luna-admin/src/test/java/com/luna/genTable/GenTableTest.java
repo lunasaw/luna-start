@@ -31,14 +31,14 @@ public class GenTableTest extends AppTest {
     @Test
     public void atest() {
         GenTable genTable = genTableMapper.selectGenTableById(2L);
-        System.out.println(JSON.toJSONString(genTable));
+        // System.out.println(JSON.toJSONString(genTable));
         GenTableVO genTableVO = DO2VOUtils.genTable2GenTableVO(genTable);
 
         String s = JSON.toJSONString(genTableVO);
-        System.out.println(JSON.toJSONString(genTableVO));
+        System.out.println(JSON.toJSONString(genTableVO.getVmTypeVO()));
 
         GenTableReq genTableReq = JSON.parseObject(s, GenTableReq.class);
-        System.out.println(JSON.toJSONString(genTableReq));
+        // System.out.println(JSON.toJSONString(genTableReq));
 
         List<GenTableColumnReq> columns = genTableReq.getColumns();
         GenTableColumnReq genTableColumnReq = columns.get(0);
@@ -47,7 +47,7 @@ public class GenTableTest extends AppTest {
         GenTable genTable1 = genTableMapper.selectGenTableById(genTableReq.getTableId());
 
         GenTable genTable2 = Req2DOUtils.genTableReq2GenTable(genTable1, genTableReq);
-        System.out.println(JSON.toJSONString(genTable2.getColumns()));
+        // System.out.println(JSON.toJSONString(genTable2.getColumns()));
 
         List<GenTableColumn> columns1 = genTable2.getColumns();
         for (GenTableColumn genTableColumn : columns1) {

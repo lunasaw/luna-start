@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.luna.generator.domain.req.GenTableColumnReq;
+import com.luna.generator.domain.vo.GenTableColumnVO;
+import com.luna.generator.domain.vo.GenTableVO;
+import com.luna.generator.util.DO2VOUtils;
 import com.luna.generator.util.Req2DOUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +59,8 @@ public class GenController extends BaseController
     {
         startPage();
         List<GenTable> list = genTableService.selectGenTableList(genTable);
-        return getDataTable(list);
+        List<GenTableVO> collect = list.stream().map(DO2VOUtils::genTable2GenTableVO).collect(Collectors.toList());
+        return getDataTable(collect);
     }
 
     /**
@@ -68,9 +73,10 @@ public class GenController extends BaseController
         GenTable table = genTableService.selectGenTableById(tableId);
         List<GenTable> tables = genTableService.selectGenTableAll();
         List<GenTableColumn> list = genTableColumnService.selectGenTableColumnListByTableId(tableId);
+        List<GenTableColumnVO> tableColumnVOS = list.stream().map(DO2VOUtils::genTableColumn2GenTableColumnVO).collect(Collectors.toList());
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("info", table);
-        map.put("rows", list);
+        map.put("rows", tableColumnVOS);
         map.put("tables", tables);
         return AjaxResult.success(map);
     }

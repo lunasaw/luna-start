@@ -1,25 +1,27 @@
 package com.luna.generator.enums;
 
-import com.luna.common.utils.ExtendUtils;
-
 import java.util.Arrays;
+import java.util.Optional;
+
+import com.luna.common.utils.ExtendUtils;
+import sun.misc.VM;
 
 /**
  * @author luna
  * 2021/11/1
  */
-public enum ColumnSettingEnum {
+public enum TableSettingEnum {
 
-    SORT_ABEL("sortAble", false, Boolean.class, "生成模版:%s"),
+    GENERATE_TEMPLATE("template", VmTypeEnum.MYBATIS_PLUS_SWAGGER, VmTypeEnum.class, "字段是否可排序:%s"),
 
     ;
 
     public static String getText(String name, String value) {
-        ColumnSettingEnum type = getType(name);
+        TableSettingEnum type = getType(name);
         return type.getText(value);
     }
 
-    public static ColumnSettingEnum getType(String name) {
+    public static TableSettingEnum getType(String name) {
         return Arrays.stream(values()).filter(v -> v.getName().equals(name)).findFirst().orElse(null);
     }
 
@@ -60,7 +62,7 @@ public enum ColumnSettingEnum {
         this.text = text;
     }
 
-    ColumnSettingEnum(String name, Object defaultValue, Class clazz, String text) {
+    TableSettingEnum(String name, Object defaultValue, Class clazz, String text) {
 
         this.name = name;
         this.defaultValue = defaultValue;
@@ -68,24 +70,27 @@ public enum ColumnSettingEnum {
         this.text = text;
     }
 
-    public static Object getValue(String extend, ColumnSettingEnum columnSettingEnum) {
+    public static Object getValue(String extend, TableSettingEnum columnSettingEnum) {
         String featuresValue = ExtendUtils.getFeaturesValue(extend, columnSettingEnum.getName());
         if (Integer.class.equals(columnSettingEnum.getClazz())) {
             return ExtendUtils.getInteger(featuresValue, (Integer)columnSettingEnum.getDefaultValue());
         } else if (Boolean.class.equals(columnSettingEnum.getClazz())) {
             return ExtendUtils.getBoolean(featuresValue, (Boolean)columnSettingEnum.getDefaultValue());
+        } else if (VmTypeEnum.class.equals(columnSettingEnum.getClazz())) {
+            return Optional.ofNullable(featuresValue).map(e -> VmTypeEnum.getById(Integer.valueOf(e)))
+                .orElse((VmTypeEnum)columnSettingEnum.getDefaultValue());
         } else {
             return ExtendUtils.getString(featuresValue, (String)columnSettingEnum.getDefaultValue());
         }
     }
 
-    public static Boolean getSortAble(String extend) {
-        return (Boolean)getValue(extend, ColumnSettingEnum.SORT_ABEL);
+    public static VmTypeEnum getTemplate(String extend) {
+        return (VmTypeEnum)getValue(extend, TableSettingEnum.GENERATE_TEMPLATE);
     }
 
-    public static String setSortAble(String extend, Boolean value) {
-        if (null != value) {
-            return ExtendUtils.setFeaturesValue(extend, ColumnSettingEnum.SORT_ABEL.getName(), value);
+    public static String setSortAble(String extend, VmTypeEnum vmTypeEnum) {
+        if (null != vmTypeEnum) {
+            return ExtendUtils.setFeaturesValue(extend, TableSettingEnum.GENERATE_TEMPLATE.getName(), vmTypeEnum.getType());
         }
         return extend;
     }

@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.luna.generator.domain.VmTypeVO;
+import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.luna.common.constant.GenConstants;
@@ -18,6 +20,7 @@ import com.luna.generator.domain.req.GenTableColumnReq;
  * 
  * @author luna
  */
+@Data
 public class GenTableVO extends BaseEntity {
     private static final long      serialVersionUID = 1L;
 
@@ -101,6 +104,9 @@ public class GenTableVO extends BaseEntity {
 
     /** 上级菜单名称字段 */
     private String                 parentMenuName;
+
+    /** 模版编号 */
+    private VmTypeVO               vmTypeVO;
 
     public String getGenVuePath() {
         return genVuePath;
