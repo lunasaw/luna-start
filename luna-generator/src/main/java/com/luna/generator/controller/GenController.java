@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.luna.generator.domain.req.GenTableColumnReq;
+import com.luna.generator.util.Req2DOUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -121,6 +124,7 @@ public class GenController extends BaseController
     @PutMapping
     public AjaxResult editSave(@Validated @RequestBody GenTable genTable)
     {
+
         genTableService.validateEdit(genTable);
         genTableService.updateGenTable(genTable);
         return AjaxResult.success();

@@ -1,17 +1,18 @@
-package com.luna.generator.domain;
+package com.luna.generator.domain.req;
 
 import javax.validation.constraints.NotBlank;
 
-import com.alibaba.fastjson.JSONObject;
 import com.luna.common.core.domain.BaseEntity;
 import com.luna.common.utils.StringUtils;
+import lombok.Data;
 
 /**
  * 代码生成业务字段表 gen_table_column
  * 
  * @author luna
  */
-public class GenTableColumn extends BaseEntity {
+@Data
+public class GenTableColumnReq extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /** 编号 */
@@ -71,16 +72,8 @@ public class GenTableColumn extends BaseEntity {
     /** 排序 */
     private Integer           sort;
 
-    /** 数据扩展 */
-    private String            extend;
-
-    public String getExtend() {
-        return extend;
-    }
-
-    public void setExtend(String extend) {
-        this.extend = extend;
-    }
+    /** 字段是否排序 */
+    private Boolean           sortAble;
 
     public void setColumnId(Long columnId) {
         this.columnId = columnId;

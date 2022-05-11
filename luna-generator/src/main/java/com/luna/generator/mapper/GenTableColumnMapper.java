@@ -1,6 +1,8 @@
 package com.luna.generator.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.luna.generator.domain.GenTableColumn;
 
 /**
@@ -8,7 +10,7 @@ import com.luna.generator.domain.GenTableColumn;
  * 
  * @author luna
  */
-public interface GenTableColumnMapper
+public interface GenTableColumnMapper extends BaseMapper<GenTableColumn>
 {
     /**
      * 根据表名称查询列信息

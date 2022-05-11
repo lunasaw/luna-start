@@ -79,11 +79,11 @@ public enum ColumnSettingEnum {
         }
     }
 
-    public static Integer getClearingType(String extend) {
-        return (Integer)getValue(extend, ColumnSettingEnum.SORT_ABEL);
+    public static Boolean getSortAble(String extend) {
+        return (Boolean)getValue(extend, ColumnSettingEnum.SORT_ABEL);
     }
 
-    public static String setClearingType(String extend, Integer value) {
+    public static String setSortAble(String extend, Boolean value) {
         if (null != value) {
             return ExtendUtils.setFeaturesValue(extend, ColumnSettingEnum.SORT_ABEL.getName(), value);
         }
