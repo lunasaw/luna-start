@@ -4,7 +4,7 @@ import com.luna.common.annotation.Log;
 import com.luna.common.core.domain.AjaxResult;
 import com.luna.common.core.text.Convert;
 import com.luna.common.enums.BusinessType;
-import com.luna.generator.domain.VmTypeEnum;
+import com.luna.generator.enums.VmTypeEnum;
 import com.luna.generator.domain.VmTypeVO;
 import com.luna.generator.service.IVmGenTableService;
 import org.apache.commons.io.IOUtils;

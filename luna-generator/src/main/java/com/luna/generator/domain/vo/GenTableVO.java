@@ -1,113 +1,119 @@
-package com.luna.generator.domain;
+package com.luna.generator.domain.vo;
 
 import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.luna.generator.domain.req.GenTableColumnReq;
+import com.luna.generator.domain.VmTypeVO;
+import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
+
 import com.luna.common.constant.GenConstants;
 import com.luna.common.core.domain.BaseEntity;
 import com.luna.common.utils.StringUtils;
+import com.luna.generator.domain.GenTableColumn;
+import com.luna.generator.domain.req.GenTableColumnReq;
 
 /**
  * 业务表 gen_table
  * 
  * @author luna
  */
-public class GenTable extends BaseEntity {
-    private static final long    serialVersionUID = 1L;
+@Data
+public class GenTableVO extends BaseEntity {
+    private static final long      serialVersionUID = 1L;
 
     /** 编号 */
-    private Long                 tableId;
+    private Long                   tableId;
 
     /** 表名称 */
     @NotBlank(message = "表名称不能为空")
-    private String               tableName;
+    private String                 tableName;
 
     /** 表描述 */
     @NotBlank(message = "表描述不能为空")
-    private String               tableComment;
+    private String                 tableComment;
 
     /** 关联父表的表名 */
-    private String               subTableName;
+    private String                 subTableName;
 
     /** 本表关联父表的外键名 */
-    private String               subTableFkName;
+    private String                 subTableFkName;
 
     /** 实体类名称(首字母大写) */
     @NotBlank(message = "实体类名称不能为空")
-    private String               className;
+    private String                 className;
 
     /** 使用的模板（crud单表操作 tree树表操作 sub主子表操作） */
-    private String               tplCategory;
+    private String                 tplCategory;
 
     /** 生成包路径 */
     @NotBlank(message = "生成包路径不能为空")
-    private String               packageName;
+    private String                 packageName;
 
     /** 生成模块名 */
     @NotBlank(message = "生成模块名不能为空")
-    private String               moduleName;
+    private String                 moduleName;
 
     /** 生成业务名 */
     @NotBlank(message = "生成业务名不能为空")
-    private String               businessName;
+    private String                 businessName;
 
     /** 生成功能名 */
     @NotBlank(message = "生成功能名不能为空")
-    private String               functionName;
+    private String                 functionName;
 
     /** 生成作者 */
     @NotBlank(message = "作者不能为空")
-    private String               functionAuthor;
+    private String                 functionAuthor;
 
     /** 生成代码方式（0zip压缩包 1自定义路径） */
-    private String               genType;
+    private String                 genType;
 
     /** 生成路径（不填默认项目路径） */
-    private String               genPath;
+    private String                 genPath;
 
     /** 生成Vue路径（不填默认项目路径） */
-    private String               genVuePath;
+    private String                 genVuePath;
 
     /** 主键信息 */
-    private GenTableColumn       pkColumn;
+    private GenTableColumn         pkColumn;
 
     /** 子表信息 */
-    private GenTable             subTable;
+    private GenTableVO             subTable;
 
     /** 表列信息 */
     @Valid
-    private List<GenTableColumn> columns;
+    private List<GenTableColumnVO> columns;
 
     /** 其它生成选项 */
-    private String               options;
+    private String                 options;
 
     /** 树编码字段 */
-    private String               treeCode;
+    private String                 treeCode;
 
     /** 树父编码字段 */
-    private String               treeParentCode;
+    private String                 treeParentCode;
 
     /** 树名称字段 */
-    private String               treeName;
+    private String                 treeName;
 
     /** 上级菜单ID字段 */
-    private String               parentMenuId;
+    private String                 parentMenuId;
 
     /** 上级菜单名称字段 */
-    private String               parentMenuName;
+    private String                 parentMenuName;
 
-    /** 扩展字段 */
-    private String               extend;
+    /** 模版编号 */
+    private VmTypeVO               vmTypeVO;
 
-    public String getExtend() {
-        return extend;
+    public VmTypeVO getVmTypeVO() {
+        return vmTypeVO;
     }
 
-    public void setExtend(String extend) {
-        this.extend = extend;
+    public void setVmTypeVO(VmTypeVO vmTypeVO) {
+        this.vmTypeVO = vmTypeVO;
     }
 
     public String getGenVuePath() {
@@ -238,19 +244,19 @@ public class GenTable extends BaseEntity {
         this.pkColumn = pkColumn;
     }
 
-    public GenTable getSubTable() {
+    public GenTableVO getSubTable() {
         return subTable;
     }
 
-    public void setSubTable(GenTable subTable) {
+    public void setSubTable(GenTableVO subTable) {
         this.subTable = subTable;
     }
 
-    public List<GenTableColumn> getColumns() {
+    public List<GenTableColumnVO> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<GenTableColumn> columns) {
+    public void setColumns(List<GenTableColumnVO> columns) {
         this.columns = columns;
     }
 

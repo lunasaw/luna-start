@@ -3,6 +3,7 @@ package com.luna.generator.service;
 import java.util.List;
 import java.util.Map;
 import com.luna.generator.domain.GenTable;
+import com.luna.generator.domain.req.GenTableReq;
 
 /**
  * 业务 服务层
@@ -56,7 +57,7 @@ public interface IGenTableService
      * @param genTable 业务信息
      * @return 结果
      */
-    public void updateGenTable(GenTable genTable);
+    public void updateGenTable(GenTableReq genTable);
 
     /**
      * 删除业务信息
@@ -117,5 +118,5 @@ public interface IGenTableService
      * 
      * @param genTable 业务信息
      */
-    public void validateEdit(GenTable genTable);
+    public void validateEdit(GenTableReq genTable);
 }

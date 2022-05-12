@@ -62,10 +62,10 @@
       <el-table-column label="实体" align="center" prop="className" :show-overflow-tooltip="true" width="120"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="160"/>
       <el-table-column label="更新时间" align="center" prop="updateTime" width="160"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" prop="vmTypeVO.id" class-name="small-padding fixed-width">
 
         <template slot-scope="scope">
-          <el-select v-model="vmType" value-key="id" placeholder="请选择生成模版" size="mini" clearable>
+          <el-select v-model="scope.row.vmTypeVO.id" value-key="id" placeholder="请选择生成模版" size="mini" clearable>
             <el-option
               v-for="(item) in vmTypes" :key="item.id"
               :label="item.type"
@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import {listTable, previewTable, delTable, genCode, synchDb, previewVmIds, genCodeAuto} from '@/api/tool/gen'
+import {listTable, previewTable, delTable, genCode, synchDb, previewVmIds, genCodeAuto, updateGenTable} from '@/api/tool/gen'
 import importTable from './importTable'
 import hljs from 'highlight.js/lib/highlight'
 import 'highlight.js/styles/github-gist.css'
@@ -209,8 +209,6 @@ export default {
       )
       previewVmIds().then(response => {
         this.vmTypes = response.data
-        console.log(this.vmTypes)
-        this.vmType = this.vmTypes[0].id
       })
     },
     /** 搜索按钮操作 */
@@ -225,7 +223,7 @@ export default {
         this.$modal.msgError('请选择要生成的数据')
         return
       }
-      genCodeAuto(row.tableName, this.vmType).then(response => {
+      genCodeAuto(row.tableName, row.vmTypeVO.id).then(response => {
         this.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath)
       })
     },
@@ -236,7 +234,7 @@ export default {
         this.$modal.msgError('请选择要生成的数据')
         return
       }
-      this.$download.zip('/tool/gen/batchGenCode/' + this.vmType + '?tables=' + tableNames, tableNames)
+      this.$download.zip('/tool/gen/batchGenCode/' + row.vmTypeVO.id + '?tables=' + tableNames, tableNames)
     },
     /** 同步数据库操作 */
     handleSynchDb(row) {
@@ -260,7 +258,7 @@ export default {
     },
     /** 预览按钮 */
     handlePreview(row) {
-      previewTable(row.tableId, this.vmType).then(response => {
+      previewTable(row.tableId, row.vmTypeVO.id).then(response => {
         this.preview.data = response.data
         this.preview.open = true
         this.preview.activeName = 'domain.java'
@@ -287,7 +285,12 @@ export default {
     /** 修改按钮操作 */
     handleEditTable(row) {
       const tableId = row.tableId || this.ids[0]
-      this.$router.push({path: '/tool/gen-edit/index/' + tableId, query: {pageNum: this.queryParams.pageNum}})
+      this.$router.push({
+        path: '/tool/gen-edit/index/' + tableId, query: {
+          pageNum: this.queryParams.pageNum,
+          vmType: row.vmTypeVO.id
+        }
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {

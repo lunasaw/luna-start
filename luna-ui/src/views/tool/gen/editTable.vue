@@ -66,14 +66,14 @@
           <el-table-column label="查询方式" min-width="10%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.queryType">
-                <el-option label="=" value="EQ" />
-                <el-option label="!=" value="NE" />
-                <el-option label=">" value="GT" />
-                <el-option label=">=" value="GTE" />
-                <el-option label="<" value="LT" />
-                <el-option label="<=" value="LTE" />
-                <el-option label="LIKE" value="LIKE" />
-                <el-option label="BETWEEN" value="BETWEEN" />
+                <el-option label="=" value="EQ"/>
+                <el-option label="!=" value="NE"/>
+                <el-option label=">" value="GT"/>
+                <el-option label=">=" value="GTE"/>
+                <el-option label="<" value="LT"/>
+                <el-option label="<=" value="LTE"/>
+                <el-option label="LIKE" value="LIKE"/>
+                <el-option label="BETWEEN" value="BETWEEN"/>
               </el-select>
             </template>
           </el-table-column>
@@ -82,18 +82,24 @@
               <el-checkbox true-label="1" v-model="scope.row.isRequired"></el-checkbox>
             </template>
           </el-table-column>
+          <el-table-column label="排序" min-width="5%">
+            <template slot-scope="scope">
+              <el-checkbox true-label=true v-model="scope.row.sortAble" false-label=false></el-checkbox>
+            </template>
+          </el-table-column>
           <el-table-column label="显示类型" min-width="12%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.htmlType">
-                <el-option label="文本框" value="input" />
-                <el-option label="文本域" value="textarea" />
-                <el-option label="下拉框" value="select" />
-                <el-option label="单选框" value="radio" />
-                <el-option label="复选框" value="checkbox" />
-                <el-option label="日期控件" value="datetime" />
-                <el-option label="图片上传" value="imageUpload" />
-                <el-option label="文件上传" value="fileUpload" />
-                <el-option label="富文本控件" value="editor" />
+                <el-option label="文本框" value="input"/>
+                <el-option label="文本域" value="textarea"/>
+                <el-option label="下拉框" value="select"/>
+                <el-option label="开关" value="switch"/>
+                <el-option label="单选框" value="radio"/>
+                <el-option label="复选框" value="checkbox"/>
+                <el-option label="日期控件" value="datetime"/>
+                <el-option label="图片上传" value="imageUpload"/>
+                <el-option label="文件上传" value="fileUpload"/>
+                <el-option label="富文本控件" value="editor"/>
               </el-select>
             </template>
           </el-table-column>
@@ -160,11 +166,13 @@ export default {
   },
   created() {
     const tableId = this.$route.params && this.$route.params.tableId;
+    const vmType = this.$route.query && this.$route.query.vmType;
     if (tableId) {
       // 获取表详细信息
       getGenTable(tableId).then(res => {
         this.columns = res.data.rows;
         this.info = res.data.info;
+        this.info.vmType = vmType;
         this.tables = res.data.tables;
       });
       /** 查询字典下拉列表 */

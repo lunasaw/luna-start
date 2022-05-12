@@ -2,7 +2,7 @@ package com.luna.generator.util;
 
 import java.util.Arrays;
 
-import com.luna.generator.domain.GenPathEnum;
+import com.luna.generator.enums.GenPathEnum;
 import org.apache.commons.lang3.RegExUtils;
 import com.luna.common.constant.GenConstants;
 import com.luna.common.utils.StringUtils;
@@ -110,6 +110,10 @@ public class GenUtils
         if (StringUtils.endsWithIgnoreCase(columnName, "status"))
         {
             column.setHtmlType(GenConstants.HTML_RADIO);
+        }
+        // 状态字段设置开关
+        if (StringUtils.endsWithIgnoreCase(columnName, "switch")) {
+            column.setHtmlType(GenConstants.HTML_SWITCH);
         }
         // 类型&性别字段设置下拉框
         else if (StringUtils.endsWithIgnoreCase(columnName, "type")

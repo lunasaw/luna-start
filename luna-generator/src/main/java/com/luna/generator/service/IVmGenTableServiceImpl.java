@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.alibaba.fastjson.JSON;
 import com.luna.generator.config.GenConfig;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FileUtils;
@@ -33,7 +32,7 @@ import com.luna.common.exception.ServiceException;
 import com.luna.common.utils.StringUtils;
 import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.GenTableColumn;
-import com.luna.generator.domain.VmTypeEnum;
+import com.luna.generator.enums.VmTypeEnum;
 import com.luna.generator.mapper.GenTableMapper;
 import com.luna.generator.util.VelocityInitializer;
 import com.luna.generator.util.VelocityUtils;

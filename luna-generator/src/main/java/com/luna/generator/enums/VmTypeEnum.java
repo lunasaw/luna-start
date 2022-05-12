@@ -1,4 +1,4 @@
-package com.luna.generator.domain;
+package com.luna.generator.enums;
 
 public enum VmTypeEnum {
 

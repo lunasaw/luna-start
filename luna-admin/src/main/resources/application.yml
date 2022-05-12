@@ -75,6 +75,8 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
   mapper-locations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  config-location: classpath:mybatis/mybatis-config.xml
   configuration:
     cache-enabled: true
     use-generated-keys: true

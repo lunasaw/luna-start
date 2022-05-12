@@ -21,6 +21,7 @@
         <result property="genPath" column="gen_path"/>
         <result property="genVuePath" column="gen_vue_path"/>
         <result property="options" column="options"/>
+        <result property="extend" column="extend"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
@@ -54,7 +55,7 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <sql id="selectGenTableVo">
+    <sql id="selectGenTable">
         select table_id,
                table_name,
                table_comment,
@@ -71,6 +72,7 @@
                gen_path,
                gen_vue_path,
                options,
+               extend,
                create_by,
                create_time,
                update_by,
@@ -80,7 +82,7 @@
     </sql>
 
     <select id="selectGenTableList" parameterType="GenTable" resultMap="GenTableResult">
-        <include refid="selectGenTableVo"/>
+        <include refid="selectGenTable"/>
         <where>
             <if test="tableName != null and tableName != ''">
                 AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
@@ -151,6 +153,7 @@
                t.gen_path,
                t.gen_vue_path,
                t.options,
+               t.extend,
                t.remark,
                c.column_id,
                c.column_name,
@@ -192,6 +195,7 @@
                t.gen_path,
                t.gen_vue_path,
                t.options,
+               t.extend,
                t.remark,
                c.column_id,
                c.column_name,
@@ -230,6 +234,7 @@
                t.function_name,
                t.function_author,
                t.options,
+               t.extend,
                t.remark,
                c.column_id,
                c.column_name,
@@ -307,6 +312,7 @@
             <if test="businessName != null and businessName != ''">business_name = #{businessName},</if>
             <if test="functionName != null and functionName != ''">function_name = #{functionName},</if>
             <if test="options != null and options != ''">options = #{options},</if>
+            <if test="extend != null and extend != ''">extend = #{extend},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()

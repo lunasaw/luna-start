@@ -20,32 +20,43 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "switch" ) && "" != $dictType)
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+      <el-option
+          v-for="dict in dict.type.${dictType}"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+      />
+    </el-select>
+  </el-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <el-option
-            v-for="dict in dict.type.${dictType}"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+      <el-option
+          v-for="dict in dict.type.${dictType}"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+      />
+    </el-select>
+  </el-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+      <el-option label="请选择字典生成" value=""/>
+    </el-select>
+  </el-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
-      <el-form-item label="${comment}" prop="${column.javaField}">
-        <el-date-picker clearable
-          v-model="queryParams.${column.javaField}"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择${comment}">
-        </el-date-picker>
-      </el-form-item>
+  <el-form-item label="${comment}" prop="${column.javaField}">
+    <el-date-picker clearable
+                    v-model="queryParams.${column.javaField}"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择${comment}">
+    </el-date-picker>
+  </el-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
       <el-form-item label="${comment}">
         <el-date-picker
@@ -123,28 +134,37 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.pk)
-      <el-table-column label="${comment}" align="center" prop="${javaField}" />
-#elseif($column.list && $column.htmlType == "datetime")
-      <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
+    #if($column.pk)
+      <el-table-column label="${comment}" align="center" prop="${javaField}"/>
+    #elseif($column.list && $column.htmlType == "datetime")
+      <el-table-column label="${comment}" align="center" prop="${javaField}" width="180" sortable>
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.${javaField}, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-#elseif($column.list && $column.htmlType == "imageUpload")
+    #elseif($column.list && $column.htmlType == "switch")
+      <el-table-column label="${comment}" align="center" prop="${javaField}" width="100" sortable>
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.${javaField}" :active-value=getActiveValue(true)
+                     :inactive-value=getActiveValue(false)
+                     @change="${column.javaField}SwitchChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+    #elseif($column.list && $column.htmlType == "imageUpload")
       <el-table-column label="${comment}" align="center" prop="${javaField}" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.${javaField}" :width="50" :height="50"/>
         </template>
       </el-table-column>
-#elseif($column.list && "" != $column.dictType)
+    #elseif($column.list && "" != $column.dictType)
       <el-table-column label="${comment}" align="center" prop="${javaField}">
         <template slot-scope="scope">
-#if($column.htmlType == "checkbox")
-          <dict-tag :options="dict.type.${column.dictType}" :value="scope.row.${javaField} ? scope.row.${javaField}.split(',') : []"/>
-#else
-          <dict-tag :options="dict.type.${column.dictType}" :value="scope.row.${javaField}"/>
-#end
+            #if($column.htmlType == "checkbox")
+              <dict-tag :options="dict.type.${column.dictType}" :value="scope.row.${javaField} ? scope.row.${javaField}.split(',') : []"/>
+            #else
+              <dict-tag :options="dict.type.${column.dictType}" :value="scope.row.${javaField}"/>
+            #end
         </template>
       </el-table-column>
 #elseif($column.list && "" != $javaField)
@@ -170,7 +190,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -213,37 +233,44 @@
         <el-form-item label="${comment}" prop="${field}">
           <el-select v-model="form.${field}" placeholder="请选择${comment}">
             <el-option
-              v-for="dict in dict.type.${dictType}"
-              :key="dict.value"
-              :label="dict.label"
-              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end
+                v-for="dict in dict.type.${dictType}"
+                :key="dict.value"
+                :label="dict.label"
+                #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end
 
             ></el-option>
           </el-select>
         </el-form-item>
 #elseif($column.htmlType == "select" && $dictType)
-        <el-form-item label="${comment}" prop="${field}">
-          <el-select v-model="form.${field}" placeholder="请选择${comment}">
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
-        </el-form-item>
+  <el-form-item label="${comment}" prop="${field}">
+    <el-select v-model="form.${field}" placeholder="请选择${comment}">
+      <el-option label="请选择字典生成" value=""/>
+    </el-select>
+  </el-form-item>
+#elseif($column.htmlType == "switch" && "" != $dictType)
+  <el-form-item label="${comment}" prop="${field}">
+    <el-switch v-model="form.${field}" :active-value="getActiveValue(true)"
+               :inactive-value="getActiveValue(false)"
+               @change="${column.javaField}SwitchChange(form)"
+    ></el-switch>
+  </el-form-item>
 #elseif($column.htmlType == "checkbox" && "" != $dictType)
-        <el-form-item label="${comment}">
-          <el-checkbox-group v-model="form.${field}">
-            <el-checkbox
-              v-for="dict in dict.type.${dictType}"
-              :key="dict.value"
-              :label="dict.value">
-              {{dict.label}}
-            </el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
+  <el-form-item label="${comment}">
+    <el-checkbox-group v-model="form.${field}">
+      <el-checkbox
+          v-for="dict in dict.type.${dictType}"
+          :key="dict.value"
+          :label="dict.value">
+        {{dict.label}}
+      </el-checkbox>
+    </el-checkbox-group>
+  </el-form-item>
 #elseif($column.htmlType == "checkbox" && $dictType)
-        <el-form-item label="${comment}">
-          <el-checkbox-group v-model="form.${field}">
-            <el-checkbox>请选择字典生成</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
+  <el-form-item label="${comment}">
+    <el-checkbox-group v-model="form.${field}">
+      <el-checkbox>请选择字典生成</el-checkbox>
+    </el-checkbox-group>
+  </el-form-item>
 #elseif($column.htmlType == "radio" && "" != $dictType)
         <el-form-item label="${comment}">
           <el-radio-group v-model="form.${field}">
@@ -299,39 +326,48 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.pk || $javaField == ${subTableFkclassName})
-#elseif($column.list && $column.htmlType == "input")
-          <el-table-column label="$comment" prop="${javaField}" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.$javaField" placeholder="请输入$comment" />
-            </template>
-          </el-table-column>
-#elseif($column.list && $column.htmlType == "datetime")
-          <el-table-column label="$comment" prop="${javaField}" width="240">
-            <template slot-scope="scope">
-              <el-date-picker clearable v-model="scope.row.$javaField" type="date" value-format="yyyy-MM-dd" placeholder="请选择$comment" />
-            </template>
-          </el-table-column>
-#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" != $column.dictType)
-          <el-table-column label="$comment" prop="${javaField}" width="150">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.$javaField" placeholder="请选择$comment">
-                <el-option
-                  v-for="dict in dict.type.$column.dictType"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" == $column.dictType)
-          <el-table-column label="$comment" prop="${javaField}" width="150">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.$javaField" placeholder="请选择$comment">
-                <el-option label="请选择字典生成" value="" />
-              </el-select>
-            </template>
+    #if($column.pk || $javaField == ${subTableFkclassName})
+    #elseif($column.list && $column.htmlType == "input" )
+      <el-table-column label="$comment" prop="${javaField}" width="150">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.$javaField" placeholder="请输入$comment"/>
+        </template>
+      </el-table-column>
+    #elseif($column.list && $column.htmlType == "datetime")
+      <el-table-column label="$comment" prop="${javaField}" width="240">
+        <template slot-scope="scope">
+          <el-date-picker clearable v-model="scope.row.$javaField" type="date" value-format="yyyy-MM-dd" placeholder="请选择$comment"/>
+        </template>
+      </el-table-column>
+    #elseif($column.list && $column.htmlType == "switch" && "" != $column.dictType)
+      <el-table-column label="$comment" prop="${javaField}" width="240">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.${javaField}" :active-value="getActiveValue(true)"
+                     :inactive-value="getActiveValue(false)"
+                     @change="${column.javaField}SwitchChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+    #elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" != $column.dictType)
+      <el-table-column label="$comment" prop="${javaField}" width="150">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.$javaField" placeholder="请选择$comment">
+            <el-option
+                v-for="dict in dict.type.$column.dictType"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            ></el-option>
+          </el-select>
+        </template>
+      </el-table-column>
+    #elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" == $column.dictType)
+      <el-table-column label="$comment" prop="${javaField}" width="150">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.$javaField" placeholder="请选择$comment">
+            <el-option label="请选择字典生成" value=""/>
+          </el-select>
+        </template>
           </el-table-column>
 #end
 #end
@@ -347,17 +383,28 @@
 </template>
 
 <script>
-import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from "@/api/${moduleName}/${businessName}";
+  import {
+    list${BusinessName},
+    get${BusinessName},
+    del${BusinessName},
+    add${BusinessName},
+    update${BusinessName}
+  } from "@/api/${moduleName}/${businessName}";
+      #foreach ($column in $columns)
+          #if($column.htmlType == "switch")
+          import {${column.javaField}SwitchChange} from "@/api/${moduleName}/${businessName}";
+          #end
+      #end
 
-export default {
-  name: "${BusinessName}",
-#if(${dicts} != '')
-  dicts: [${dicts}],
-#end
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
+  export default {
+    name: "${BusinessName}",
+      #if(${dicts} != '')
+        dicts: [${dicts}],
+      #end
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
       // 选中数组
       ids: [],
 #if($table.sub)
@@ -489,8 +536,30 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.${pkColumn.javaField})
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
+    },
+      #foreach ($column in $columns)
+          #if($column.htmlType == "switch")
+            // 状态修改
+                  ${column.javaField}SwitchChange(row) {
+              let text = row.${column.javaField} === '1' ? '启用' : '停用'
+              this.$modal.confirm ('确认要"' + text + '""' + row.${pkColumn.javaField} + '"吗？').then(function () {
+                return ${column.javaField}SwitchChange(row.${pkColumn.javaField}, row.${column.javaField})
+              }).then(() => {
+                this.$modal.msgSuccess ('成功')
+              }).catch(function () {
+                row.${column.javaField} = row.${column.javaField} === '1' ? '0' : '1'
+              })
+            },
+          #end
+      #end
+    getActiveValue(value) {
+      if (value) {
+        return Number("1")
+      } else {
+        return Number("0")
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {
