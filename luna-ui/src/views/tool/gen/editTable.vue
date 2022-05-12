@@ -84,7 +84,7 @@
           </el-table-column>
           <el-table-column label="排序" min-width="5%">
             <template slot-scope="scope">
-              <el-checkbox true-label="1" v-model="scope.row.sortAble"></el-checkbox>
+              <el-checkbox true-label=true v-model="scope.row.sortAble" false-label=false></el-checkbox>
             </template>
           </el-table-column>
           <el-table-column label="显示类型" min-width="12%">

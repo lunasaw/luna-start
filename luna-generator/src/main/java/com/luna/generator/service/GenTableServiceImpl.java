@@ -131,7 +131,7 @@ public class GenTableServiceImpl implements IGenTableService {
         {
             for (GenTableColumnReq cenTableColumn : genTable.getColumns())
             {
-                GenTableColumn genTableColumn = genTableColumnMapper.selectById(cenTableColumn.getColumnId());
+                GenTableColumn genTableColumn = genTableColumnMapper.selectGenTableColumnByColumnId(cenTableColumn.getColumnId());
                 GenTableColumn req2GenTableColumn = Req2DOUtils.genTableColumnReq2GenTableColumn(genTableColumn, cenTableColumn);
                 genTableColumnMapper.updateGenTableColumn(req2GenTableColumn);
             }
