@@ -1,13 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="上级分类的编号" prop="parentId">
-        <el-input
+      <el-form-item label="上级分类" prop="parentId">
+        <el-cascader
           v-model="queryParams.parentId"
-          placeholder="请输入上级分类的编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+          :options="cascadeList"
+          :props="{ multiple: false, emitPath: false, checkStrictly: true,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+          :show-all-levels="false" clearable filterable
+          @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
       </el-form-item>
       <el-form-item label="分类名称" prop="name">
         <el-input
@@ -170,6 +171,18 @@
         </template>
       </el-table-column>
       <el-table-column label="关键词" align="center" prop="keywords"/>
+      <el-table-column label="查看下级" align="center" prop="keywords">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-arrow-down"
+            @click="selectLowerLevel(scope.row)"
+            v-hasPermi="['product:category:list']"
+          >查看下级
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="描述" align="center" prop="description"/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -264,7 +277,14 @@
 </template>
 
 <script>
-import {listCategory, getCategory, delCategory, addCategory, updateCategory} from "@/api/product/category";
+import {
+  listCategory,
+  getCategory,
+  delCategory,
+  addCategory,
+  updateCategory,
+  categoryCascadeList
+} from "@/api/product/category";
 import {navStatusSwitchChange} from "@/api/product/category";
 import {showStatusSwitchChange} from "@/api/product/category";
 
@@ -287,6 +307,8 @@ export default {
       total: 0,
       // 产品分类表格数据
       categoryList: [],
+      // 及联列表
+      cascadeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -338,6 +360,15 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
+      });
+    },
+    selectLowerLevel(row) {
+      this.queryParams.parentId = row.id;
+      this.getList();
+    },
+    handleChange(val) {
     },
     // 取消按钮
     cancel() {

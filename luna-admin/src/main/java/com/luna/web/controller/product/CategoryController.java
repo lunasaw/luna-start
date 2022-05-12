@@ -1,4 +1,4 @@
-package com.luna.product.controller;
+package com.luna.web.controller.product;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.Objects;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,6 +50,16 @@ public class CategoryController extends BaseController {
         startPage();
         List<Category> list = categoryService.selectCategoryList(category);
         return getDataTable(list);
+    }
+
+    /**
+     * 分页查询产品分类列表
+     */
+    @PreAuthorize("@ss.hasPermi('product:category:list')")
+    @ApiOperation(value = "查询产品分类及联列表")
+    @GetMapping("/cascadeList")
+    public AjaxResult categoryCascade(Category category) {
+        return AjaxResult.success(categoryService.getCategoryCascadeVO(category));
     }
 
     /**

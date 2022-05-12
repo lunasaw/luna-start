@@ -18,6 +18,15 @@ export function categoryListAll(query) {
   })
 }
 
+// 查询全部分类及联列表
+export function categoryCascadeList(query) {
+  return request({
+    url: '/product/category/cascadeList',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询全部产品分类列表
 export function categoryListByIds(ids) {
   let query = {

@@ -2,9 +2,14 @@ package com.luna.product.service;
 
 import java.util.List;
 import com.luna.common.utils.DateUtils;
+import com.luna.product.domain.CategoryCascadeVO;
+import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import org.apache.commons.compress.utils.Lists;
@@ -140,5 +145,33 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      */
     public int deleteCategoryById(Long id) {
         return categoryMapper.deleteCategoryById(id);
+    }
+
+    /**
+     * 及联查询分类列表
+     * 
+     * @param category
+     * @return
+     */
+    public List<CategoryCascadeVO> getCategoryCascadeVO(Category category) {
+        Long categoryId = Optional.ofNullable(category.getParentId()).orElse(0L);
+        category.setParentId(categoryId);
+        ArrayList<CategoryCascadeVO> arrayList = Lists.newArrayList();
+        List<Category> categories = categoryMapper.selectCategoryList(category);
+        if (CollectionUtils.isEmpty(categories)) {
+            return arrayList;
+        }
+        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::Category2CategoryCascadeVO).collect(Collectors.toList());
+        arrayList.addAll(cascadeVOList);
+        for (CategoryCascadeVO categoryTemp : cascadeVOList) {
+            Category categoryChild = new Category();
+            categoryChild.setParentId(categoryTemp.getId());
+            List<CategoryCascadeVO> childCategory = getCategoryCascadeVO(categoryChild);
+            if (CollectionUtils.isEmpty(childCategory)) {
+                continue;
+            }
+            categoryTemp.setChildCategory(childCategory);
+        }
+        return arrayList;
     }
 }
