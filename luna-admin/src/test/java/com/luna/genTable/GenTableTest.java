@@ -31,11 +31,10 @@ public class GenTableTest extends AppTest {
     @Test
     public void atest() {
         GenTable genTable = genTableMapper.selectGenTableById(2L);
-        // System.out.println(JSON.toJSONString(genTable));
         GenTableVO genTableVO = DO2VOUtils.genTable2GenTableVO(genTable);
 
         String s = JSON.toJSONString(genTableVO);
-        System.out.println(JSON.toJSONString(genTableVO.getVmTypeVO()));
+        genTableVO.getColumns().forEach(e -> System.out.println(e.getSortAble()));
 
         GenTableReq genTableReq = JSON.parseObject(s, GenTableReq.class);
         // System.out.println(JSON.toJSONString(genTableReq));

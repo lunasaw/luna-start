@@ -76,6 +76,14 @@ public class GenTableColumnVO extends BaseEntity {
     /** 字段是否排序 */
     private Boolean           sortAble;
 
+    public Boolean isSortAble() {
+        return sortAble;
+    }
+
+    public void setSortAble(Boolean sortAble) {
+        this.sortAble = sortAble;
+    }
+
     public void setColumnId(Long columnId) {
         this.columnId = columnId;
     }

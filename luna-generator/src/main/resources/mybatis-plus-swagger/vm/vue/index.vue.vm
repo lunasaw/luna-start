@@ -128,6 +128,7 @@
       <el-table-column type="selection" width="55" align="center" />
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
+#set($sortable=$column.sortAble)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
@@ -135,15 +136,15 @@
 #set($comment=$column.columnComment)
 #end
     #if($column.pk)
-      <el-table-column label="${comment}" align="center" prop="${javaField}"/>
+      <el-table-column label="${comment}" align="center" prop="${javaField}" #if($sortable)sortable #end/>
     #elseif($column.list && $column.htmlType == "datetime")
-      <el-table-column label="${comment}" align="center" prop="${javaField}" width="180" sortable>
+      <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.${javaField}, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
     #elseif($column.list && $column.htmlType == "switch")
-      <el-table-column label="${comment}" align="center" prop="${javaField}" width="100" sortable>
+      <el-table-column label="${comment}" align="center" prop="${javaField}" width="100" #if($sortable)sortable #end>
         <template slot-scope="scope">
           <el-switch v-model="scope.row.${javaField}" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
@@ -152,13 +153,13 @@
         </template>
       </el-table-column>
     #elseif($column.list && $column.htmlType == "imageUpload")
-      <el-table-column label="${comment}" align="center" prop="${javaField}" width="100">
+      <el-table-column label="${comment}" align="center" prop="${javaField}" width="100" #if($sortable)sortable #end>
         <template slot-scope="scope">
           <image-preview :src="scope.row.${javaField}" :width="50" :height="50"/>
         </template>
       </el-table-column>
     #elseif($column.list && "" != $column.dictType)
-      <el-table-column label="${comment}" align="center" prop="${javaField}">
+      <el-table-column label="${comment}" align="center" prop="${javaField}" #if($sortable)sortable #end>
         <template slot-scope="scope">
             #if($column.htmlType == "checkbox")
               <dict-tag :options="dict.type.${column.dictType}" :value="scope.row.${javaField} ? scope.row.${javaField}.split(',') : []"/>
@@ -167,8 +168,8 @@
             #end
         </template>
       </el-table-column>
-#elseif($column.list && "" != $javaField)
-      <el-table-column label="${comment}" align="center" prop="${javaField}" />
+    #elseif($column.list && "" != $javaField)
+      <el-table-column label="${comment}" align="center" prop="${javaField}" #if($sortable)sortable #end/>
 #end
 #end
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">

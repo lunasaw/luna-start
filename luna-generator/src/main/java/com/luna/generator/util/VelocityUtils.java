@@ -1,11 +1,13 @@
 package com.luna.generator.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luna.common.constant.GenConstants;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.GenTableColumn;
+import com.luna.generator.domain.vo.GenTableVO;
 import com.luna.generator.enums.VmTypeEnum;
 import org.apache.velocity.VelocityContext;
 
@@ -38,6 +40,7 @@ public class VelocityUtils {
      * @return 模板列表
      */
     public static VelocityContext prepareContext(GenTable genTable) {
+        GenTableVO genTableVO = DO2VOUtils.genTable2GenTableVO(genTable);
         String moduleName = genTable.getModuleName();
         String businessName = genTable.getBusinessName();
         String packageName = genTable.getPackageName();
@@ -60,7 +63,10 @@ public class VelocityUtils {
         velocityContext.put("pkColumn", genTable.getPkColumn());
         velocityContext.put("importList", getImportList(genTable));
         velocityContext.put("permissionPrefix", getPermissionPrefix(moduleName, businessName));
-        velocityContext.put("columns", genTable.getColumns());
+        velocityContext.put("columns", genTableVO.getColumns());
+
+        System.out.println(JSON.toJSONString(genTableVO.getColumns()));
+
         velocityContext.put("table", genTable);
         velocityContext.put("dicts", getDicts(genTable));
         setMenuVelocityContext(velocityContext, genTable);

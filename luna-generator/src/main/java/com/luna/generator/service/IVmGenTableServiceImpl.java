@@ -15,6 +15,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import com.luna.generator.config.GenConfig;
+import com.luna.generator.domain.vo.GenTableVO;
+import com.luna.generator.util.DO2VOUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
