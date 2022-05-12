@@ -66,12 +66,12 @@
           <el-table-column label="查询方式" min-width="10%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.queryType">
-                <el-option label="=" value="EQ" />
-                <el-option label="!=" value="NE" />
-                <el-option label=">" value="GT" />
-                <el-option label=">=" value="GTE" />
-                <el-option label="<" value="LT" />
-                <el-option label="<=" value="LTE" />
+                <el-option label="=" value="EQ"/>
+                <el-option label="!=" value="NE"/>
+                <el-option label=">" value="GT"/>
+                <el-option label=">=" value="GTE"/>
+                <el-option label="<" value="LT"/>
+                <el-option label="<=" value="LTE"/>
                 <el-option label="LIKE" value="LIKE"/>
                 <el-option label="BETWEEN" value="BETWEEN"/>
               </el-select>
@@ -97,9 +97,9 @@
                 <el-option label="单选框" value="radio"/>
                 <el-option label="复选框" value="checkbox"/>
                 <el-option label="日期控件" value="datetime"/>
-                <el-option label="图片上传" value="imageUpload" />
-                <el-option label="文件上传" value="fileUpload" />
-                <el-option label="富文本控件" value="editor" />
+                <el-option label="图片上传" value="imageUpload"/>
+                <el-option label="文件上传" value="fileUpload"/>
+                <el-option label="富文本控件" value="editor"/>
               </el-select>
             </template>
           </el-table-column>
