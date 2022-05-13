@@ -70,7 +70,7 @@ public class CategoryController extends BaseController {
     @GetMapping("/listPage")
     public TableDataInfo listPage(Category category) {
         Page<Category> page = startPageList();
-        IPage<Category> list = categoryService.selectList(page, category);
+        IPage<CategoryVO> list = categoryService.selectVOList(page, category);
         return getDataTable(list);
     }
 

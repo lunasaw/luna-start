@@ -56,6 +56,7 @@ public class DruidConfig
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
+        // 添加数据源
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
     

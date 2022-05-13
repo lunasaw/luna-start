@@ -1,8 +1,13 @@
 package com.luna.product.service;
 
 import java.util.List;
+
+import com.luna.common.annotation.DataSource;
+import com.luna.common.enums.DataSourceType;
 import com.luna.common.utils.DateUtils;
-import com.luna.product.domain.CategoryCascadeVO;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.vo.CategoryCascadeVO;
+import com.luna.product.domain.vo.CategoryVO;
 import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +99,7 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      * @param page 分页参数
      * @return 产品分类
      */
+    @DataSource(DataSourceType.SLAVE)
     public IPage<Category> selectList(IPage<Category> page, Category category) {
         QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>(category);
         for (OrderItem order : page.orders()) {
@@ -104,6 +110,28 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         return categoryMapper.selectPage(selectPage, queryWrapper);
     }
 
+    /**
+     * 分页查询产品分类列表
+     *
+     * @param category 产品分类
+     * @param page 分页参数
+     * @return 产品分类
+     */
+    public IPage<CategoryVO> selectVOList(IPage<Category> page, Category category) {
+        IPage categoryIPage = selectList(page, category);
+
+        List<CategoryVO> list = new ArrayList<>();
+        List<Category> records = categoryIPage.getRecords();
+        for (Category record : records) {
+            String parentName =
+                Optional.ofNullable(categoryMapper.selectCategoryById(record.getParentId())).map(Category::getName).orElse(StringUtils.EMPTY);
+            CategoryVO categoryVO = DO2VOUtils.category2CategoryVO(record, parentName);
+            list.add(categoryVO);
+        }
+
+        categoryIPage.setRecords(list);
+        return categoryIPage;
+    }
 
     /**
      * 新增产品分类

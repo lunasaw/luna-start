@@ -9,6 +9,16 @@ export function listCategory(query) {
   })
 }
 
+// 查询产品分类列表
+export function listPageCategory(query) {
+  return request({
+    url: '/product/category/listPage',
+    method: 'get',
+    params: query
+  })
+}
+
+
 // 查询全部产品分类列表
 export function categoryListAll(query) {
   return request({
@@ -73,7 +83,6 @@ export function navStatusSwitchChange(id, navStatus) {
   }
   return updateCategory(data);
 }
-
 // 修改 显示状态 状态
 export function showStatusSwitchChange(id, showStatus) {
   const data = {

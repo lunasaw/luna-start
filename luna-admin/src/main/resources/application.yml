@@ -77,12 +77,6 @@ mybatis-plus:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
   # 加载全局的配置文件
   config-location: classpath:mybatis/mybatis-config.xml
-  configuration:
-    cache-enabled: true
-    use-generated-keys: true
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-    default-executor-type: SIMPLE
-  #type-aliases-package: com.luna.**.domain,;com.d3code.**.domain
   type-aliases-package: com.luna.**.domain
 
 # PageHelper分页插件

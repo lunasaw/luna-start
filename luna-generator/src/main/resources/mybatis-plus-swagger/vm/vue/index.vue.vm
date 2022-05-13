@@ -345,7 +345,6 @@
         <template slot-scope="scope">
           <el-switch v-model="scope.row.${javaField}" :active-value="getActiveValue(true)"
                      :inactive-value="getActiveValue(false)"
-                     @change="${column.javaField}SwitchChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
@@ -389,7 +388,12 @@
     get${BusinessName},
     del${BusinessName},
     add${BusinessName},
-    update${BusinessName}
+    addList${BusinessName},
+    listPage${BusinessName},
+          ${businessName}ListByIds,
+          ${businessName}ListAll,
+    update${BusinessName},
+    updateList${BusinessName}
   } from "@/api/${moduleName}/${businessName}";
       #foreach ($column in $columns)
           #if($column.htmlType == "switch")
@@ -544,13 +548,13 @@
           #if($column.htmlType == "switch")
             // 状态修改
                   ${column.javaField}SwitchChange(row) {
-              let text = row.${column.javaField} === '1' ? '启用' : '停用'
+              let text = row.${column.javaField} === 1 ? '启用' : '停用'
               this.$modal.confirm ('确认要"' + text + '""' + row.${pkColumn.javaField} + '"吗？').then(function () {
                 return ${column.javaField}SwitchChange(row.${pkColumn.javaField}, row.${column.javaField})
               }).then(() => {
                 this.$modal.msgSuccess ('成功')
               }).catch(function () {
-                row.${column.javaField} = row.${column.javaField} === '1' ? '0' : '1'
+                row.${column.javaField} = row.${column.javaField} === 1 ? 0 : 1
               })
             },
           #end

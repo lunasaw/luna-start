@@ -1,7 +1,8 @@
 package com.luna.utils;
 
 import com.luna.product.domain.Category;
-import com.luna.product.domain.CategoryCascadeVO;
+import com.luna.product.domain.vo.CategoryCascadeVO;
+import com.luna.product.domain.vo.CategoryVO;
 
 /**
  * @author luna
@@ -9,6 +10,34 @@ import com.luna.product.domain.CategoryCascadeVO;
  */
 public class DO2VOUtils {
 
+    public static CategoryVO category2CategoryVO(Category category, String parentName) {
+        if (category == null) {
+            return null;
+        }
+        CategoryVO categoryVO = new CategoryVO();
+        categoryVO.setId(category.getId());
+        categoryVO.setParentId(category.getParentId());
+        categoryVO.setParentName(parentName);
+        categoryVO.setName(category.getName());
+        categoryVO.setLevel(category.getLevel());
+        categoryVO.setProductCount(category.getProductCount());
+        categoryVO.setProductUnit(category.getProductUnit());
+        categoryVO.setNavStatus(category.getNavStatus());
+        categoryVO.setShowStatus(category.getShowStatus());
+        categoryVO.setSort(category.getSort());
+        categoryVO.setIcon(category.getIcon());
+        categoryVO.setKeywords(category.getKeywords());
+        categoryVO.setDescription(category.getDescription());
+        categoryVO.setSearchValue(category.getSearchValue());
+        categoryVO.setCreateBy(category.getCreateBy());
+        categoryVO.setCreateTime(category.getCreateTime());
+        categoryVO.setDeleted(category.getDeleted());
+        categoryVO.setUpdateBy(category.getUpdateBy());
+        categoryVO.setUpdateTime(category.getUpdateTime());
+        categoryVO.setRemark(category.getRemark());
+        categoryVO.setParams(category.getParams());
+        return categoryVO;
+    }
     public static CategoryCascadeVO Category2CategoryCascadeVO(Category category) {
         if (category == null) {
             return null;

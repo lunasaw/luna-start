@@ -1,4 +1,4 @@
-package com.luna.product.domain;
+package com.luna.product.domain.vo;
 
 import com.luna.common.annotation.Excel;
 import com.luna.common.core.domain.BaseEntity;

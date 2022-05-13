@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.luna</groupId>
-    <artifactId>luna</artifactId>
+    <artifactId>luna-start</artifactId>
     <version>${luna.version}</version>
 
     <name>luna-start</name>
