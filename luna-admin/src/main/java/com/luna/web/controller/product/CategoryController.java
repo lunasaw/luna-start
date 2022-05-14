@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.product.domain.vo.CategoryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.Objects;
@@ -177,13 +178,13 @@ public class CategoryController extends BaseController {
     }
 
     /**
-     * 单个删除产品分类
+     * 逻辑删除单个删除产品分类
      */
-    @ApiOperation(value = "删除产品分类")
+    @ApiOperation(value = "逻辑删除产品分类")
     @PreAuthorize("@ss.hasPermi('product:category:remove')")
     @Log(title = "产品分类", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{id}")
-    public AjaxResult remove(@PathVariable Long id) {
-        return toAjax(categoryService.deleteCategoryById(id));
+    @DeleteMapping("delete")
+    public AjaxResult remove(@RequestBody Category category) {
+        return toAjax(categoryService.deleteCategoryById(category));
     }
 }

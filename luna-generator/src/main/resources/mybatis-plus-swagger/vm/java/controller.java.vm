@@ -187,13 +187,13 @@ public class ${ClassName}Controller extends BaseController {
     }
 
     /**
-     * 单个删除${functionName}
+     * 逻辑删除${functionName}
      */
-    @ApiOperation(value = "删除${functionName}" )
+    @ApiOperation(value = "逻辑删除${functionName}" )
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:remove')" )
     @Log(title = "${functionName}" , businessType = BusinessType.DELETE)
-    @DeleteMapping("/{${pkColumn.javaField}}" )
-    public AjaxResult remove(@PathVariable ${pkColumn.javaType} ${pkColumn.javaField}) {
-        return toAjax(${className}Service.delete${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaField}));
+    @DeleteMapping("delete" )
+    public AjaxResult remove(@PathVariable ${ClassName} ${className}) {
+        return toAjax(${className}Service.deleteById(${className}));
     }
 }

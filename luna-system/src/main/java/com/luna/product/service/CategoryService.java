@@ -56,7 +56,6 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         return categoryMapper.selectCategoryList(category);
     }
 
-
     /**
      * 查询全部产品分类列表
      *
@@ -118,19 +117,19 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      * @return 产品分类
      */
     public IPage<CategoryVO> selectVOList(IPage<Category> page, Category category) {
-        IPage categoryIPage = selectList(page, category);
+        IPage<Category> categoryPage = selectList(page, category);
 
         List<CategoryVO> list = new ArrayList<>();
-        List<Category> records = categoryIPage.getRecords();
+        List<Category> records = categoryPage.getRecords();
         for (Category record : records) {
             String parentName =
                 Optional.ofNullable(categoryMapper.selectCategoryById(record.getParentId())).map(Category::getName).orElse(StringUtils.EMPTY);
             CategoryVO categoryVO = DO2VOUtils.category2CategoryVO(record, parentName);
             list.add(categoryVO);
         }
-
-        categoryIPage.setRecords(list);
-        return categoryIPage;
+        Page<CategoryVO> result = new Page<>(categoryPage.getCurrent(), categoryPage.getSize(), categoryPage.getTotal());
+        result.setRecords(list);
+        return result;
     }
 
     /**
@@ -166,13 +165,14 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
     }
 
     /**
-     * 删除产品分类信息
+     * 逻辑删除产品分类信息
      *
-     * @param id 产品分类主键
+     * @param category 产品分类主键
      * @return 结果
      */
-    public int deleteCategoryById(Long id) {
-        return categoryMapper.deleteCategoryById(id);
+    public int deleteCategoryById(Category category) {
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>(category);
+        return categoryMapper.deleteById(queryWrapper);
     }
 
     /**
