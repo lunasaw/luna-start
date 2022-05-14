@@ -106,3 +106,12 @@ export function del${BusinessName}(${pkColumn.javaField}) {
     })
 }
 
+// 逻辑删除${functionName}
+export function delete${BusinessName}(data) {
+    return request({
+        url: '/${moduleName}/${businessName}/delete',
+        method: 'delete',
+        data: data
+    })
+}
+
