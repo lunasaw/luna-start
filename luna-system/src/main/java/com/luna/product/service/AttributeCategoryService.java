@@ -1,7 +1,10 @@
 package com.luna.product.service;
 
 import java.util.List;
+
+import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.PageUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.Category;
 import com.luna.product.domain.vo.AttributeCategoryVO;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -53,8 +57,19 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
      * @param attributeCategory 产品属性分类
      * @return 产品属性分类
      */
-    public List<AttributeCategory> selectAttributeCategoryList(AttributeCategory attributeCategory) {
-        return attributeCategoryMapper.selectAttributeCategoryList(attributeCategory);
+    public PageInfo selectAttributeCategoryList(AttributeCategory attributeCategory) {
+        List<AttributeCategory> attributeCategoryList = attributeCategoryMapper.selectAttributeCategoryList(attributeCategory);
+        PageInfo pageInfo = new PageInfo<>(attributeCategoryList);
+        List<AttributeCategoryVO> collect = attributeCategoryList.stream().map(this::fillData).collect(Collectors.toList());
+        pageInfo.setList(collect);
+        return pageInfo;
+    }
+
+    public AttributeCategoryVO fillData(AttributeCategory category) {
+        String categoryName =
+            Optional.ofNullable(categoryMapper.selectCategoryById(category.getCategoryId())).map(Category::getName).orElse(StringUtils.EMPTY);
+        AttributeCategoryVO attributeCategoryVO = DO2VOUtils.attribateCategory2AttributeCategoryVO(category, categoryName);
+        return attributeCategoryVO;
     }
 
     /**

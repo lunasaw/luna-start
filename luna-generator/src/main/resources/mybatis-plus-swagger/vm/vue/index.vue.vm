@@ -496,7 +496,7 @@
               }
             #end
         #end
-      listPage${BusinessName}(this.queryParams).then(response => {
+      list${BusinessName}(this.queryParams).then(response => {
         this.${businessName}List = response.rows;
         this.total = response.total;
         this.loading = false;

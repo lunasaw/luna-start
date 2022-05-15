@@ -6,9 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import java.util.Objects;
 import java.util.ArrayList;
+
+import com.github.pagehelper.PageInfo;
+
 import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +56,15 @@ public class ${ClassName}Controller extends BaseController {
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
     @GetMapping("/list")
     #if($table.crud || $table.sub)
-    public TableDataInfo list(${ClassName} ${className})
-    {
+    public TableDataInfo list(${ClassName} ${className}) {
         startPage();
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
-        return getDataTable(list);
+        PageInfo pageInfo = ${className}Service.select${ClassName}List(${className});
+        TableDataInfo dataTable = getDataTable(pageInfo.getList());
+        dataTable.setTotal(pageInfo.getTotal());
+        return dataTable;
     }
     #elseif($table.tree)
-        public AjaxResult list(${ClassName} ${className})
-        {
+        public AjaxResult list(${ClassName} ${className}) {
             List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
             return AjaxResult.success(list);
         }

@@ -56,9 +56,10 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
      * @param ${className} ${functionName}
      * @return ${functionName}
      */
-    public List<${ClassName}> select${ClassName}List(${ClassName} ${className})
-    {
-        return ${className}Mapper.select${ClassName}List(${className});
+    public PageInfo select${ClassName}List(${ClassName} ${className}) {
+        List<${ClassName}> list ${className}Mapper.select${ClassName}List(${className});
+        PageInfo pageInfo = new PageInfo<>(list);
+        return pageInfo
     }
 
 

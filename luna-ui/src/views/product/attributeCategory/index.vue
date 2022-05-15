@@ -34,6 +34,11 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="是否删除" prop="navStatus">
+        <el-switch v-model="queryParams.deleted" :active-value=getActiveValue(true)
+                   :inactive-value=getActiveValue(false)
+        ></el-switch>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -139,10 +144,16 @@
     <!-- 添加或修改产品属性分类对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="分类ID" prop="categoryId">
-          <el-input v-model="form.categoryId" placeholder="请输入分类ID"/>
+        <el-form-item label="所属分类" prop="categoryId">
+          <el-cascader
+            v-model="form.categoryId"
+            :options="cascadeList"
+            :props="{ multiple: false, emitPath: false, checkStrictly: true,
+           placeholder: '请选择分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+            :show-all-levels="false" clearable filterable
+            @keyup.enter.native="handleQuery"></el-cascader>
         </el-form-item>
-        <el-form-item label="分类属性名" prop="name">
+        <el-form-item label="分类属性名" prop="name" label-width="90px">
           <el-input v-model="form.name" placeholder="请输入分类属性名"/>
         </el-form-item>
         <el-form-item label="属性数量" prop="attributeCount">
@@ -184,6 +195,7 @@ import {categoryCascadeList} from "@/api/product/category";
 
 export default {
   name: "AttributeCategory",
+  dicts: ['tb_product_level', 'tb_normal_status'],
   data() {
     return {
       // 遮罩层
@@ -240,7 +252,7 @@ export default {
     /** 查询产品属性分类列表 */
     getList() {
       this.loading = true;
-      listPageAttributeCategory(this.queryParams).then(response => {
+      listAttributeCategory(this.queryParams).then(response => {
         this.attributeCategoryList = response.rows;
         this.total = response.total;
         this.loading = false;

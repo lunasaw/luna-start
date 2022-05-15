@@ -1,5 +1,6 @@
 package com.luna.common.utils;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.luna.common.core.page.PageDomain;
 import com.luna.common.core.page.TableSupport;
@@ -26,6 +27,21 @@ public class PageUtils extends PageHelper
             Boolean reasonable = pageDomain.getReasonable();
             PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
         }
+    }
+
+    /**
+     * 设置请求分页数据
+     */
+    public static Page page() {
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize)) {
+            String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
+            Boolean reasonable = pageDomain.getReasonable();
+            return PageHelper.startPage(pageNum, pageSize, orderBy).setReasonable(reasonable);
+        }
+        return PageHelper.startPage(0, 20);
     }
 
     /**

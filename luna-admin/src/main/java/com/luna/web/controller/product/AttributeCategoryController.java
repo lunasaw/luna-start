@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.common.utils.PageUtils;
 import com.luna.product.domain.vo.AttributeCategoryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,9 +51,11 @@ public class AttributeCategoryController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(AttributeCategory attributeCategory)
     {
-        startPage();
-        List<AttributeCategory> list = attributeCategoryService.selectAttributeCategoryList(attributeCategory);
-        return getDataTable(list);
+        PageUtils.startPage();
+        PageInfo pageInfo = attributeCategoryService.selectAttributeCategoryList(attributeCategory);
+        TableDataInfo dataTable = getDataTable(pageInfo.getList());
+        dataTable.setTotal(pageInfo.getTotal());
+        return dataTable;
     }
 
     /**
@@ -96,7 +99,7 @@ public class AttributeCategoryController extends BaseController {
     @Log(title = "产品属性分类" , businessType = BusinessType.EXPORT)
     @PostMapping("/export" )
     public void export(HttpServletResponse response, AttributeCategory attributeCategory) {
-        List<AttributeCategory> list = attributeCategoryService.selectAttributeCategoryList(attributeCategory);
+        List<AttributeCategory> list = attributeCategoryService.selectAllList(attributeCategory);
         ExcelUtil<AttributeCategory> util = new ExcelUtil<AttributeCategory>(AttributeCategory.class);
         util.exportExcel(response, list, "产品属性分类数据" );
     }
