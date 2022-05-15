@@ -1,13 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="分类ID" prop="categoryId">
-        <el-input
+      <el-form-item label="分类" prop="categoryId">
+        <el-cascader
           v-model="queryParams.categoryId"
-          placeholder="请输入分类ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+          :options="cascadeList"
+          :props="{ multiple: false, emitPath: false, checkStrictly: true,
+           placeholder: '请选择分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+          :show-all-levels="false" clearable filterable
+          @keyup.enter.native="handleQuery"></el-cascader>
       </el-form-item>
       <el-form-item label="分类属性名" prop="name">
         <el-input
@@ -92,10 +93,10 @@
     <el-table v-loading="loading" :data="attributeCategoryList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="分类属性ID" align="center" prop="id"/>
-      <el-table-column label="分类ID" align="center" prop="categoryId"/>
+      <el-table-column label="所属分类" align="center" prop="categoryName"/>
       <el-table-column label="分类属性名" align="center" prop="name"/>
-      <el-table-column label="属性数量" align="center" prop="attributeCount"/>
-      <el-table-column label="参数数量" align="center" prop="paramCount"/>
+      <el-table-column label="属性数量" align="center" prop="attributeCount" sortable/>
+      <el-table-column label="参数数量" align="center" prop="paramCount" sortable/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="是否删除" align="center" prop="deleted" width="100">
         <template slot-scope="scope">
@@ -179,6 +180,7 @@ import {
   from
     "@/api/product/attributeCategory";
 import {deletedSwitchChange} from "@/api/product/attributeCategory";
+import {categoryCascadeList} from "@/api/product/category";
 
 export default {
   name: "AttributeCategory",
@@ -198,6 +200,8 @@ export default {
       total: 0,
       // 产品属性分类表格数据
       attributeCategoryList: [],
+      // 及联列表
+      cascadeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -230,15 +234,22 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryCascadeList();
   },
   methods: {
     /** 查询产品属性分类列表 */
     getList() {
       this.loading = true;
-      listAttributeCategory(this.queryParams).then(response => {
+      listPageAttributeCategory(this.queryParams).then(response => {
         this.attributeCategoryList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
       });
     },
     // 取消按钮

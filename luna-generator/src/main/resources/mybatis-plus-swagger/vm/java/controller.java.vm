@@ -74,7 +74,7 @@ public class ${ClassName}Controller extends BaseController {
     #if($table.crud || $table.sub)
     public TableDataInfo listPage(${ClassName} ${className}) {
         Page<${ClassName}> page = startPageList();
-        IPage<${ClassName}> list = ${className}Service.selectList(page, ${className});
+        IPage<${ClassName}VO> list = ${className}Service.selectVOList(page, ${className});
         return getDataTable(list);
     }
     #elseif($table.tree)

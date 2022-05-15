@@ -1,9 +1,10 @@
-package com.luna.product.controller;
+package com.luna.web.controller.product;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.product.domain.vo.AttributeCategoryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.Objects;
@@ -62,7 +63,7 @@ public class AttributeCategoryController extends BaseController {
     @GetMapping("/listPage" )
     public TableDataInfo listPage(AttributeCategory attributeCategory) {
         Page<AttributeCategory> page = startPageList();
-        IPage<AttributeCategory> list = attributeCategoryService.selectList(page, attributeCategory);
+        IPage<AttributeCategoryVO> list = attributeCategoryService.selectVOList(page, attributeCategory);
         return getDataTable(list);
     }
 

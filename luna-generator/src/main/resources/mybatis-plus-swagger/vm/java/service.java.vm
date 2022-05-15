@@ -26,6 +26,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
     #end
 import ${packageName}.mapper.${ClassName}Mapper;
 import ${packageName}.domain.${ClassName};
+import ${packageName}.domain.vo.${ClassName}VO;
+import ${packageName}.utils.DO2VOUtils;
 
 /**
  * ${functionName}Service业务层处理
@@ -110,6 +112,29 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         Page<${ClassName}> selectPage = Page.of(page.getCurrent(), page.getSize());
         selectPage.setMaxLimit(page.maxLimit());
         return ${className}Mapper.selectPage(selectPage, queryWrapper);
+    }
+
+    /**
+     * 分页查询${functionName}VO视图列表
+     *
+     * @param ${className} ${functionName}
+     * @param page 分页参数
+     * @return ${functionName}
+     */
+    public IPage<${ClassName}> selectVOList(IPage<${ClassName}> page, ${ClassName} ${className}) {
+        IPage<${ClassName}> ${className}Page = selectList(page, ${className});
+        List<${ClassName}VO> list = new ArrayList<>();
+        List<${ClassName}> records = ${className}Page.getRecords();
+
+        for (${ClassName} record:
+                          records) {
+
+                ${ClassName}VO ${className}VO = DO2VOUtils .${className}2 ${ClassName}VO(record);
+            list.add(${className}VO);
+        }
+        Page<${ClassName}> result = new Page<>(${className}Page.getCurrent(), ${className}Page.getSize(), ${className}Page.getTotal());
+        result.setRecords(list);
+        return list;
     }
 
 

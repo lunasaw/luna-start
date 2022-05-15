@@ -13,7 +13,7 @@ import com.luna.common.annotation.Excel;
 import lombok.Data;
 
 /**
- * ${functionName}对象 ${tableName}
+ * ${functionName}视图对象
  *
  * @author ${author}
  * @date ${datetime}
@@ -24,7 +24,6 @@ import lombok.Data;
         #set($Entity="TreeEntity")
     #end
         @Data
-        @TableName("${tableName}")
         public class ${ClassName}VO extends ${Entity}
 {
     private static final long serialVersionUID = 1L;

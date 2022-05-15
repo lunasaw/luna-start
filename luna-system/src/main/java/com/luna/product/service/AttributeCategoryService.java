@@ -2,9 +2,17 @@ package com.luna.product.service;
 
 import java.util.List;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.Category;
+import com.luna.product.domain.vo.AttributeCategoryVO;
+import com.luna.product.domain.vo.CategoryVO;
+import com.luna.product.mapper.CategoryMapper;
+import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import org.apache.commons.compress.utils.Lists;
@@ -25,6 +33,9 @@ import com.luna.product.domain.AttributeCategory;
 public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMapper, AttributeCategory> {
     @Autowired
     private AttributeCategoryMapper attributeCategoryMapper;
+
+    @Autowired
+    private CategoryMapper          categoryMapper;
 
     /**
      * 查询产品属性分类
@@ -96,6 +107,29 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
         Page<AttributeCategory> selectPage = Page.of(page.getCurrent(), page.getSize());
         selectPage.setMaxLimit(page.maxLimit());
         return attributeCategoryMapper.selectPage(selectPage, queryWrapper);
+    }
+
+    /**
+     * 分页查询产品属性分类列表
+     *
+     * @param attributeCategory 产品属性分类
+     * @param page 分页参数
+     * @return 产品属性分类
+     */
+    public IPage<AttributeCategoryVO> selectVOList(IPage<AttributeCategory> page, AttributeCategory attributeCategory) {
+        IPage<AttributeCategory> categoryPage = selectList(page, attributeCategory);
+
+        List<AttributeCategoryVO> list = new ArrayList<>();
+        List<AttributeCategory> records = categoryPage.getRecords();
+        for (AttributeCategory record : records) {
+            String categoryName =
+                Optional.ofNullable(categoryMapper.selectCategoryById(record.getCategoryId())).map(Category::getName).orElse(StringUtils.EMPTY);
+            AttributeCategoryVO attributeCategoryVO = DO2VOUtils.attribateCategory2AttributeCategoryVO(record, categoryName);
+            list.add(attributeCategoryVO);
+        }
+        Page<AttributeCategoryVO> result = new Page<>(categoryPage.getCurrent(), categoryPage.getSize(), categoryPage.getTotal());
+        result.setRecords(list);
+        return result;
     }
 
     /**

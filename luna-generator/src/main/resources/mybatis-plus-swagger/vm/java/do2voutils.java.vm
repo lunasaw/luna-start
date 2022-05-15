@@ -1,0 +1,24 @@
+package ${packageName}.utils;
+
+import ${packageName}.domain.${ClassName};
+import ${packageName}.domain.vo.${ClassName}VO;
+
+/**
+ * ${functionName}Controller
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public class DO2VOUtils {
+
+    public static ${ClassName}VO ${ClassName}2
+
+        ${ClassName}VO(${ClassName} ${ClassName}) {
+        if (${ClassName} ==null){
+            return null;
+        }
+            ${ClassName}VO ${className}VO = new ${ClassName}VO();
+        return ${className}VO;
+    }
+
+}

@@ -134,6 +134,10 @@ public class VelocityUtils {
     public static List<String> getTemplateListPlus(String tplCategory, VmTypeEnum typeEnum) {
         List<String> templates = new ArrayList<String>();
         String header = typeEnum.getPath();
+        if (VmTypeEnum.MYBATIS_PLUS_SWAGGER.equals(typeEnum)) {
+            templates.add(header + "/java/domainvo.java.vm");
+            templates.add(header + "/java/do2voutils.java.vm");
+        }
         templates.add(header + "/java/domain.java.vm");
         templates.add(header + "/java/mapper.java.vm");
         templates.add(header + "/java/service.java.vm");
@@ -203,6 +207,12 @@ public class VelocityUtils {
 
         if (template.contains("domain.java.vm")) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, className);
+        }
+        if (template.contains("domainvo.java.vm") && VmTypeEnum.MYBATIS_PLUS_SWAGGER.equals(vmTypeEnum)) {
+            fileName = StringUtils.format("{}/domain/vo/{}.java", javaPath, genTable.getSubTable().getClassName());
+        }
+        if (template.contains("do2voutils.java.vm") && VmTypeEnum.MYBATIS_PLUS_SWAGGER.equals(vmTypeEnum)) {
+            fileName = StringUtils.format("{}/utils/{}.java", javaPath, genTable.getSubTable().getClassName());
         }
         if (template.contains("sub-domain.java.vm") && StringUtils.equals(GenConstants.TPL_SUB, genTable.getTplCategory())) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, genTable.getSubTable().getClassName());
