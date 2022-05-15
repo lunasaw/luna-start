@@ -164,7 +164,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort"/>
+      <el-table-column label="排序" align="center" prop="sort" sortable/>
       <el-table-column label="图标" align="center" prop="icon" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.icon" :width="50" :height="50"/>

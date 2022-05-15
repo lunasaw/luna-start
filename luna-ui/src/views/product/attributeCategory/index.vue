@@ -1,10 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="属性名称" prop="name">
+      <el-form-item label="分类ID" prop="categoryId">
+        <el-input
+          v-model="queryParams.categoryId"
+          placeholder="请输入分类ID"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="分类属性名" prop="name">
         <el-input
           v-model="queryParams.name"
-          placeholder="请输入属性名称"
+          placeholder="请输入分类属性名"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -39,8 +47,9 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['product:categoryAttribute:add']"
-        >新增</el-button>
+          v-hasPermi="['product:attributeCategory:add']"
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -50,8 +59,9 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['product:categoryAttribute:edit']"
-        >修改</el-button>
+          v-hasPermi="['product:attributeCategory:edit']"
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -61,8 +71,9 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['product:categoryAttribute:remove']"
-        >删除</el-button>
+          v-hasPermi="['product:attributeCategory:remove']"
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -71,19 +82,29 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['product:categoryAttribute:export']"
-        >导出</el-button>
+          v-hasPermi="['product:attributeCategory:export']"
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="categoryAttributeList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="属性ID" align="center" prop="id" />
-      <el-table-column label="属性名称" align="center" prop="name" />
-      <el-table-column label="属性数量" align="center" prop="attributeCount" />
-      <el-table-column label="参数数量" align="center" prop="paramCount" />
-      <el-table-column label="备注" align="center" prop="remark" />
+    <el-table v-loading="loading" :data="attributeCategoryList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="分类属性ID" align="center" prop="id"/>
+      <el-table-column label="分类ID" align="center" prop="categoryId"/>
+      <el-table-column label="分类属性名" align="center" prop="name"/>
+      <el-table-column label="属性数量" align="center" prop="attributeCount"/>
+      <el-table-column label="参数数量" align="center" prop="paramCount"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="是否删除" align="center" prop="deleted" width="100">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
+                     :inactive-value=getActiveValue(false)
+                     @change="deletedSwitchChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -91,19 +112,21 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['product:categoryAttribute:edit']"
-          >修改</el-button>
+            v-hasPermi="['product:attributeCategory:edit']"
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['product:categoryAttribute:remove']"
-          >删除</el-button>
+            v-hasPermi="['product:attributeCategory:remove']"
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -115,17 +138,20 @@
     <!-- 添加或修改产品属性分类对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="属性名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入属性名称" />
+        <el-form-item label="分类ID" prop="categoryId">
+          <el-input v-model="form.categoryId" placeholder="请输入分类ID"/>
+        </el-form-item>
+        <el-form-item label="分类属性名" prop="name">
+          <el-input v-model="form.name" placeholder="请输入分类属性名"/>
         </el-form-item>
         <el-form-item label="属性数量" prop="attributeCount">
-          <el-input v-model="form.attributeCount" placeholder="请输入属性数量" />
+          <el-input v-model="form.attributeCount" placeholder="请输入属性数量"/>
         </el-form-item>
         <el-form-item label="参数数量" prop="paramCount">
-          <el-input v-model="form.paramCount" placeholder="请输入参数数量" />
+          <el-input v-model="form.paramCount" placeholder="请输入参数数量"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -137,10 +163,25 @@
 </template>
 
 <script>
-import { listCategoryAttribute, getCategoryAttribute, delCategoryAttribute, addCategoryAttribute, updateCategoryAttribute } from "@/api/product/categoryAttribute";
+import {
+  listAttributeCategory,
+  getAttributeCategory,
+  delAttributeCategory,
+  addAttributeCategory,
+  addListAttributeCategory,
+  listPageAttributeCategory,
+  attributeCategoryListByIds,
+  attributeCategoryListAll,
+  deleteAttributeCategory,
+  updateAttributeCategory,
+  updateListAttributeCategory
+}
+  from
+    "@/api/product/attributeCategory";
+import {deletedSwitchChange} from "@/api/product/attributeCategory";
 
 export default {
-  name: "CategoryAttribute",
+  name: "AttributeCategory",
   data() {
     return {
       // 遮罩层
@@ -156,7 +197,7 @@ export default {
       // 总条数
       total: 0,
       // 产品属性分类表格数据
-      categoryAttributeList: [],
+      attributeCategoryList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -165,20 +206,25 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        categoryId: null,
         name: null,
         attributeCount: null,
         paramCount: null,
+        deleted: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
+          {required: true, message: "创建时间不能为空", trigger: "blur"}
         ],
         updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
+          {required: true, message: "更新时间不能为空", trigger: "blur"}
         ],
+        deleted: [
+          {required: true, message: "是否删除不能为空", trigger: "blur"}
+        ]
       }
     };
   },
@@ -189,8 +235,8 @@ export default {
     /** 查询产品属性分类列表 */
     getList() {
       this.loading = true;
-      listCategoryAttribute(this.queryParams).then(response => {
-        this.categoryAttributeList = response.rows;
+      listAttributeCategory(this.queryParams).then(response => {
+        this.attributeCategoryList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -204,6 +250,7 @@ export default {
     reset() {
       this.form = {
         id: null,
+        categoryId: null,
         name: null,
         attributeCount: null,
         paramCount: null,
@@ -211,7 +258,8 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        deleted: null
       };
       this.resetForm("form");
     },
@@ -228,8 +276,26 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
+    },
+    // 状态修改
+    deletedSwitchChange(row) {
+      let text = row.deleted === 1 ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return deletedSwitchChange(row.id, row.deleted)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.deleted = row.deleted === 1 ? 0 : 1
+      })
+    },
+    getActiveValue(value) {
+      if (value) {
+        return Number("1")
+      } else {
+        return Number("0")
+      }
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -241,7 +307,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getCategoryAttribute(id).then(response => {
+      getAttributeCategory(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改产品属性分类";
@@ -252,13 +318,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateCategoryAttribute(this.form).then(response => {
+            updateAttributeCategory(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addCategoryAttribute(this.form).then(response => {
+            addAttributeCategory(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -270,18 +336,19 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除产品属性分类编号为"' + ids + '"的数据项？').then(function() {
-        return delCategoryAttribute(ids);
+      this.$modal.confirm('是否确认删除产品属性分类编号为"' + ids + '"的数据项？').then(function () {
+        return delAttributeCategory(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('product/categoryAttribute/export', {
+      this.download('product/attributeCategory/export', {
         ...this.queryParams
-      }, `categoryAttribute_${new Date().getTime()}.xlsx`)
+      }, `attributeCategory_${new Date().getTime()}.xlsx`)
     }
   }
 };

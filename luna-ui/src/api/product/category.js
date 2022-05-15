@@ -120,7 +120,7 @@ export function delCategory(id) {
 }
 
 // 条件逻辑删除产品分类
-export function delCategory(data) {
+export function deleteCategory(data) {
   return request({
     url: '/product/category/delete',
     method: 'delete',

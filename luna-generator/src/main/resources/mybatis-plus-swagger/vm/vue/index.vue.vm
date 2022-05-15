@@ -392,14 +392,12 @@
     listPage${BusinessName},
           ${businessName}ListByIds,
           ${businessName}ListAll,
-    delete${BusinessName}
-
-  (data),
-      update${BusinessName},
-      updateList${BusinessName}
+    delete${BusinessName},
+    update${BusinessName},
+    updateList${BusinessName}
   }
-  from
-  "@/api/${moduleName}/${businessName}";
+    from
+        "@/api/${moduleName}/${businessName}";
       #foreach ($column in $columns)
           #if($column.htmlType == "switch")
           import {${column.javaField}SwitchChange} from "@/api/${moduleName}/${businessName}";

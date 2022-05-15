@@ -178,7 +178,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     /**
      * 逻辑删除${functionName}信息
      *
-     * @param ${ClassName} ${className}主键
+     * @param ${ClassName} ${className} 主键
      * @return 结果
      */
         #if($table.sub)
