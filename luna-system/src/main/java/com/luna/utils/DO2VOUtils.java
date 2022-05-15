@@ -62,7 +62,8 @@ public class DO2VOUtils {
         categoryVO.setParams(category.getParams());
         return categoryVO;
     }
-    public static CategoryCascadeVO Category2CategoryCascadeVO(Category category) {
+
+    public static CategoryCascadeVO category2CategoryCascadeVO(Category category) {
         if (category == null) {
             return null;
         }

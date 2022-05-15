@@ -72,13 +72,15 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     public List<${ClassName}> selectAllList(${ClassName} ${className}) {
 
         QueryWrapper<${ClassName}> queryWrapper = new QueryWrapper<${ClassName}>(${className});
-        queryWrapper.last("limit 100");
         ArrayList<${ClassName}> list = Lists.newArrayList();
+        Page<${ClassName}> of = Page.of(0, 2000);
         while (true) {
-            List<${ClassName}> ${className}s = ${className}Mapper.selectList(queryWrapper);
+            Page<${ClassName}> ${className}Page = ${className}Mapper.selectList(of, queryWrapper);
+            List<${ClassName}> ${className}s = ${className}Page.getRecords();
             if (CollectionUtils.isEmpty(${className}s)) {
                 break;
             }
+            of.setCurrent(of.getCurrent() + 1);
             list.addAll(${className}s);
         }
 

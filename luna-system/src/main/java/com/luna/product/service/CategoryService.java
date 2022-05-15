@@ -1,18 +1,19 @@
 package com.luna.product.service;
 
-import java.util.List;
+import java.util.*;
 
+import com.github.pagehelper.PageInfo;
 import com.luna.common.annotation.DataSource;
 import com.luna.common.enums.DataSourceType;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.PageUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.vo.CategoryCascadeVO;
 import com.luna.product.domain.vo.CategoryVO;
 import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -52,8 +53,17 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      * @param category 产品分类
      * @return 产品分类
      */
-    public List<Category> selectCategoryList(Category category) {
-        return categoryMapper.selectCategoryList(category);
+    public PageInfo selectCategoryList(Category category) {
+        PageUtils.startPage();
+        List<Category> categories = categoryMapper.selectCategoryList(category);
+        PageInfo pageInfo = new PageInfo<>(categories);
+        List<CategoryVO> categoryVOS = categories.stream().map(record -> {
+            String parentName =
+                Optional.ofNullable(categoryMapper.selectCategoryById(record.getParentId())).map(Category::getName).orElse(StringUtils.EMPTY);
+            return DO2VOUtils.category2CategoryVO(record, parentName);
+        }).collect(Collectors.toList());
+        pageInfo.setList(categoryVOS);
+        return pageInfo;
     }
 
     /**
@@ -65,13 +75,15 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
     public List<Category> selectAllList(Category category) {
 
         QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>(category);
-        queryWrapper.last("limit 100");
         ArrayList<Category> list = Lists.newArrayList();
+        Page<Category> of = Page.of(0, 2000);
         while (true) {
-            List<Category> categorys = categoryMapper.selectList(queryWrapper);
+            Page<Category> categoryPage = categoryMapper.selectPage(of, queryWrapper);
+            List<Category> categorys = categoryPage.getRecords();
             if (CollectionUtils.isEmpty(categorys)) {
                 break;
             }
+            of.setCurrent(of.getCurrent() + 1);
             list.addAll(categorys);
         }
 
@@ -177,6 +189,107 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
 
     /**
      * 及联查询分类列表
+     *
+     * @param category
+     * @return
+     */
+    public List<CategoryCascadeVO> getMapCategoryCascadeVO(Category category) {
+        // 查询所有
+        List<Category> categories = selectAllList(category);
+
+        // 利用Map的key不重复作为父级ID
+        Map<Long, List<Category>> listMap = initMap(categories);
+
+        return getThirdCategoryCascadeVO(listMap);
+    }
+
+    public List<CategoryCascadeVO> getSecondCategoryCascadeVO(Map<Long, List<Category>> listMap) {
+        List<Category> categories = listMap.get(0L);
+        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO).collect(Collectors.toList());
+
+        for (CategoryCascadeVO categoryCascadeVO : cascadeVOList) {
+            List<CategoryCascadeVO> cascadeVOS = listMap.get(categoryCascadeVO.getId()).stream().map(DO2VOUtils::category2CategoryCascadeVO)
+                .sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo))).collect(Collectors.toList());
+            categoryCascadeVO.setChildCategory(cascadeVOS);
+        }
+
+        return cascadeVOList;
+    }
+
+    public List<CategoryCascadeVO> getThirdCategoryCascadeVO(Map<Long, List<Category>> listMap) {
+        List<CategoryCascadeVO> cascadeVOList = getSecondCategoryCascadeVO(listMap);
+
+        for (CategoryCascadeVO categoryCascadeVO : cascadeVOList) {
+            if (CollectionUtils.isEmpty(categoryCascadeVO.getChildCategory())) {
+                continue;
+            }
+            List<CategoryCascadeVO> cascadeVOS = listMap.get(categoryCascadeVO.getId()).stream().map(DO2VOUtils::category2CategoryCascadeVO)
+                .sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo))).collect(Collectors.toList());
+            categoryCascadeVO.setChildCategory(cascadeVOS);
+        }
+
+        return cascadeVOList;
+    }
+
+    public Map<Long, List<Category>> initMap(List<Category> categories) {
+        Map<Long, List<Category>> map = new HashMap<>();
+        // 进行封装
+        for (Category category : categories) {
+            Long key = category.getParentId();
+            if (map.containsKey(key)) {
+                // 存在
+                List<Category> list = map.get(key);
+                list.add(category);
+            } else {
+                // 不存在
+                List<Category> list = new ArrayList<>();
+                list.add(category);
+                map.put(key, list);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 及联查询分类列表
+     *
+     * @param category
+     * @return
+     */
+    public List<CategoryCascadeVO> getBestCategoryCascadeVO(Category category) {
+        Long categoryId = Optional.ofNullable(category.getParentId()).orElse(0L);
+        Category categoryTemp = selectCategoryById(categoryId);
+        Integer level = Optional.ofNullable(categoryTemp).map(Category::getLevel).orElse(1);
+        // 查零级
+        category.setLevel(level);
+        List<Category> categories = selectAllList(category);
+        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO).collect(Collectors.toList());
+
+        // 查一级
+        category.setLevel(level + 1);
+        List<Category> categoriesLevelOne = selectAllList(category);
+        for (CategoryCascadeVO categoryCascadeVO : cascadeVOList) {
+            List<CategoryCascadeVO> collect = categoriesLevelOne.stream().filter(e -> e.getParentId().equals(categoryCascadeVO.getId()))
+                .map(DO2VOUtils::category2CategoryCascadeVO)
+                .sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo))).collect(Collectors.toList());
+            categoryCascadeVO.setChildCategory(collect);
+        }
+        // 查二级
+        category.setLevel(level + 2);
+        List<Category> categoriesLevelTwo = selectAllList(category);
+        for (CategoryCascadeVO categoryCascadeVO : cascadeVOList) {
+            for (CategoryCascadeVO cascadeVO : categoryCascadeVO.getChildCategory()) {
+                List<CategoryCascadeVO> collect = categoriesLevelTwo.stream().filter(e -> e.getParentId().equals(cascadeVO.getId()))
+                    .map(DO2VOUtils::category2CategoryCascadeVO)
+                    .sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo))).collect(Collectors.toList());
+                cascadeVO.setChildCategory(collect);
+            }
+        }
+        return cascadeVOList;
+    }
+
+    /**
+     * 及联查询分类列表
      * 
      * @param category
      * @return
@@ -185,11 +298,11 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         Long categoryId = Optional.ofNullable(category.getParentId()).orElse(0L);
         category.setParentId(categoryId);
         ArrayList<CategoryCascadeVO> arrayList = Lists.newArrayList();
-        List<Category> categories = categoryMapper.selectCategoryList(category);
+        List<Category> categories = selectAllList(category);
         if (CollectionUtils.isEmpty(categories)) {
             return arrayList;
         }
-        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::Category2CategoryCascadeVO).collect(Collectors.toList());
+        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO).collect(Collectors.toList());
         arrayList.addAll(cascadeVOList);
         for (CategoryCascadeVO categoryTemp : cascadeVOList) {
             Category categoryChild = new Category();
@@ -198,6 +311,10 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
             if (CollectionUtils.isEmpty(childCategory)) {
                 continue;
             }
+            // 排序
+            childCategory =
+                childCategory.stream().sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo)))
+                    .collect(Collectors.toList());
             categoryTemp.setChildCategory(childCategory);
         }
         return arrayList;

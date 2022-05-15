@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.PageInfo;
 import com.luna.product.domain.vo.CategoryVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,9 +49,10 @@ public class CategoryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:category:list')")
     @GetMapping("/list")
     public TableDataInfo list(Category category) {
-        startPage();
-        List<Category> list = categoryService.selectCategoryList(category);
-        return getDataTable(list);
+        PageInfo pageInfo = categoryService.selectCategoryList(category);
+        TableDataInfo dataTable = getDataTable(pageInfo.getList());
+        dataTable.setTotal(pageInfo.getTotal());
+        return dataTable;
     }
 
     /**
@@ -60,7 +62,7 @@ public class CategoryController extends BaseController {
     @ApiOperation(value = "查询产品分类及联列表")
     @GetMapping("/cascadeList")
     public AjaxResult categoryCascade(Category category) {
-        return AjaxResult.success(categoryService.getCategoryCascadeVO(category));
+        return AjaxResult.success(categoryService.getBestCategoryCascadeVO(category));
     }
 
     /**
@@ -104,7 +106,7 @@ public class CategoryController extends BaseController {
     @Log(title = "产品分类", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Category category) {
-        List<Category> list = categoryService.selectCategoryList(category);
+        List<Category> list = categoryService.selectAllList(category);
         ExcelUtil<Category> util = new ExcelUtil<Category>(Category.class);
         util.exportExcel(response, list, "产品分类数据");
     }

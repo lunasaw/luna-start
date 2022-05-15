@@ -365,7 +365,7 @@ export default {
     /** 查询产品分类列表 */
     getList() {
       this.loading = true;
-      listPageCategory(this.queryParams).then(response => {
+      listCategory(this.queryParams).then(response => {
         this.categoryList = response.rows;
         this.total = response.total;
         this.loading = false;

@@ -143,11 +143,11 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="属性ID" align="center" prop="id"/>
       <el-table-column label="属性所属分类ID" align="center" prop="productAttributeCategoryId"/>
-      <el-table-column label="属性名称" align="center" prop="name"/>
+      <el-table-column label="属性名称" align="center" prop="name" sortable/>
       <el-table-column label="属性选择类型" align="center" prop="selectType"/>
       <el-table-column label="属性录入方式" align="center" prop="inputType"/>
       <el-table-column label="可选值列表" align="center" prop="inputList"/>
-      <el-table-column label="排序" align="center" prop="sort"/>
+      <el-table-column label="排序" align="center" prop="sort" sortable/>
       <el-table-column label="分类筛选样式" align="center" prop="filterType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.tb_product_category_select" :value="scope.row.filterType"/>
