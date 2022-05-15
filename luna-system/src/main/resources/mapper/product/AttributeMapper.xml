@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.AttributeMapper">
+
+    <resultMap type="Attribute" id="AttributeResult">
+        <result property="id" column="id"/>
+        <result property="productAttributeCategoryId" column="product_attribute_category_id"/>
+        <result property="name" column="name"/>
+        <result property="selectType" column="select_type"/>
+        <result property="inputType" column="input_type"/>
+        <result property="inputList" column="input_list"/>
+        <result property="sort" column="sort"/>
+        <result property="filterType" column="filter_type"/>
+        <result property="icon" column="icon"/>
+        <result property="searchType" column="search_type"/>
+        <result property="relatedStatus" column="related_status"/>
+        <result property="handAddStatus" column="hand_add_status"/>
+        <result property="attrType" column="attr_type"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectAttributeVo">
+        select id,
+               product_attribute_category_id,
+               name,
+               select_type,
+               input_type,
+               input_list,
+               sort,
+               filter_type,
+               icon,
+               search_type,
+               related_status,
+               hand_add_status,
+               attr_type,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_attribute
+    </sql>
+
+    <select id="selectAttributeList" parameterType="Attribute" resultMap="AttributeResult">
+        <include refid="selectAttributeVo"/>
+        <where>
+            <if test="productAttributeCategoryId != null ">and product_attribute_category_id = #{productAttributeCategoryId}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="selectType != null ">and select_type = #{selectType}</if>
+            <if test="inputType != null ">and input_type = #{inputType}</if>
+            <if test="inputList != null  and inputList != ''">and input_list = #{inputList}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="filterType != null ">and filter_type = #{filterType}</if>
+            <if test="icon != null  and icon != ''">and icon = #{icon}</if>
+            <if test="searchType != null ">and search_type = #{searchType}</if>
+            <if test="relatedStatus != null ">and related_status = #{relatedStatus}</if>
+            <if test="handAddStatus != null ">and hand_add_status = #{handAddStatus}</if>
+            <if test="attrType != null ">and attr_type = #{attrType}</if>
+            <if test="deleted != null ">and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectAttributeById" parameterType="Long" resultMap="AttributeResult">
+        <include refid="selectAttributeVo"/>
+        where id = #{id}
+        limit 1
+    </select>
+
+    <insert id="insertAttribute" parameterType="Attribute" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_attribute
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productAttributeCategoryId != null">product_attribute_category_id,</if>
+            <if test="name != null">name,</if>
+            <if test="selectType != null">select_type,</if>
+            <if test="inputType != null">input_type,</if>
+            <if test="inputList != null">input_list,</if>
+            <if test="sort != null">sort,</if>
+            <if test="filterType != null">filter_type,</if>
+            <if test="icon != null">icon,</if>
+            <if test="searchType != null">search_type,</if>
+            <if test="relatedStatus != null">related_status,</if>
+            <if test="handAddStatus != null">hand_add_status,</if>
+            <if test="attrType != null">attr_type,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productAttributeCategoryId != null">#{productAttributeCategoryId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="selectType != null">#{selectType},</if>
+            <if test="inputType != null">#{inputType},</if>
+            <if test="inputList != null">#{inputList},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="filterType != null">#{filterType},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="searchType != null">#{searchType},</if>
+            <if test="relatedStatus != null">#{relatedStatus},</if>
+            <if test="handAddStatus != null">#{handAddStatus},</if>
+            <if test="attrType != null">#{attrType},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAttribute" parameterType="Attribute">
+        update tb_pms_attribute
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productAttributeCategoryId != null">product_attribute_category_id = #{productAttributeCategoryId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="selectType != null">select_type = #{selectType},</if>
+            <if test="inputType != null">input_type = #{inputType},</if>
+            <if test="inputList != null">input_list = #{inputList},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="filterType != null">filter_type = #{filterType},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="searchType != null">search_type = #{searchType},</if>
+            <if test="relatedStatus != null">related_status = #{relatedStatus},</if>
+            <if test="handAddStatus != null">hand_add_status = #{handAddStatus},</if>
+            <if test="attrType != null">attr_type = #{attrType},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttributeById" parameterType="Long">
+        delete
+        from tb_pms_attribute
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAttributeByIds" parameterType="String">
+        delete from tb_pms_attribute where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -209,10 +209,10 @@ public class VelocityUtils {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, className);
         }
         if (template.contains("domainvo.java.vm") && VmTypeEnum.MYBATIS_PLUS_SWAGGER.equals(vmTypeEnum)) {
-            fileName = StringUtils.format("{}/domain/vo/{}.java", javaPath, genTable.getSubTable().getClassName());
+            fileName = StringUtils.format("{}/domain/vo/{}.java", javaPath, className + "VO");
         }
         if (template.contains("do2voutils.java.vm") && VmTypeEnum.MYBATIS_PLUS_SWAGGER.equals(vmTypeEnum)) {
-            fileName = StringUtils.format("{}/utils/{}.java", javaPath, genTable.getSubTable().getClassName());
+            fileName = StringUtils.format("{}/utils/DO2VOUtils.java", javaPath);
         }
         if (template.contains("sub-domain.java.vm") && StringUtils.equals(GenConstants.TPL_SUB, genTable.getTplCategory())) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, genTable.getSubTable().getClassName());

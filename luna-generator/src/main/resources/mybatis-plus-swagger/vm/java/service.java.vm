@@ -57,9 +57,9 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
      * @return ${functionName}
      */
     public PageInfo select${ClassName}List(${ClassName} ${className}) {
-        List<${ClassName}> list ${className}Mapper.select${ClassName}List(${className});
+        List<${ClassName}> list = ${className}Mapper.select${ClassName}List(${className});
         PageInfo pageInfo = new PageInfo<>(list);
-        return pageInfo
+        return pageInfo;
     }
 
 
@@ -122,20 +122,19 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
      * @param page 分页参数
      * @return ${functionName}
      */
-    public IPage<${ClassName}> selectVOList(IPage<${ClassName}> page, ${ClassName} ${className}) {
+    public IPage<${ClassName}VO> selectVOList(IPage<${ClassName}> page, ${ClassName} ${className}) {
         IPage<${ClassName}> ${className}Page = selectList(page, ${className});
         List<${ClassName}VO> list = new ArrayList<>();
         List<${ClassName}> records = ${className}Page.getRecords();
 
         for (${ClassName} record:
                           records) {
-
                 ${ClassName}VO ${className}VO = DO2VOUtils .${className}2 ${ClassName}VO(record);
             list.add(${className}VO);
         }
-        Page<${ClassName}> result = new Page<>(${className}Page.getCurrent(), ${className}Page.getSize(), ${className}Page.getTotal());
+        Page<${ClassName}VO> result = new Page<>(${className}Page.getCurrent(), ${className}Page.getSize(), ${className}Page.getTotal());
         result.setRecords(list);
-        return list;
+        return result;
     }
 
 
@@ -204,7 +203,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     /**
      * 逻辑删除${functionName}信息
      *
-     * @param ${ClassName} ${className} 主键
+     * @param ${className} ${className} 主键
      * @return 结果
      */
         #if($table.sub)

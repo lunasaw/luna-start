@@ -10,7 +10,7 @@
           :show-all-levels="false" clearable filterable
           @keyup.enter.native="handleQuery"></el-cascader>
       </el-form-item>
-      <el-form-item label="分类属性名" prop="name">
+      <el-form-item label="分类属性名" prop="name" label-width="100px">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入分类属性名"

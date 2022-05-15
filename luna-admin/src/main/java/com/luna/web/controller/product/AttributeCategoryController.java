@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.PageUtils;
 import com.luna.product.domain.vo.AttributeCategoryVO;
 import io.swagger.annotations.Api;
