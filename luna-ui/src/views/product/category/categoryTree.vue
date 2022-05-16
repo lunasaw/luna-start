@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px" label-position="left">
       <el-form-item label="上级分类" prop="parentId">
         <el-cascader
           v-model="queryParams.parentId"
@@ -86,207 +87,38 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['product:category:add']"
-        >新增
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['product:category:edit']"
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['product:category:remove']"
-        >删除
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['product:category:export']"
-        >导出
-        </el-button>
-        <el-button
-          type="info"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          @click="handleEdit"
-          v-hasPermi="['product:category:list']"
-        >维护
-        </el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+
+    <el-row :gutter="10" class="mb8 ml5">
+      <el-tree
+        :props="props" :data="cascadeList" node-key="id"
+        show-checkbox
+        :default-expand-all=false
+        :expand-on-click-node=false
+        :check-on-click-node=true
+        @check-change="handleCheckChange">
+
+    <span class="custom-tree-node fixed-width right" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+        <span>
+          <el-button v-if="node.level <= 2"
+                     type="text"
+                     size="mini"
+                     @click="() => append(data)">
+            添加
+          </el-button>
+          <el-button v-if="node.childNodes.length === 0"
+                     type="text"
+                     size="mini"
+                     @click="() => remove(node, data)">
+            删除
+          </el-button>
+        </span>
+      </span>
+      </el-tree>
+
     </el-row>
-
-    <el-table v-loading="loading" :data="categoryList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="分类ID" align="center" prop="id"/>
-      <el-table-column label="上级分类" align="center" prop="parentName"/>
-      <el-table-column label="分类名称" align="center" prop="name"/>
-      <el-table-column label="分类级别" align="center" prop="level">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.tb_product_level" :value="scope.row.level"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="产品数量" align="center" prop="productCount"/>
-      <el-table-column label="分类属性单位" align="center" prop="productUnit"/>
-      <el-table-column label="显示在导航" align="center" prop="navStatus" width="100" sortable>
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.navStatus" :active-value=getActiveValue(true)
-                     :inactive-value=getActiveValue(false)
-                     @change="navStatusSwitchChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="显示状态" align="center" prop="showStatus" width="100" sortable>
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.showStatus" :active-value=getActiveValue(true)
-                     :inactive-value=getActiveValue(false)
-                     @change="showStatusSwitchChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="排序" align="center" prop="sort" sortable/>
-      <el-table-column label="图标" align="center" prop="icon" width="100">
-        <template slot-scope="scope">
-          <image-preview :src="scope.row.icon" :width="50" :height="50"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="关键词" align="center" prop="keywords"/>
-      <el-table-column label="查看下级" align="center" prop="keywords">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-arrow-down"
-            @click="selectLowerLevel(scope.row)"
-            v-hasPermi="['product:category:list']"
-          >查看下级
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="描述" align="center" prop="description"/>
-      <el-table-column label="备注" align="center" prop="remark"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['product:category:edit']"
-          >修改
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['product:category:remove']"
-          >删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改产品分类对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="上级分类" prop="parentId">
-          <el-cascader
-            v-model="form.parentId"
-            :options="cascadeList"
-            :props="{ multiple: false, emitPath: false, checkStrictly: true,
-           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
-            :show-all-levels="true" clearable filterable
-            @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
-        </el-form-item>
-        <el-form-item label="分类名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入分类名称"/>
-        </el-form-item>
-        <el-form-item label="分类级别" prop="level">
-          <el-select v-model="form.level" placeholder="请选择分类级别" disabled>
-            <el-option
-              v-for="dict in dict.type.tb_product_level"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="产品数量" prop="productCount">
-          <el-input v-model="form.productCount" placeholder="请输入产品数量"/>
-        </el-form-item>
-        <el-form-item label="分类属性单位" prop="productUnit">
-          <el-input v-model="form.productUnit" placeholder="请输入分类属性单位"/>
-        </el-form-item>
-        <el-form-item label="显示在导航" prop="navStatus">
-          <el-switch v-model="form.navStatus" :active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="显示状态" prop="showStatus">
-          <el-switch v-model="form.showStatus" :active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" placeholder="请输入排序"/>
-        </el-form-item>
-        <el-form-item label="图标">
-          <image-upload v-model="form.icon"/>
-        </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="form.keywords" placeholder="请输入关键词"/>
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -327,6 +159,11 @@ export default {
       categoryList: [],
       // 及联列表
       cascadeList: [],
+      props: {
+        children: 'childCategory',
+        label: 'name',
+        value: 'id',
+      },
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -371,6 +208,16 @@ export default {
     this.getCategoryCascadeList();
   },
   methods: {
+    append(data) {
+      console.log(data)
+    },
+
+    remove(node, data) {
+      console.log(data)
+    },
+    handleCheckChange() {
+      console.log(this.ids);
+    },
     /** 查询产品分类列表 */
     getList() {
       this.loading = true;

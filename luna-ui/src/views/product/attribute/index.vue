@@ -181,7 +181,7 @@
     <el-table v-loading="loading" :data="attributeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="属性ID" align="center" prop="id" sortable/>
-      <el-table-column label="属性所属分类ID" align="center" prop="productAttributeCategoryName"/>
+      <el-table-column label="属性所属分类" align="center" prop="productAttributeCategoryName"/>
       <el-table-column label="属性名称" align="center" prop="name" sortable/>
       <el-table-column label="属性选择类型" align="center" prop="selectType">
         <template slot-scope="scope">
