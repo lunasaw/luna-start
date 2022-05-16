@@ -1,4 +1,4 @@
-package com.luna.product.controller;
+package com.luna.web.controller.product;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;

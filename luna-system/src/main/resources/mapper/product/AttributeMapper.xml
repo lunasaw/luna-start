@@ -52,12 +52,13 @@
     <select id="selectAttributeList" parameterType="Attribute" resultMap="AttributeResult">
         <include refid="selectAttributeVo"/>
         <where>
+            <if test="id != null ">and id = #{id}</if>
             <if test="productAttributeCategoryId != null ">and product_attribute_category_id = #{productAttributeCategoryId}</if>
             <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
             <if test="selectType != null ">and select_type = #{selectType}</if>
             <if test="inputType != null ">and input_type = #{inputType}</if>
             <if test="inputList != null  and inputList != ''">and input_list = #{inputList}</if>
-            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="sort != null ">and sort &gt;= #{sort}</if>
             <if test="filterType != null ">and filter_type = #{filterType}</if>
             <if test="icon != null  and icon != ''">and icon = #{icon}</if>
             <if test="searchType != null ">and search_type = #{searchType}</if>
@@ -65,6 +66,7 @@
             <if test="handAddStatus != null ">and hand_add_status = #{handAddStatus}</if>
             <if test="attrType != null ">and attr_type = #{attrType}</if>
             <if test="deleted != null ">and deleted = #{deleted}</if>
+            <if test="createTime != null ">and create_time &gt;= #{createTime}</if>
         </where>
     </select>
 
