@@ -81,14 +81,16 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
     public List<AttributeCategory> selectAllList(AttributeCategory attributeCategory) {
 
         QueryWrapper<AttributeCategory> queryWrapper = new QueryWrapper<AttributeCategory>(attributeCategory);
-        queryWrapper.last("limit 100");
         ArrayList<AttributeCategory> list = Lists.newArrayList();
+        Page<AttributeCategory> of = Page.of(0, 500);
         while (true) {
-            List<AttributeCategory> attributeCategorys = attributeCategoryMapper.selectList(queryWrapper);
-            if (CollectionUtils.isEmpty(attributeCategorys)) {
+            Page<AttributeCategory> categoryPage = attributeCategoryMapper.selectPage(of, queryWrapper);
+            List<AttributeCategory> categorys = categoryPage.getRecords();
+            if (CollectionUtils.isEmpty(categorys)) {
                 break;
             }
-            list.addAll(attributeCategorys);
+            of.setCurrent(of.getCurrent() + 1);
+            list.addAll(categorys);
         }
 
         return list;

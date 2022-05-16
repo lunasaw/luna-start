@@ -1,17 +1,19 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="属性所属分类ID" prop="productAttributeCategoryId">
-        <el-input
-          v-model="queryParams.productAttributeCategoryId"
-          placeholder="请输入属性所属分类ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px" label-position="right">
+      <el-form-item label="属性分类" prop="productAttributeCategoryId">
+        <el-select v-model="queryParams.productAttributeCategoryId" filterable placeholder="请选择">
+          <el-option
+            v-for="item in this.categoryAttributeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="属性名称" prop="name">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.name" s
           placeholder="请输入属性名称"
           clearable
           @keyup.enter.native="handleQuery"
@@ -27,6 +29,7 @@
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input
+          type="number"
           v-model="queryParams.sort"
           placeholder="请输入排序"
           clearable
@@ -53,7 +56,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="相同属性产品是否关联" prop="relatedStatus">
+      <el-form-item label="相同属性产品是否关联" prop="relatedStatus" label-width="160px">
         <el-select v-model="queryParams.relatedStatus" placeholder="请选择相同属性产品是否关联" clearable>
           <el-option
             v-for="dict in dict.type.tb_product_attribute_relation"
@@ -63,7 +66,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="支持手动新增" prop="handAddStatus">
+      <el-form-item label="支持手动新增" prop="handAddStatus" label-width="110px">
         <el-select v-model="queryParams.handAddStatus" placeholder="请选择支持手动新增" clearable>
           <el-option
             v-for="dict in dict.type.tb_product_attribute_support_normal"
@@ -73,7 +76,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="属性的类型" prop="attrType">
+      <el-form-item label="属性类型" prop="attrType" label-width="110px">
         <el-select v-model="queryParams.attrType" placeholder="请选择属性的类型" clearable>
           <el-option
             v-for="dict in dict.type.tb_attribute_type"
@@ -142,7 +145,7 @@
     <el-table v-loading="loading" :data="attributeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="属性ID" align="center" prop="id"/>
-      <el-table-column label="属性所属分类ID" align="center" prop="productAttributeCategoryId"/>
+      <el-table-column label="属性所属分类" align="center" prop="productAttributeCategoryName"/>
       <el-table-column label="属性名称" align="center" prop="name" sortable/>
       <el-table-column label="属性选择类型" align="center" prop="selectType"/>
       <el-table-column label="属性录入方式" align="center" prop="inputType"/>
@@ -211,9 +214,16 @@
 
     <!-- 添加或修改商品属性参数对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="属性所属分类ID" prop="productAttributeCategoryId">
-          <el-input v-model="form.productAttributeCategoryId" placeholder="请输入属性所属分类ID"/>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
+        <el-form-item label="属性所属分类" prop="productAttributeCategoryId">
+          <el-select v-model="queryParams.productAttributeCategoryId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in this.categoryAttributeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="属性名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入属性名称"/>
@@ -247,7 +257,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="相同属性产品是否关联">
+        <el-form-item label="相同属性产品是否关联" label-width="160px">
           <el-radio-group v-model="form.relatedStatus">
             <el-radio
               v-for="dict in dict.type.tb_product_attribute_relation"
@@ -257,7 +267,7 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="支持手动新增">
+        <el-form-item label="支持手动新增" label-width="100px">
           <el-radio-group v-model="form.handAddStatus">
             <el-radio
               v-for="dict in dict.type.tb_product_attribute_support_normal"
@@ -267,7 +277,7 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="属性的类型" prop="attrType">
+        <el-form-item label="属性类型" prop="attrType">
           <el-select v-model="form.attrType" placeholder="请选择属性的类型">
             <el-option
               v-for="dict in dict.type.tb_attribute_type"
@@ -306,6 +316,7 @@ import {
   from
     "@/api/product/attribute";
 import {deletedSwitchChange} from "@/api/product/attribute";
+import {attributeCategoryListAll} from "@/api/product/attributeCategory";
 
 export default {
   name: "Attribute",
@@ -326,6 +337,7 @@ export default {
       total: 0,
       // 商品属性参数表格数据
       attributeList: [],
+      categoryAttributeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -335,6 +347,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         productAttributeCategoryId: null,
+        productAttributeCategoryName: null,
         name: null,
         selectType: null,
         inputType: null,
@@ -366,8 +379,19 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryAttributeList();
   },
   methods: {
+    getCategoryAttributeList() {
+      let name = this.queryParams.productAttributeCategoryName
+      let query = {
+        name: name
+      }
+      attributeCategoryListAll(query).then(res => {
+        this.categoryAttributeList = res.data;
+        console.log(res)
+      });
+    },
     /** 查询商品属性参数列表 */
     getList() {
       this.loading = true;

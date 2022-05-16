@@ -103,11 +103,12 @@ public class ${ClassName}Controller extends BaseController {
     /**
      * ids批量查询品牌列表
      */
-    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')" )
-    @ApiOperation(value = "ids查询${functionName}列表" )
-    @GetMapping("/listByIds" )
-    public List<${ClassName}> listByIds(List<Long> ids) {
-        return ${className}Service.select${ClassName}ByIds(ids);
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
+    @ApiOperation(value = "ids查询${functionName}列表")
+    @GetMapping("/listByIds")
+    public AjaxResultlistByIds(List<Long> ids) {
+        List<${ClassName}> list = ${className}Service.select${ClassName}ByIds(ids);
+        return AjaxResult.success(list);
     }
 
     /**

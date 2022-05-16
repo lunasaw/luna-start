@@ -21,6 +21,10 @@ public class AttributeVO extends BaseEntity {
     @Excel(name = "属性所属分类ID")
     private Long              productAttributeCategoryId;
 
+    /** 属性所属分类ID */
+    @Excel(name = "属性所属分类名称")
+    private String            productAttributeCategoryName;
+
     /** 属性名称 */
     @Excel(name = "属性名称")
     private String            name;

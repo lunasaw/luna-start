@@ -4,9 +4,15 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.AttributeCategory;
+import com.luna.product.mapper.AttributeCategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import org.apache.commons.compress.utils.Lists;
@@ -28,7 +34,10 @@ import com.luna.product.utils.DO2VOUtils;
 @Service
 public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     @Autowired
-    private AttributeMapper attributeMapper;
+    private AttributeMapper         attributeMapper;
+
+    @Autowired
+    private AttributeCategoryMapper attributeCategoryMapper;
 
     /**
      * 查询商品属性参数
@@ -48,7 +57,13 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      */
     public PageInfo selectAttributeList(Attribute attribute) {
         List<Attribute> list = attributeMapper.selectAttributeList(attribute);
+        List<AttributeVO> attributeVOList = list.stream().map(record -> {
+            AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
+            String name = Optional.ofNullable(attributeCategory).map(AttributeCategory::getName).orElse(StringUtils.EMPTY);
+            return DO2VOUtils.attribute2AttributeVO(record, name);
+        }).collect(Collectors.toList());
         PageInfo pageInfo = new PageInfo<>(list);
+        pageInfo.setList(attributeVOList);
         return pageInfo;
     }
 
@@ -117,8 +132,8 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         List<Attribute> records = attributePage.getRecords();
 
         for (Attribute record : records) {
-
-            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record);
+            AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
+            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, attributeCategory.getName());
             list.add(attributeVO);
         }
         Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());

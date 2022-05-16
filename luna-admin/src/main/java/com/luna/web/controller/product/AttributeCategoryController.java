@@ -77,9 +77,9 @@ public class AttributeCategoryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attributeCategory:list')")
     @ApiOperation(value = "查询全部产品属性分类列表" )
     @GetMapping("/listAll" )
-    public List<AttributeCategory> listAll(AttributeCategory attributeCategory) {
+    public AjaxResult listAll(AttributeCategory attributeCategory) {
         List<AttributeCategory> list = attributeCategoryService.selectAllList(attributeCategory);
-        return list;
+        return AjaxResult.success(list);
     }
 
     /**

@@ -79,9 +79,9 @@ public class AttributeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attribute:list')")
     @ApiOperation(value = "查询全部商品属性参数列表")
     @GetMapping("/listAll")
-    public List<Attribute> listAll(Attribute attribute) {
+    public AjaxResult listAll(Attribute attribute) {
         List<Attribute> list = attributeService.selectAllList(attribute);
-        return list;
+        return AjaxResult.success(list);
     }
 
     /**
