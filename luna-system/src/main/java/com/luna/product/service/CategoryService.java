@@ -153,6 +153,7 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      */
     public int insertCategory(Category category) {
         category.setCreateTime(DateUtils.getNowDate());
+        setCategoryLevel(category);
         return categoryMapper.insertCategory(category);
     }
 
@@ -164,7 +165,15 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      */
     public int updateCategory(Category category) {
         category.setUpdateTime(DateUtils.getNowDate());
+        setCategoryLevel(category);
         return categoryMapper.updateCategory(category);
+    }
+
+    private void setCategoryLevel(Category category) {
+        Long parentId = Optional.ofNullable(category.getParentId()).orElse(0L);
+        Category categoryParent = categoryMapper.selectCategoryById(parentId);
+        Integer level = Optional.ofNullable(categoryParent).map(Category::getLevel).map(e -> e += 1).orElse(1);
+        category.setLevel(level);
     }
 
     /**

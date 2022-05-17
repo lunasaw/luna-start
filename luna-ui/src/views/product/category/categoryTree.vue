@@ -20,16 +20,20 @@
 
 
     <el-row :gutter="10" class="mb8 ml5">
-      <el-tree
-        :props="props" :data="cascadeList" node-key="id"
-        show-checkbox
-        :default-expand-all=false
-        :expand-on-click-node=false
-        :check-on-click-node=true
-        :default-expanded-keys="defaultExpandedKeys"
-        @check-change="handleCheckChange">
 
-    <span class="custom-tree-node fixed-width right" slot-scope="{ node, data }">
+      <el-col :span="8">
+        <el-tree class="filter-tree"
+                 :props="props" :data="cascadeList" node-key="id"
+                 show-checkbox
+                 :default-expand-all=false
+                 :expand-on-click-node=false
+                 :check-on-click-node=true
+                 :default-expanded-keys="defaultExpandedKeys"
+                 :draggable=true
+                 :allow-drop='allowDrop'
+                 @check-change="handleCheckChange">
+
+    <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
         <span>
           <el-button v-if="node.level <= 2"
@@ -37,6 +41,12 @@
                      size="mini"
                      @click="() => append(data)">
             添加
+          </el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => handleUpdate(data)">
+            修改
           </el-button>
           <el-button v-if="node.childNodes.length === 0"
                      type="text"
@@ -46,8 +56,8 @@
           </el-button>
         </span>
       </span>
-      </el-tree>
-
+        </el-tree>
+      </el-col>
     </el-row>
 
 
@@ -55,13 +65,13 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="上级分类" prop="parentId">
-          <el-cascader
-            v-model="form.parentId"
-            :options="cascadeList"
-            :props="{ multiple: false, emitPath: false, checkStrictly: true,
+          <el-cascader disabled
+                       v-model="form.parentId"
+                       :options="cascadeList"
+                       :props="{ multiple: false, emitPath: false, checkStrictly: true,
            placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
-            :show-all-levels="true" clearable filterable
-            @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
+                       :show-all-levels="true" clearable filterable
+                       @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
         </el-form-item>
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入分类名称"/>
@@ -217,28 +227,44 @@ export default {
 
       })
     },
+    // 判断是否能拖拽
+    allowDrop(draggingNode, dropNode, type) {
+      let maxLevel = this.countNodeLevel(dropNode);
+      console.log(maxLevel);
+      console.log('============' + draggingNode.data.name);
+      console.log(draggingNode);
+      console.log('============' + dropNode.data.name);
+      console.log(dropNode);
+      // 深度 = 最大深度 - 当前深度 + 1
+      let dep = maxLevel - draggingNode.data.level + 1;
+      if (type === 'inner') {
+        // 目标深度 + 深度 <= 3
+        return (dep + dropNode.level) <= 3;
+      } else {
+        return (dep + dropNode.parent.level) <= 3;
+      }
+    },
+    countNodeLevel(node) {
+      // 找到所有子节点，求出最大深度
+      let maxLevel = node.level;
+      if (node.childCategory && node.childCategory.length > 0) {
+        node.childCategory.forEach(item => {
+          let level = this.countNodeLevel(item);
+          if (level > maxLevel) {
+            maxLevel = level;
+          }
+        });
+      }
+      return maxLevel + 1;
+    },
     handleCheckChange() {
       console.log(this.ids);
-    },
-    /** 查询产品分类列表 */
-    getList() {
-      this.loading = true;
-      listCategory(this.queryParams).then(response => {
-        this.categoryList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
     },
     // 查询全部及联列表
     getCategoryCascadeList() {
       categoryCascadeList(this.queryParams).then(response => {
         this.cascadeList = response.data;
       });
-    },
-    // 查询下级
-    selectLowerLevel(row) {
-      this.queryParams.parentId = row.id;
-      this.getList();
     },
     handleChange(val) {
     },
@@ -315,15 +341,20 @@ export default {
       }
     },
     /** 新增按钮操作 */
-    handleAdd() {
+    handleAdd(data) {
       this.reset();
       this.open = true;
+      this.form.parentId = data.id;
+      this.form.level = data.level + 1;
+      this.form.navStatus = 1;
+      this.form.showStatus = 1;
+      this.form.sort = 0;
       this.title = "添加产品分类";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    handleUpdate(data) {
       this.reset();
-      const id = row.id || this.ids
+      const id = data.id
       getCategory(id).then(response => {
         this.form = response.data;
         this.open = true;
@@ -338,39 +369,31 @@ export default {
             updateCategory(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
-              this.getList();
+              this.getCategoryCascadeList();
+              this.defaultExpandedKeys = [this.form.parentId];
             });
           } else {
             addCategory(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              this.getList();
+              this.getCategoryCascadeList();
+              this.defaultExpandedKeys = [this.form.parentId];
             });
           }
         }
       });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除产品分类编号为"' + ids + '"的数据项？').then(function () {
-        return delCategory(ids);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {
-      });
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('product/category/export', {
-        ...this.queryParams
-      }, `category_${new Date().getTime()}.xlsx`)
-    },
-    /** 菜单维护按钮操作 */
-    handleEdit() {
-      this.$router.push("/category/category-tree");
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
+</style>
+
