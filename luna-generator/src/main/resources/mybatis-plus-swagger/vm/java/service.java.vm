@@ -211,12 +211,12 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         #if($table.sub)
         @Transactional
         #end
-    public int deleteById(${ClassName} ${className}) {
+    public int delete(${ClassName} ${className}) {
         QueryWrapper<${ClassName}> queryWrapper = new QueryWrapper<${ClassName}>(${className});
         #if($table.sub)
-                ${className}Mapper.deleteById(queryWrapper);
+                ${className}Mapper.delete(queryWrapper);
         #end
-        return ${className}Mapper.deleteById(queryWrapper);
+        return ${className}Mapper.delete(queryWrapper);
     }
     #if($table.sub)
 

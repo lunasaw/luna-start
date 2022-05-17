@@ -11,6 +11,7 @@ import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.vo.CategoryCascadeVO;
 import com.luna.product.domain.vo.CategoryVO;
 import com.luna.utils.DO2VOUtils;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -184,7 +185,7 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      */
     public int deleteCategoryById(Category category) {
         QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>(category);
-        return categoryMapper.deleteById(queryWrapper);
+        return categoryMapper.delete(queryWrapper);
     }
 
     /**
@@ -264,7 +265,9 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         category.setLevel(level);
         List<Category> categories = selectAllList(category);
         List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO).collect(Collectors.toList());
-
+        if (CollectionUtils.isEmpty(cascadeVOList)) {
+            cascadeVOList.add(DO2VOUtils.category2CategoryCascadeVO(categoryTemp));
+        }
         // 查一级
         category.setLevel(level + 1);
         List<Category> categoriesLevelOne = selectAllList(category);

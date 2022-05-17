@@ -181,7 +181,7 @@ public class AttributeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attribute:remove')")
     @Log(title = "商品属性参数", businessType = BusinessType.DELETE)
     @DeleteMapping("delete")
-    public AjaxResult remove(@PathVariable Attribute attribute) {
+    public AjaxResult remove(@RequestBody Attribute attribute) {
         return toAjax(attributeService.deleteById(attribute));
     }
 }

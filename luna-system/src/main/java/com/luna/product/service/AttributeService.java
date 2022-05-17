@@ -181,6 +181,6 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      */
     public int deleteById(Attribute attribute) {
         QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(attribute);
-        return attributeMapper.deleteById(queryWrapper);
+        return attributeMapper.delete(queryWrapper);
     }
 }

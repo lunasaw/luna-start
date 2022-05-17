@@ -301,6 +301,7 @@ import {
   categoryListAll,
   categoryCascadeList,
   updateCategory,
+  deleteCategory,
   updateListCategory
 } from "@/api/product/category";
 import {navStatusSwitchChange} from "@/api/product/category";
