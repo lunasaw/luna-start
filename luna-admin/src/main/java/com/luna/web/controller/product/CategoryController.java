@@ -165,7 +165,7 @@ public class CategoryController extends BaseController {
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<Category> categoryList) {
         categoryList = categoryList.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        return toAjax(categoryService.updateBatchById(categoryList));
+        return toAjax(categoryService.updateCategoryBatch(categoryList));
     }
 
     /**

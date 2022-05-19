@@ -44,7 +44,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="显示在导航" prop="navStatus">
+      <el-form-item label="显示在导航" prop="navStatus" label-width="100px">
         <el-select v-model="queryParams.navStatus" placeholder="请选择显示在导航" clearable>
           <el-option
             v-for="dict in dict.type.tb_normal_status"

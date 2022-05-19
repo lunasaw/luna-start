@@ -16,10 +16,12 @@ export default {
   data() {
     return {
       sizeOptions: [
-        { label: 'Default', value: 'default' },
-        { label: 'Medium', value: 'medium' },
-        { label: 'Small', value: 'small' },
-        { label: 'Mini', value: 'mini' }
+        {label: 'Default', value: 'default'},
+        {label: 'Medium', value: 'medium'},
+        {label: 'Extra large', value: 'Extra large'},
+        {label: 'Large', value: 'large'},
+        {label: 'Small', value: 'small'},
+        {label: 'Mini', value: 'mini'}
       ]
     }
   },

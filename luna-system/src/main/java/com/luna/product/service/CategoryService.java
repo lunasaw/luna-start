@@ -169,6 +169,16 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         return categoryMapper.updateCategory(category);
     }
 
+    /**
+     * 批量修改产品分类
+     *
+     * @param categoryList 产品分类
+     * @return 结果
+     */
+    public Boolean updateCategoryBatch(List<Category> categoryList) {
+        return updateBatchById(categoryList);
+    }
+
     private void setCategoryLevel(Category category) {
         Long parentId = Optional.ofNullable(category.getParentId()).orElse(0L);
         Category categoryParent = categoryMapper.selectCategoryById(parentId);
@@ -273,7 +283,8 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         // 查零级
         category.setLevel(level);
         List<Category> categories = selectAllList(category);
-        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO).collect(Collectors.toList());
+        List<CategoryCascadeVO> cascadeVOList = categories.stream().map(DO2VOUtils::category2CategoryCascadeVO)
+            .sorted(Comparator.comparing(CategoryCascadeVO::getSort, Comparator.nullsLast(Long::compareTo))).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(cascadeVOList)) {
             cascadeVOList.add(DO2VOUtils.category2CategoryCascadeVO(categoryTemp));
         }

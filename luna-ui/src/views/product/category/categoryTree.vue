@@ -13,6 +13,16 @@
           @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
       </el-form-item>
       <el-form-item>
+        <el-switch
+          v-model="draggable"
+          active-text="开启拖拽"
+          inactive-text="关闭拖拽"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-check" size="mini" @click="saveBatch">保存</el-button>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
@@ -21,6 +31,8 @@
 
     <el-row :gutter="10" class="mb8 ml5">
 
+      <el-row :span="24" class="text-right mb5 pr5">
+      </el-row>
       <el-col :span="8">
         <el-tree class="filter-tree"
                  :props="props" :data="cascadeList" node-key="id"
@@ -29,8 +41,9 @@
                  :expand-on-click-node=false
                  :check-on-click-node=true
                  :default-expanded-keys="defaultExpandedKeys"
-                 :draggable=true
+                 :draggable='draggable'
                  :allow-drop='allowDrop'
+                 @node-drop='handleDrop'
                  @check-change="handleCheckChange">
 
     <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -161,12 +174,18 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      // 是否支持拖拽
+      draggable: false,
       // 总条数
       total: 0,
       // 产品分类表格数据
       categoryList: [],
       // 及联列表
       cascadeList: [],
+      // 更新节点
+      updateNodes: [],
+      // 操作节点
+      parentId: 0,
       // 默认展开的节点
       defaultExpandedKeys: [],
       props: {
@@ -186,8 +205,20 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        navStatus: [
-          {required: true, message: "显示在导航不能为空", trigger: "blur"}
+        draggable: [
+          {
+            required: true, message: "请先保存数据", trigger: "blur", validator: (rule, value, callback) => {
+              if (this.draggable) {
+                if (this.form.id) {
+                  callback();
+                } else {
+                  callback(new Error("请先保存数据"));
+                }
+              } else {
+                callback();
+              }
+            }
+          },
         ],
         showStatus: [
           {required: true, message: "显示状态不能为空", trigger: "blur"}
@@ -200,6 +231,17 @@ export default {
         ],
       }
     };
+  },
+  watch: {
+    "queryParams.parentId": function (val) {
+      this.queryParams.parentId = val;
+      this.getCategoryCascadeList();
+    },
+    "draggable": function (val) {
+      if (!val) {
+        this.getCategoryCascadeList();
+      }
+    }
   },
   created() {
     categoryCascadeList().then(response => {
@@ -217,7 +259,7 @@ export default {
         id: data.id,
         parentId: data.parentId
       };
-      this.$modal.confirm('确认要删除【"' + data.name + '"】吗？').then(function () {
+      this.$modal.confirm('确认要删除【' + data.name + '】吗？').then(function () {
         return deleteCategory(param)
       }).then(() => {
         this.$modal.msgSuccess('删除成功')
@@ -227,16 +269,89 @@ export default {
 
       })
     },
+    saveBatch() {
+      updateListCategory(this.updateNodes).then(() => {
+        this.$modal.msgSuccess('更新成功');
+        this.getCategoryCascadeList();
+        this.defaultExpandedKeys = [this.parentId];
+        this.updateNodes = [];
+      });
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      console.log('tree drop: ', '当前拖拽节点', draggingNode, '当前拖拽目的节点', dropNode, dropType);
+      // 当前节点对父节点
+      let parentId = this.parentId;
+      if (dropType === 'inner') {
+        parentId = dropNode.data.id;
+      } else {
+        parentId = dropNode.parent.data.id || 0;
+      }
+      // 最新顺序
+      // 1. 获取所有兄弟节点
+      let childNodes;
+      if (dropType === 'inner') {
+        childNodes = dropNode.childNodes;
+      } else {
+        childNodes = dropNode.parent.childNodes;
+      }
+      console.log("childNodes", childNodes);
+      // 2. 获取当前节点的顺序
+      let index = 0;
+      childNodes.forEach(e => {
+        index++;
+        if (e.data.id === draggingNode.data.id) {
+          // 如果是当前正在拖拽对节点
+          let catLevel = draggingNode.data.level;
+          console.log('当前节点等级', e.level, '目标节点等级', catLevel);
+          if (e.level !== catLevel) {
+            console.log('当前节点等级', e.level, '目标节点等级', catLevel);
+            catLevel = e.level;
+            // 是外部的话 还需要修改子节点层级
+            this.updateChildNodeLevel(e);
+          }
+          // 放入更新节点level
+          this.updateNodes.push({
+            id: e.data.id,
+            sort: index,
+            parentId: parentId,
+            level: catLevel
+          });
+          return;
+        } else {
+          this.updateNodes.push({
+            id: e.data.id,
+            sort: index
+          });
+        }
+      });
+      // 当前节点对最近节点
+      // 当前节点对最近节点的父节点
+      this.parentId = parentId;
+      console.log(this.updateNodes);
+    },
+    updateChildNodeLevel(node) {
+      console.log('更新子节点层级', node);
+      node.childNodes.forEach(e => {
+        this.updateNodes.push({
+          id: e.data.id,
+          sort: e.data.sort,
+          parentId: node.data.id,
+          level: e.level
+        });
+        this.updateChildNodeLevel(e);
+      });
+    },
     // 判断是否能拖拽
     allowDrop(draggingNode, dropNode, type) {
-      let maxLevel = this.countNodeLevel(dropNode);
+      // 拖拽节点 拖拽到目标节点 的某个位置
+      let maxLevel = this.countNodeLevel(draggingNode);
       console.log(maxLevel);
       console.log('============' + draggingNode.data.name);
       console.log(draggingNode);
       console.log('============' + dropNode.data.name);
       console.log(dropNode);
       // 深度 = 最大深度 - 当前深度 + 1
-      let dep = maxLevel - draggingNode.data.level + 1;
+      let dep = Math.abs(maxLevel - draggingNode.level + 1);
       if (type === 'inner') {
         // 目标深度 + 深度 <= 3
         return (dep + dropNode.level) <= 3;
@@ -247,15 +362,15 @@ export default {
     countNodeLevel(node) {
       // 找到所有子节点，求出最大深度
       let maxLevel = node.level;
-      if (node.childCategory && node.childCategory.length > 0) {
-        node.childCategory.forEach(item => {
+      if (node.childNodes && node.childNodes.length > 0) {
+        node.childNodes.forEach(item => {
           let level = this.countNodeLevel(item);
           if (level > maxLevel) {
             maxLevel = level;
           }
         });
       }
-      return maxLevel + 1;
+      return maxLevel;
     },
     handleCheckChange() {
       console.log(this.ids);
@@ -365,6 +480,10 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          if (this.draggable || this.updateNodes.length > 0) {
+            this.$modal.msgSuccess('请先保存数据或关闭拖拽');
+            return;
+          }
           if (this.form.id != null) {
             updateCategory(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
