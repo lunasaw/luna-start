@@ -189,4 +189,15 @@ public class CategoryController extends BaseController {
     public AjaxResult remove(@RequestBody Category category) {
         return toAjax(categoryService.deleteCategoryById(category));
     }
+
+    /**
+     * 逻辑删除单个删除产品分类
+     */
+    @ApiOperation(value = "逻辑批量删除产品分类")
+    @PreAuthorize("@ss.hasPermi('product:category:remove')")
+    @Log(title = "产品分类", businessType = BusinessType.DELETE)
+    @DeleteMapping("deleteBatch")
+    public AjaxResult removeBatch(@RequestBody List<Category> categoryList) {
+        return toAjax(categoryService.deleteIds(categoryList));
+    }
 }

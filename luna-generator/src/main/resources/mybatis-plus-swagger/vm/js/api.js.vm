@@ -115,3 +115,12 @@ export function delete${BusinessName}(data) {
     })
 }
 
+// 逻辑批量删除${functionName}
+export function deleteBatch${BusinessName}(data) {
+    return request({
+        url: '/${moduleName}/${businessName}/deleteBatch',
+        method: 'delete',
+        data: data
+    })
+}
+

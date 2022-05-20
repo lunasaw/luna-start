@@ -195,11 +195,23 @@ public class ${ClassName}Controller extends BaseController {
     /**
      * 逻辑删除${functionName}
      */
-    @ApiOperation(value = "逻辑删除${functionName}" )
-    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:remove')" )
-    @Log(title = "${functionName}" , businessType = BusinessType.DELETE)
-    @DeleteMapping("delete" )
+    @ApiOperation(value = "逻辑删除${functionName}")
+    @PreAuthorize("@ss.hasPermi('${permissionPrefix}:remove')")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @DeleteMapping("delete")
     public AjaxResult remove(@RequestBody ${ClassName} ${className}) {
         return toAjax(${className}Service.delete(${className}));
+    }
+
+
+    /**
+     * 批量逻辑删除${functionName}
+     */
+    @ApiOperation(value = "逻辑批量删除${functionName}")
+    @PreAuthorize("@ss.hasPermi('product:category:remove')")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @DeleteMapping("deleteBatch")
+    public AjaxResult removeBatch(@RequestBody List<${ClassName}> ${className}List) {
+        return toAjax(${className}Service.deleteIds(${className}List));
     }
 }

@@ -203,6 +203,20 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     }
 
     /**
+     * 批量逻辑删除${functionName}
+     *
+     * @param ${className}List ${functionName}
+     * @return 结果
+     */
+    public int deleteIds(List<${ClassName}> ${className}List) {
+        List<Long> collect = ${className}List.stream().map(${ClassName}::getId).collect(Collectors.toList());
+        QueryWrapper<${ClassName}> queryWrapper = new QueryWrapper<${ClassName}>();
+        queryWrapper.in("${pkColumn.javaField}", collect);
+        return categoryMapper.delete(queryWrapper);
+    }
+
+
+    /**
      * 逻辑删除${functionName}信息
      *
      * @param ${className} ${className} 主键

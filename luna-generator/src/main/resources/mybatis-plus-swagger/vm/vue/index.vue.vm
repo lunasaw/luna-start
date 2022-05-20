@@ -413,6 +413,7 @@
           ${businessName}ListByIds,
           ${businessName}ListAll,
     delete${BusinessName},
+    deleteBatch${BusinessName},
     update${BusinessName},
     updateList${BusinessName}
   }

@@ -23,8 +23,10 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-check" size="mini" @click="saveBatch">保存</el-button>
+        <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteBatch">删除</el-button>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+
       </el-form-item>
     </el-form>
 
@@ -44,7 +46,9 @@
                  :draggable='draggable'
                  :allow-drop='allowDrop'
                  @node-drop='handleDrop'
-                 @check-change="handleCheckChange">
+                 @check-change="handleCheckChange"
+                 ref="categoryTree"
+        >
 
     <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -185,7 +189,7 @@ export default {
       // 更新节点
       updateNodes: [],
       // 操作节点
-      parentId: 0,
+      parentId: [],
       // 默认展开的节点
       defaultExpandedKeys: [],
       props: {
@@ -253,6 +257,19 @@ export default {
     append(data) {
       this.handleAdd(data);
     },
+    deleteBatch: function () {
+      let checkNodes = this.$refs.categoryTree.getCheckedNodes();
+
+      let checkedKeys = this.$refs.categoryTree.getCheckedKeys();
+      this.$modal.confirm('确认要删除【' + checkedKeys + '】吗？').then(function () {
+
+      }).then(() => {
+
+      }).catch(function () {
+
+      })
+      console.log("被选中的元素", checkNodes);
+    },
     remove(node, data) {
       console.log(node, data)
       let param = {
@@ -273,7 +290,7 @@ export default {
       updateListCategory(this.updateNodes).then(() => {
         this.$modal.msgSuccess('更新成功');
         this.getCategoryCascadeList();
-        this.defaultExpandedKeys = [this.parentId];
+        this.defaultExpandedKeys = this.parentId;
         this.updateNodes = [];
       });
     },
@@ -326,7 +343,7 @@ export default {
       });
       // 当前节点对最近节点
       // 当前节点对最近节点的父节点
-      this.parentId = parentId;
+      this.parentId.push(parentId);
       console.log(this.updateNodes);
     },
     updateChildNodeLevel(node) {
