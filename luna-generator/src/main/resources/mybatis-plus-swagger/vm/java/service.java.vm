@@ -18,13 +18,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-    #if($table.sub)
-    import java.util.ArrayList;
+#if($table.sub)
+import java.util.ArrayList;
 
-    import com.luna.common.utils.StringUtils;
-    import org.springframework.transaction.annotation.Transactional;
-    import ${packageName}.domain.${subClassName};
-    #end
+import com.luna.common.utils.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
+import ${packageName}.domain.${subClassName};
+#end
 import ${packageName}.mapper.${ClassName}Mapper;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.domain.vo.${ClassName}VO;
