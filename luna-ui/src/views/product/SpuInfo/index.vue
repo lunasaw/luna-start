@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="商品ID" prop="id">
+      <el-form-item label="商品ID" prop="id"  >
         <el-input
           v-model="queryParams.id"
           placeholder="请输入商品ID"
@@ -9,7 +9,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="spuName">
+      <el-form-item label="商品名称" prop="spuName"  >
         <el-input
           v-model="queryParams.spuName"
           placeholder="请输入商品名称"
@@ -17,7 +17,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属分类" prop="catalogId">
+      <el-form-item label="所属分类" prop="catalogId"  >
         <el-input
           v-model="queryParams.catalogId"
           placeholder="请输入所属分类"
@@ -25,7 +25,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="品牌" prop="brandId">
+      <el-form-item label="品牌" prop="brandId"  >
         <el-input
           v-model="queryParams.brandId"
           placeholder="请输入品牌"
@@ -33,7 +33,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="重量" prop="weight">
+      <el-form-item label="重量" prop="weight"  >
         <el-input
           v-model="queryParams.weight"
           placeholder="请输入重量"
@@ -56,8 +56,7 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['product:SpuInfo:add']"
-        >新增
-        </el-button>
+        >新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -68,8 +67,7 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['product:SpuInfo:edit']"
-        >修改
-        </el-button>
+        >修改</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -80,8 +78,7 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['product:SpuInfo:remove']"
-        >删除
-        </el-button>
+        >删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -91,21 +88,20 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['product:SpuInfo:export']"
-        >导出
-        </el-button>
+        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="SpuInfoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="商品ID" align="center" prop="id"/>
-      <el-table-column label="商品名称" align="center" prop="spuName"/>
-      <el-table-column label="商品描述" align="center" prop="spuDescription"/>
-      <el-table-column label="所属分类" align="center" prop="catalogId"/>
-      <el-table-column label="品牌" align="center" prop="brandId"/>
-      <el-table-column label="重量" align="center" prop="weight"/>
-      <el-table-column label="上架状态" align="center" prop="publishStatus" width="100">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="商品ID" align="center" prop="id" />
+      <el-table-column label="商品名称" align="center" prop="spuName" />
+      <el-table-column label="商品描述" align="center" prop="spuDescription" />
+      <el-table-column label="所属分类" align="center" prop="catalogId" />
+      <el-table-column label="品牌" align="center" prop="brandId" />
+      <el-table-column label="重量" align="center" prop="weight" sortable />
+      <el-table-column label="上架状态" align="center" prop="publishStatus" width="100" >
         <template slot-scope="scope">
           <el-switch v-model="scope.row.publishStatus" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
@@ -113,7 +109,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="是否删除" align="center" prop="deleted" width="100">
+      <el-table-column label="是否删除" align="center" prop="deleted" width="100" >
         <template slot-scope="scope">
           <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
@@ -121,7 +117,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -130,16 +126,14 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['product:SpuInfo:edit']"
-          >修改
-          </el-button>
+          >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['product:SpuInfo:remove']"
-          >删除
-          </el-button>
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -159,7 +153,7 @@
           <el-input v-model="form.spuName" placeholder="请输入商品名称"/>
         </el-form-item>
         <el-form-item label="商品描述" prop="spuDescription">
-          <el-input v-model="form.spuDescription" type="textarea" placeholder="请输入内容"/>
+          <el-input v-model="form.spuDescription" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="所属分类" prop="catalogId">
           <el-input v-model="form.catalogId" placeholder="请输入所属分类"/>
@@ -171,7 +165,7 @@
           <el-input v-model="form.weight" placeholder="请输入重量"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -241,14 +235,26 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        spuName: [
+          { required: true, message: "商品名称不能为空", trigger: "blur" }
+        ],
+        catalogId: [
+          { required: true, message: "所属分类不能为空", trigger: "blur" }
+        ],
+        brandId: [
+          { required: true, message: "品牌不能为空", trigger: "blur" }
+        ],
+        publishStatus: [
+          { required: true, message: "上架状态不能为空", trigger: "blur" }
+        ],
         deleted: [
-          {required: true, message: "是否删除不能为空", trigger: "blur"}
+          { required: true, message: "是否删除不能为空", trigger: "blur" }
         ],
         createTime: [
-          {required: true, message: "创建时间不能为空", trigger: "blur"}
+          { required: true, message: "创建时间不能为空", trigger: "blur" }
         ],
         updateTime: [
-          {required: true, message: "更新时间不能为空", trigger: "blur"}
+          { required: true, message: "更新时间不能为空", trigger: "blur" }
         ],
       }
     };
@@ -309,10 +315,10 @@ export default {
     // 状态修改
     publishStatusSwitchChange(row) {
       let text = row.publishStatus === 1 ? '启用' : '停用'
-      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+      this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
         return publishStatusSwitchChange(row.id, row.publishStatus)
       }).then(() => {
-        this.$modal.msgSuccess('成功')
+        this.$modal.msgSuccess ('成功')
       }).catch(function () {
         row.publishStatus = row.publishStatus === 1 ? 0 : 1
       })
@@ -320,10 +326,10 @@ export default {
     // 状态修改
     deletedSwitchChange(row) {
       let text = row.deleted === 1 ? '启用' : '停用'
-      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+      this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
         return deletedSwitchChange(row.id, row.deleted)
       }).then(() => {
-        this.$modal.msgSuccess('成功')
+        this.$modal.msgSuccess ('成功')
       }).catch(function () {
         row.deleted = row.deleted === 1 ? 0 : 1
       })
@@ -351,6 +357,42 @@ export default {
         this.title = "修改商品SPU信息";
       });
     },
+    /** 提交按钮 */
+    submitForm() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.id != null) {
+            updateSpuInfo(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            addSpuInfo(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除商品SPU信息编号为"' + ids + '"的数据项？').then(function() {
+        return delSpuInfo(ids);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('product/SpuInfo/export', {
+        ...this.queryParams
+      }, `SpuInfo_${new Date().getTime()}.xlsx`)
+    }
   }
 };
 </script>
