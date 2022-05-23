@@ -11,7 +11,7 @@ import ${packageName}.domain.vo.${ClassName}VO;
  */
 public class DO2VOUtils {
 
-    public static ${ClassName}VO${className}2${ClassName}VO (${ClassName} ${ClassName}) {
+    public static ${ClassName}VO ${className}2${ClassName}VO (${ClassName} ${ClassName}) {
         if (${ClassName} ==null){
             return null;
         }
