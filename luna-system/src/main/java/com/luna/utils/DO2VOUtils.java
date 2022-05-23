@@ -35,7 +35,7 @@ public class DO2VOUtils {
         spuInfoVO.setParams(SpuInfo.getParams());
 
         spuInfoVO.setCategoryName(categoryName);
-        spuInfoVO.setBrandId(brandName);
+        spuInfoVO.setBrandName(brandName);
         return spuInfoVO;
     }
 

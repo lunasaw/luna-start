@@ -4,17 +4,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.luna.product.domain.vo.SpuInfoVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
 import java.util.Objects;
 import java.util.ArrayList;
-
 import com.github.pagehelper.PageInfo;
-
 import java.util.stream.Collectors;
-
+import com.luna.product.domain.vo.SpuInfoVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +38,7 @@ import com.luna.common.core.page.TableDataInfo;
  * @date 2022-05-23
  */
 @RestController
-@RequestMapping("/product/SpuInfo")
+@RequestMapping("/product/spuInfo")
 @Api(tags = "商品SPU信息")
 public class SpuInfoController extends BaseController {
     @Autowired
@@ -51,7 +47,7 @@ public class SpuInfoController extends BaseController {
     /**
      * 查询商品SPU信息列表
      */
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:list')")
     @GetMapping("/list")
     public TableDataInfo list(SpuInfo spuInfo) {
         startPage();
@@ -64,7 +60,7 @@ public class SpuInfoController extends BaseController {
     /**
      * 分页查询商品SPU信息列表
      */
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:list')")
     @ApiOperation(value = "查询商品SPU信息列表")
     @GetMapping("/listPage")
     public TableDataInfo listPage(SpuInfo spuInfo) {
@@ -76,7 +72,7 @@ public class SpuInfoController extends BaseController {
     /**
      * 查询全部商品SPU信息列表
      */
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:list')")
     @ApiOperation(value = "查询全部商品SPU信息列表")
     @GetMapping("/listAll")
     public List<SpuInfo> listAll(SpuInfo spuInfo) {
@@ -87,7 +83,7 @@ public class SpuInfoController extends BaseController {
     /**
      * ids批量查询品牌列表
      */
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:list')")
     @ApiOperation(value = "ids查询商品SPU信息列表")
     @GetMapping("/listByIds")
     public AjaxResult listByIds(List<Long> ids) {
@@ -99,7 +95,7 @@ public class SpuInfoController extends BaseController {
      * 导出商品SPU信息列表
      */
     @ApiOperation(value = "导出商品SPU信息列表")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:export')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:export')")
     @Log(title = "商品SPU信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SpuInfo spuInfo) {
@@ -112,7 +108,7 @@ public class SpuInfoController extends BaseController {
      * 获取商品SPU信息详细信息
      */
     @ApiOperation(value = "获取商品SPU信息详细信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:query')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(spuInfoService.selectSpuInfoById(id));
@@ -122,7 +118,7 @@ public class SpuInfoController extends BaseController {
      * 新增商品SPU信息
      */
     @ApiOperation(value = "新增商品SPU信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:add')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:add')")
     @Log(title = "商品SPU信息", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SpuInfo spuInfo) {
@@ -132,7 +128,7 @@ public class SpuInfoController extends BaseController {
     /**
      * 批量新增
      */
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:add')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:add')")
     @ApiOperation(value = "批量新增商品SPU信息列表")
     @Log(title = "商品SPU信息", businessType = BusinessType.INSERT)
     @PostMapping("/addList")
@@ -141,11 +137,12 @@ public class SpuInfoController extends BaseController {
         return spuInfoService.saveBatch(spuInfoList);
     }
 
+
     /**
      * 修改商品SPU信息
      */
     @ApiOperation(value = "修改商品SPU信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:edit')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:edit')")
     @Log(title = "商品SPU信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SpuInfo spuInfo) {
@@ -156,7 +153,7 @@ public class SpuInfoController extends BaseController {
      * 批量修改商品SPU信息
      */
     @ApiOperation(value = "修改商品SPU信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:edit')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:edit')")
     @Log(title = "商品SPU信息", businessType = BusinessType.UPDATE)
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<SpuInfo> spuInfoList) {
@@ -168,7 +165,7 @@ public class SpuInfoController extends BaseController {
      * 删除商品SPU信息
      */
     @ApiOperation(value = "删除商品SPU信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:remove')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:remove')")
     @Log(title = "商品SPU信息", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult removeByIds(@PathVariable Long[] ids) {
@@ -179,12 +176,13 @@ public class SpuInfoController extends BaseController {
      * 逻辑删除商品SPU信息
      */
     @ApiOperation(value = "逻辑删除商品SPU信息")
-    @PreAuthorize("@ss.hasPermi('product:SpuInfo:remove')")
+    @PreAuthorize("@ss.hasPermi('product:spuInfo:remove')")
     @Log(title = "商品SPU信息", businessType = BusinessType.DELETE)
     @DeleteMapping("delete")
     public AjaxResult remove(@RequestBody SpuInfo spuInfo) {
         return toAjax(spuInfoService.delete(spuInfo));
     }
+
 
     /**
      * 批量逻辑删除商品SPU信息

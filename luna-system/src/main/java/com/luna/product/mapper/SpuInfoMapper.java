@@ -60,4 +60,5 @@ public interface SpuInfoMapper extends BaseMapper<SpuInfo> {
      */
     public int deleteSpuInfoByIds(Long[] ids);
 
+
 }

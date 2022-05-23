@@ -1,20 +1,19 @@
 package com.luna.product.service;
 
 import java.util.List;
-
-import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.Brand;
 import com.luna.product.domain.Category;
-import com.luna.product.domain.vo.SpuInfoVO;
 import com.luna.product.mapper.BrandMapper;
 import com.luna.product.mapper.CategoryMapper;
+import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.github.pagehelper.PageInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import org.apache.commons.compress.utils.Lists;
@@ -24,8 +23,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SpuInfoMapper;
 import com.luna.product.domain.SpuInfo;
-
-import com.luna.utils.DO2VOUtils;
+import com.luna.product.domain.vo.SpuInfoVO;
 
 /**
  * 商品SPU信息Service业务层处理
@@ -65,6 +63,7 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         PageInfo pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
+
 
     /**
      * 查询全部商品SPU信息列表
@@ -191,6 +190,7 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         queryWrapper.in("id", spuInfoIds);
         return spuInfoMapper.delete(queryWrapper);
     }
+
 
     /**
      * 逻辑删除商品SPU信息信息

@@ -74,6 +74,7 @@ export function publishStatusSwitchChange(id, publishStatus) {
   }
   return updateSpuInfo(data);
 }
+
 // 修改 是否删除 状态
 export function deletedSwitchChange(id, deleted) {
   const data = {

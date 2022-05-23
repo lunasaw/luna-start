@@ -1,10 +1,12 @@
 package com.luna.product.utils;
 
 import com.luna.product.domain.SpuImages;
+import com.luna.product.domain.SpuInfo;
 import com.luna.product.domain.vo.SpuImagesVO;
+import com.luna.product.domain.vo.SpuInfoVO;
 
 /**
- * SPU图片Controller
+ * 商品SPU信息Controller
  *
  * @author luna
  * @date 2022-05-23

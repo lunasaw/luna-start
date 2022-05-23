@@ -48,6 +48,8 @@
             <if test="weight != null ">and weight = #{weight}</if>
             <if test="publishStatus != null ">and publish_status = #{publishStatus}</if>
             <if test="deleted != null ">and deleted = #{deleted}</if>
+            <if test="createTime != null ">and create_time &gt;= #{createTime}</if>
+            <if test="updateTime != null ">and update_time &gt;= #{updateTime}</if>
         </where>
     </select>
 
@@ -60,7 +62,7 @@
     <insert id="insertSpuInfo" parameterType="SpuInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_pms_spu_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="spuName != null">spu_name,</if>
+            <if test="spuName != null and spuName != ''">spu_name,</if>
             <if test="spuDescription != null">spu_description,</if>
             <if test="catalogId != null">catalog_id,</if>
             <if test="brandId != null">brand_id,</if>
@@ -74,7 +76,7 @@
             <if test="remark != null">remark,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="spuName != null">#{spuName},</if>
+            <if test="spuName != null and spuName != ''">#{spuName},</if>
             <if test="spuDescription != null">#{spuDescription},</if>
             <if test="catalogId != null">#{catalogId},</if>
             <if test="brandId != null">#{brandId},</if>
@@ -92,7 +94,7 @@
     <update id="updateSpuInfo" parameterType="SpuInfo">
         update tb_pms_spu_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="spuName != null">spu_name = #{spuName},</if>
+            <if test="spuName != null and spuName != ''">spu_name = #{spuName},</if>
             <if test="spuDescription != null">spu_description = #{spuDescription},</if>
             <if test="catalogId != null">catalog_id = #{catalogId},</if>
             <if test="brandId != null">brand_id = #{brandId},</if>
