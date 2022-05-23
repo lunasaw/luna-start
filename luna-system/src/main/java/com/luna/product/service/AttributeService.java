@@ -7,6 +7,7 @@ import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.AttributeCategory;
 import com.luna.product.mapper.AttributeCategoryMapper;
+import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.AttributeMapper;
 import com.luna.product.domain.Attribute;
 import com.luna.product.domain.vo.AttributeVO;
-import com.luna.product.utils.DO2VOUtils;
 
 /**
  * 商品属性参数Service业务层处理

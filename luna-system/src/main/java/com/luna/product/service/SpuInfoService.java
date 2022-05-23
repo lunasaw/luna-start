@@ -18,7 +18,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SpuInfoMapper;
 import com.luna.product.domain.SpuInfo;
 
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * 商品SPU信息Service业务层处理

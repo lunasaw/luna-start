@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询商品SPU信息列表
 export function listSpuInfo(query) {
   return request({
-    url: '/product/SpuInfo/list',
+    url: '/product/spuInfo/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listSpuInfo(query) {
 // 查询商品SPU信息列表
 export function listPageSpuInfo(query) {
   return request({
-    url: '/product/SpuInfo/listPage',
+    url: '/product/spuInfo/listPage',
     method: 'get',
     params: query
   })
@@ -20,21 +20,21 @@ export function listPageSpuInfo(query) {
 
 
 // 查询全部商品SPU信息列表
-export function SpuInfoListAll(query) {
+export function spuInfoListAll(query) {
   return request({
-    url: '/product/SpuInfo/listAll',
+    url: '/product/spuInfo/listAll',
     method: 'get',
     params: query
   })
 }
 
 // 查询全部商品SPU信息列表
-export function SpuInfoListByIds(ids) {
+export function spuInfoListByIds(ids) {
   let query = {
     ids: ids
   }
   return request({
-    url: '/product/SpuInfo/listByIds',
+    url: '/product/spuInfo/listByIds',
     method: 'get',
     params: query
   })
@@ -43,7 +43,7 @@ export function SpuInfoListByIds(ids) {
 // 查询商品SPU信息详细
 export function getSpuInfo(id) {
   return request({
-    url: '/product/SpuInfo/' + id,
+    url: '/product/spuInfo/' + id,
     method: 'get'
   })
 }
@@ -51,7 +51,7 @@ export function getSpuInfo(id) {
 // 新增商品SPU信息
 export function addSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo',
+    url: '/product/spuInfo',
     method: 'post',
     data: data
   })
@@ -60,7 +60,7 @@ export function addSpuInfo(data) {
 // 批量新增商品SPU信息
 export function addListSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo/addList',
+    url: '/product/spuInfo/addList',
     method: 'post',
     data: data
   })
@@ -74,7 +74,6 @@ export function publishStatusSwitchChange(id, publishStatus) {
   }
   return updateSpuInfo(data);
 }
-
 // 修改 是否删除 状态
 export function deletedSwitchChange(id, deleted) {
   const data = {
@@ -87,7 +86,7 @@ export function deletedSwitchChange(id, deleted) {
 // 修改商品SPU信息
 export function updateSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo',
+    url: '/product/spuInfo',
     method: 'put',
     data: data
   })
@@ -96,7 +95,7 @@ export function updateSpuInfo(data) {
 // 批量修改商品SPU信息
 export function updateListSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo/editList',
+    url: '/product/spuInfo/editList',
     method: 'put',
     data: data
   })
@@ -106,7 +105,7 @@ export function updateListSpuInfo(data) {
 // 删除商品SPU信息
 export function delSpuInfo(id) {
   return request({
-    url: '/product/SpuInfo/' + id,
+    url: '/product/spuInfo/' + id,
     method: 'delete'
   })
 }
@@ -114,7 +113,7 @@ export function delSpuInfo(id) {
 // 逻辑删除商品SPU信息
 export function deleteSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo/delete',
+    url: '/product/spuInfo/delete',
     method: 'delete',
     data: data
   })
@@ -123,7 +122,7 @@ export function deleteSpuInfo(data) {
 // 逻辑批量删除商品SPU信息
 export function deleteBatchSpuInfo(data) {
   return request({
-    url: '/product/SpuInfo/deleteBatch',
+    url: '/product/spuInfo/deleteBatch',
     method: 'delete',
     data: data
   })
