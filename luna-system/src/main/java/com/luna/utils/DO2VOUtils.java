@@ -12,7 +12,7 @@ import com.luna.product.domain.vo.*;
  */
 public class DO2VOUtils {
 
-    public static SpuInfoVO spuInfo2SpuInfoVO(SpuInfo SpuInfo) {
+    public static SpuInfoVO spuInfo2SpuInfoVO(SpuInfo SpuInfo, String categoryName, String brandName) {
         if (SpuInfo == null) {
             return null;
         }
@@ -34,6 +34,8 @@ public class DO2VOUtils {
         spuInfoVO.setRemark(SpuInfo.getRemark());
         spuInfoVO.setParams(SpuInfo.getParams());
 
+        spuInfoVO.setCategoryName(categoryName);
+        spuInfoVO.setBrandId(brandName);
         return spuInfoVO;
     }
 

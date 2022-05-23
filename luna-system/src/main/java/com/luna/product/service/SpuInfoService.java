@@ -4,10 +4,17 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.Brand;
+import com.luna.product.domain.Category;
 import com.luna.product.domain.vo.SpuInfoVO;
+import com.luna.product.mapper.BrandMapper;
+import com.luna.product.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import org.apache.commons.compress.utils.Lists;
@@ -29,7 +36,13 @@ import com.luna.utils.DO2VOUtils;
 @Service
 public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
     @Autowired
-    private SpuInfoMapper spuInfoMapper;
+    private SpuInfoMapper  spuInfoMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+    @Autowired
+    private BrandMapper    brandMapper;
 
     /**
      * 查询商品SPU信息
@@ -120,7 +133,11 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         List<SpuInfo> records = spuInfoPage.getRecords();
 
         for (SpuInfo record : records) {
-            SpuInfoVO spuInfoVO = DO2VOUtils.spuInfo2SpuInfoVO(record);
+            String categoryName = Optional.ofNullable(record.getCatalogId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
+                .orElse(StringUtils.EMPTY);
+            String brandName =
+                Optional.ofNullable(record.getBrandId()).map(id -> brandMapper.selectById(id)).map(Brand::getName).orElse(StringUtils.EMPTY);
+            SpuInfoVO spuInfoVO = DO2VOUtils.spuInfo2SpuInfoVO(record, categoryName, brandName);
             list.add(spuInfoVO);
         }
         Page<SpuInfoVO> result = new Page<>(spuInfoPage.getCurrent(), spuInfoPage.getSize(), spuInfoPage.getTotal());

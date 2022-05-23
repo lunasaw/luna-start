@@ -28,11 +28,11 @@ public class SpuInfoVO extends BaseEntity {
     private String            spuDescription;
 
     /** 所属分类 */
-    @Excel(name = "所属分类")
+    @Excel(name = "所属分类ID")
     private Long              catalogId;
 
     /** 品牌 */
-    @Excel(name = "品牌")
+    @Excel(name = "品牌ID")
     private Long              brandId;
 
     /** 重量 */
@@ -42,5 +42,13 @@ public class SpuInfoVO extends BaseEntity {
     /** 上架状态 */
     @Excel(name = "上架状态")
     private Integer           publishStatus;
+
+    /** 所属分类 */
+    @Excel(name = "所属分类")
+    private String            categoryName;
+
+    /** 品牌 */
+    @Excel(name = "品牌")
+    private String            brandName;
 
 }

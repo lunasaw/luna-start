@@ -13,31 +13,31 @@ import lombok.Data;
  */
 @Data
 @TableName("tb_pms_spu_images")
-public class SpuImages extends BaseEntity{
-private static final long serialVersionUID=1L;
+public class SpuImages extends BaseEntity {
+    private static final long serialVersionUID = 1L;
 
-/** id */
+    /** id */
     @Excel(name = "id")
-private Long id;
+    private Long              id;
 
-/** SPU_ID */
+    /** SPU_ID */
     @Excel(name = "SPU_ID")
-private Long spuId;
+    private Long              spuId;
 
-/** 图片名 */
+    /** 图片名 */
     @Excel(name = "图片名")
-private String imgName;
+    private String            imgName;
 
-/** 图片地址 */
+    /** 图片地址 */
     @Excel(name = "图片地址")
-private String imgUrl;
+    private String            imgUrl;
 
-/** 顺序 */
+    /** 顺序 */
     @Excel(name = "顺序")
-private Long imgSort;
+    private Long              imgSort;
 
-/** 是否默认图 */
+    /** 是否默认图 */
     @Excel(name = "是否默认图")
-private Integer defaultImg;
+    private Integer           defaultImg;
 
-        }
+}

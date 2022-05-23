@@ -12,31 +12,31 @@ import lombok.Data;
  * @date 2022-05-23
  */
 @Data
-public class SpuImagesVO extends BaseEntity{
-private static final long serialVersionUID = 1L;
+public class SpuImagesVO extends BaseEntity {
+    private static final long serialVersionUID = 1L;
 
-/** id */
-@Excel(name = "id")
-private Long id;
+    /** id */
+    @Excel(name = "id")
+    private Long              id;
 
-/** SPU_ID */
-@Excel(name = "SPU_ID")
-private Long spuId;
+    /** SPU_ID */
+    @Excel(name = "SPU_ID")
+    private Long              spuId;
 
-/** 图片名 */
-@Excel(name = "图片名")
-private String imgName;
+    /** 图片名 */
+    @Excel(name = "图片名")
+    private String            imgName;
 
-/** 图片地址 */
-@Excel(name = "图片地址")
-private String imgUrl;
+    /** 图片地址 */
+    @Excel(name = "图片地址")
+    private String            imgUrl;
 
-/** 顺序 */
-@Excel(name = "顺序")
-private Long imgSort;
+    /** 顺序 */
+    @Excel(name = "顺序")
+    private Long              imgSort;
 
-/** 是否默认图 */
-@Excel(name = "是否默认图")
-private Integer defaultImg;
+    /** 是否默认图 */
+    @Excel(name = "是否默认图")
+    private Integer           defaultImg;
 
 }
