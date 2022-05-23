@@ -106,7 +106,7 @@ public class ${ClassName}Controller extends BaseController {
     @PreAuthorize("@ss.hasPermi('${permissionPrefix}:list')")
     @ApiOperation(value = "ids查询${functionName}列表")
     @GetMapping("/listByIds")
-    public AjaxResultlistByIds(List<Long> ids) {
+    public AjaxResult listByIds(List<Long> ids) {
         List<${ClassName}> list = ${className}Service.select${ClassName}ByIds(ids);
         return AjaxResult.success(list);
     }

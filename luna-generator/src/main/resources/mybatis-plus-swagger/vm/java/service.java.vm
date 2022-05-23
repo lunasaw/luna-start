@@ -75,7 +75,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         ArrayList<${ClassName}> list = Lists.newArrayList();
         Page<${ClassName}> of = Page.of(0, 2000);
         while (true) {
-            Page<${ClassName}> ${className}Page = ${className}Mapper.selectList(of, queryWrapper);
+            Page<${ClassName}> ${className}Page = ${className}Mapper.selectPage(of, queryWrapper);
             List<${ClassName}> ${className}s = ${className}Page.getRecords();
             if (CollectionUtils.isEmpty(${className}s)) {
                 break;
@@ -214,7 +214,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         }
         QueryWrapper<${ClassName}> queryWrapper = new QueryWrapper<${ClassName}>();
         queryWrapper.in("${pkColumn.javaField}", ${className}Ids);
-        return categoryMapper.delete(queryWrapper);
+        return ${className}Mapper.delete(queryWrapper);
     }
 
 

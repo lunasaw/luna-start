@@ -178,17 +178,15 @@
           <el-input v-model="form.firstLetter" placeholder="请输入首字母"/>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" placeholder="请输入排序"/>
+          <el-input v-model.number="form.sort" placeholder="请输入排序"/>
         </el-form-item>
         <el-form-item label="是否为品牌制造商" prop="factoryStatus">
           <el-switch v-model="form.factoryStatus" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
-                     @change="factoryStatusSwitchChange(form)"
           ></el-switch>
         </el-form-item>
         <el-form-item label="是否展示" prop="showStatus">
           <el-switch v-model="form.showStatus" active-value="1" inactive-value="0"
-                     @change="showStatusSwitchChange(form)"
           ></el-switch>
         </el-form-item>
         <el-form-item label="产品数量" prop="productCount">
@@ -264,6 +262,36 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        name: [
+          {required: true, message: "品牌名称不能为空", trigger: "blur"}
+        ],
+        firstLetter: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error('首字母不能为空'));
+              } else if (!/^[a-zA-Z]*$/.test(value)) {
+                callback(new Error('首字母只能是字母'));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        sort: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error('排序不能为空'));
+              } else if (!/^[0-9]*$/.test(value)) {
+                callback(new Error('排序只能是数字'));
+              } else {
+                callback();
+              }
+            }, trigger: "blur"
+          }
+        ],
         showStatus: [
           {required: true, message: "是否展示不能为空", trigger: "blur"}
         ],
@@ -272,7 +300,8 @@ export default {
   },
   created() {
     this.getList();
-  },
+  }
+  ,
   methods: {
     uploadOss(row) {
       let data = {
@@ -283,7 +312,8 @@ export default {
       getOssPolicy(data).then(res => {
         console.log(res);
       });
-    },
+    }
+    ,
     /** 查询品牌列表 */
     getList() {
       this.loading = true;
@@ -292,12 +322,14 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    },
+    }
+    ,
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
-    },
+    }
+    ,
     // 表单重置
     reset() {
       this.form = {
@@ -314,23 +346,27 @@ export default {
         brandStory: null
       };
       this.resetForm("form");
-    },
+    }
+    ,
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
-    },
+    }
+    ,
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
-    },
+    }
+    ,
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    },
+    }
+    ,
     // 状态修改
     factoryStatusSwitchChange(row) {
       let text = row.factoryStatus === 1 ? '启用' : '停用'
@@ -341,7 +377,8 @@ export default {
       }).catch(function () {
         row.factoryStatus = row.factoryStatus === 1 ? 0 : 1
       })
-    },
+    }
+    ,
     // 状态修改
     showStatusSwitchChange(row) {
       let text = row.showStatus === '1' ? '启用' : '停用'
@@ -352,20 +389,23 @@ export default {
       }).catch(function () {
         row.showStatus = row.showStatus === '1' ? '0' : '1'
       })
-    },
+    }
+    ,
     getActiveValue(value) {
       if (value) {
         return Number("1")
       } else {
         return Number("0")
       }
-    },
+    }
+    ,
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
       this.title = "添加品牌";
-    },
+    }
+    ,
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -375,7 +415,8 @@ export default {
         this.open = true;
         this.title = "修改品牌";
       });
-    },
+    }
+    ,
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
@@ -395,7 +436,8 @@ export default {
           }
         }
       });
-    },
+    }
+    ,
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
@@ -406,7 +448,8 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {
       });
-    },
+    }
+    ,
     /** 导出按钮操作 */
     handleExport() {
       this.download('product/brand/export', {

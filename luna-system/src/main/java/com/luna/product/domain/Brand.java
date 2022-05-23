@@ -55,7 +55,7 @@ public class Brand extends BaseEntity {
 
     /** 专区大图 */
     @Excel(name = "专区大图")
-    @Size(max = 512, message = "图片上传数量过多")
+    @Size(max = 255, message = "图片上传数量过多")
     private String            bigPic;
 
     /** 品牌故事 */

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.SpuInfoMapper">
+
+    <resultMap type="SpuInfo" id="SpuInfoResult">
+        <result property="id" column="id"/>
+        <result property="spuName" column="spu_name"/>
+        <result property="spuDescription" column="spu_description"/>
+        <result property="catalogId" column="catalog_id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="weight" column="weight"/>
+        <result property="publishStatus" column="publish_status"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSpuInfoVo">
+        select id,
+               spu_name,
+               spu_description,
+               catalog_id,
+               brand_id,
+               weight,
+               publish_status,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_spu_info
+    </sql>
+
+    <select id="selectSpuInfoList" parameterType="SpuInfo" resultMap="SpuInfoResult">
+        <include refid="selectSpuInfoVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="spuName != null  and spuName != ''">and spu_name like concat('%', #{spuName}, '%')</if>
+            <if test="spuDescription != null  and spuDescription != ''">and spu_description = #{spuDescription}</if>
+            <if test="catalogId != null ">and catalog_id = #{catalogId}</if>
+            <if test="brandId != null ">and brand_id = #{brandId}</if>
+            <if test="weight != null ">and weight = #{weight}</if>
+            <if test="publishStatus != null ">and publish_status = #{publishStatus}</if>
+            <if test="deleted != null ">and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectSpuInfoById" parameterType="Long" resultMap="SpuInfoResult">
+        <include refid="selectSpuInfoVo"/>
+        where id = #{id}
+        limit 1
+    </select>
+
+    <insert id="insertSpuInfo" parameterType="SpuInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_spu_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="spuName != null">spu_name,</if>
+            <if test="spuDescription != null">spu_description,</if>
+            <if test="catalogId != null">catalog_id,</if>
+            <if test="brandId != null">brand_id,</if>
+            <if test="weight != null">weight,</if>
+            <if test="publishStatus != null">publish_status,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="spuName != null">#{spuName},</if>
+            <if test="spuDescription != null">#{spuDescription},</if>
+            <if test="catalogId != null">#{catalogId},</if>
+            <if test="brandId != null">#{brandId},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="publishStatus != null">#{publishStatus},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSpuInfo" parameterType="SpuInfo">
+        update tb_pms_spu_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="spuName != null">spu_name = #{spuName},</if>
+            <if test="spuDescription != null">spu_description = #{spuDescription},</if>
+            <if test="catalogId != null">catalog_id = #{catalogId},</if>
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="publishStatus != null">publish_status = #{publishStatus},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSpuInfoById" parameterType="Long">
+        delete
+        from tb_pms_spu_info
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSpuInfoByIds" parameterType="String">
+        delete from tb_pms_spu_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
