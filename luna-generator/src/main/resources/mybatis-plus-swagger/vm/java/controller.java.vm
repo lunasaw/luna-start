@@ -211,7 +211,7 @@ public class ${ClassName}Controller extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:category:remove')")
     @Log(title = "${functionName}", businessType = BusinessType.DELETE)
     @DeleteMapping("deleteBatch")
-    public AjaxResult removeBatch(@RequestBody List<${ClassName}> ${className}List) {
-        return toAjax(${className}Service.deleteIds(${className}List));
+    public AjaxResult removeBatch(@RequestBody List<${pkColumn.javaType}> ${className}Ids) {
+        return toAjax(${className}Service.deleteIds(${className}Ids));
     }
 }

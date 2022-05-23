@@ -3,7 +3,7 @@ package com.luna.web.controller.system;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.luna.common.config.RuoYiConfig;
+import com.luna.common.config.LunaConfig;
 import com.luna.common.utils.StringUtils;
 
 /**
@@ -16,7 +16,7 @@ public class SysIndexController
 {
     /** 系统基础配置 */
     @Autowired
-    private RuoYiConfig ruoyiConfig;
+    private LunaConfig ruoyiConfig;
 
     /**
      * 访问首页，提示语

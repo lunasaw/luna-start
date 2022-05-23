@@ -199,13 +199,15 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
     /**
      * 批量逻辑删除产品分类信息
      *
-     * @param categoryList 产品分类
+     * @param categoryIds 产品分类
      * @return 结果
      */
-    public int deleteIds(List<Category> categoryList) {
-        List<Long> collect = categoryList.stream().map(Category::getId).collect(Collectors.toList());
+    public int deleteIds(List<Long> categoryIds) {
+        if (CollectionUtils.isEmpty(categoryIds)) {
+            return 0;
+        }
         QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>();
-        queryWrapper.in("id", collect);
+        queryWrapper.in("id", categoryIds);
         return categoryMapper.delete(queryWrapper);
     }
 

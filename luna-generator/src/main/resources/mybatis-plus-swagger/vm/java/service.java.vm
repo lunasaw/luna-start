@@ -205,13 +205,15 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     /**
      * 批量逻辑删除${functionName}
      *
-     * @param ${className}List ${functionName}
+     * @param ${className}Ids ${functionName}
      * @return 结果
      */
-    public int deleteIds(List<${ClassName}> ${className}List) {
-        List<Long> collect = ${className}List.stream().map(${ClassName}::getId).collect(Collectors.toList());
+    public int deleteIds(List<${pkColumn.javaType}> ${className}Ids) {
+        if (CollectionUtils.isEmpty(${className}Ids)) {
+            return 0;
+        }
         QueryWrapper<${ClassName}> queryWrapper = new QueryWrapper<${ClassName}>();
-        queryWrapper.in("${pkColumn.javaField}", collect);
+        queryWrapper.in("${pkColumn.javaField}", ${className}Ids);
         return categoryMapper.delete(queryWrapper);
     }
 

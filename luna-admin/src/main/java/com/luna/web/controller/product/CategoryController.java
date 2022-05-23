@@ -197,7 +197,7 @@ public class CategoryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:category:remove')")
     @Log(title = "产品分类", businessType = BusinessType.DELETE)
     @DeleteMapping("deleteBatch")
-    public AjaxResult removeBatch(@RequestBody List<Category> categoryList) {
-        return toAjax(categoryService.deleteIds(categoryList));
+    public AjaxResult removeBatch(@RequestBody List<Long> categoryIds) {
+        return toAjax(categoryService.deleteIds(categoryIds));
     }
 }

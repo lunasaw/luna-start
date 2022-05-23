@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -119,7 +120,7 @@ public class BrandController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:brand:edit')")
     @Log(title = "品牌", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Brand brand) {
+    public AjaxResult edit(@Valid @RequestBody Brand brand) {
         return toAjax(brandService.updateBrand(brand));
     }
 

@@ -68,7 +68,7 @@ import com.luna.common.annotation.Excel;
 import com.luna.common.annotation.Excel.ColumnType;
 import com.luna.common.annotation.Excel.Type;
 import com.luna.common.annotation.Excels;
-import com.luna.common.config.RuoYiConfig;
+import com.luna.common.config.LunaConfig;
 import com.luna.common.core.domain.AjaxResult;
 import com.luna.common.core.text.Convert;
 import com.luna.common.exception.UtilException;
@@ -1100,7 +1100,7 @@ public class ExcelUtil<T>
      */
     public String getAbsoluteFile(String filename)
     {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
+        String downloadPath = LunaConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);
         if (!desc.getParentFile().exists())
         {

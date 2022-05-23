@@ -7,3 +7,12 @@ export function getServer() {
     method: 'get'
   })
 }
+
+// 获取oss签名
+export function getOssPolicy(data) {
+  return request({
+    url: '/common/ossPolicy',
+    method: 'post',
+    data: data
+  })
+}

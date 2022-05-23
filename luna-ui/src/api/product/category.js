@@ -127,3 +127,12 @@ export function deleteCategory(data) {
     data: data
   })
 }
+
+// 批量逻辑删除产品分类
+export function deleteBatchCategory(data) {
+  return request({
+    url: '/product/category/deleteBatch',
+    method: 'delete',
+    data: data
+  })
+}

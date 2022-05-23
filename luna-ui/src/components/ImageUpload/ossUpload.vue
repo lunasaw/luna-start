@@ -2,7 +2,8 @@
   <div class="component-upload-image">
     <el-upload
       multiple
-      :action="uploadImgUrl"
+      ref="upload"
+      :action="uploadOssUrl"
       list-type="picture-card"
       :on-success="handleUploadSuccess"
       :before-upload="handleBeforeUpload"
@@ -14,6 +15,7 @@
       :show-file-list="true"
       :headers="headers"
       :file-list="fileList"
+      :data="uploadData"
       :on-preview="handlePictureCardPreview"
       :class="{hide: this.fileList.length >= this.limit}"
     >
@@ -23,8 +25,8 @@
     <!-- 上传提示 -->
     <div class="el-upload__tip" slot="tip" v-if="showTip">
       请上传
-      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
-      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
+      <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b></template>
+      <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b></template>
       的文件
     </div>
 
@@ -43,9 +45,11 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
+import {getToken} from "@/utils/auth";
+import axios from "axios";
 
 export default {
+  name: "ossUpload",
   props: {
     value: [String, Object, Array],
     // 图片数量限制
@@ -55,7 +59,7 @@ export default {
     },
     // 大小限制(MB)
     fileSize: {
-       type: Number,
+      type: Number,
       default: 5,
     },
     // 文件类型, 例如['png', 'jpg', 'jpeg']
@@ -76,8 +80,10 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       hideUpload: false,
+      ossSignReq: {},
+      uploadData: {},
       baseUrl: process.env.VUE_APP_BASE_API,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadOssUrl: 'https://luna-oss.oss-cn-beijing.aliyuncs.com',
       headers: {
         Authorization: "Bearer " + getToken(),
       },
@@ -88,6 +94,7 @@ export default {
     value: {
       handler(val) {
         if (val) {
+          console.log(val);
           // 首先将值转为数组
           const list = Array.isArray(val) ? val : this.value.split(',');
           // 然后将数组转为对象数组
@@ -123,14 +130,37 @@ export default {
     // 删除图片
     handleRemove(file, fileList) {
       const findex = this.fileList.map(f => f.name).indexOf(file.name);
-      if(findex > -1) {
+      if (findex > -1) {
         this.fileList.splice(findex, 1);
         this.$emit("input", this.listToString(this.fileList));
       }
     },
+    doRequest() {
+      axios({
+        method: 'POST',
+        url: this.baseUrl + '/common/ossPolicy',
+        headers: this.headers,
+        data: this.ossSignReq,
+      }).then((res) => {
+        this.ossSign = res.data;
+        this.uploadOssUrl = this.ossSign.host;
+        this.uploadData.policy = this.ossSign.policy;
+        this.uploadData.key = this.ossSign.dir + this.ossSign.objectName;
+        this.uploadData.success_action_status = 200;
+        this.uploadData.OSSAccessKeyId = this.ossSign.accessKey;
+        this.uploadData.signature = this.ossSign.signature;
+        console.log(this.uploadData)
+      }).catch(err => {
+        console.log(err);
+      })
+    },
     // 上传成功回调
-    handleUploadSuccess(res) {
-      this.uploadList.push({ name: res.fileName, url: res.fileName });
+    handleUploadSuccess(res, file, fileList) {
+      let tempFile = {
+        name: file.name,
+        url: this.uploadOssUrl + "/" + this.uploadData.key
+      }
+      this.uploadList.push(tempFile);
       if (this.uploadList.length === this.number) {
         this.fileList = this.fileList.concat(this.uploadList);
         this.uploadList = [];
@@ -167,8 +197,34 @@ export default {
           return false;
         }
       }
+
+      this.ossSignReq = {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        expireTime: 300
+      }
+
       this.$modal.loading("正在上传图片，请稍候...");
       this.number++;
+
+      return axios({
+        method: 'POST',
+        url: this.baseUrl + '/common/ossPolicy',
+        headers: this.headers,
+        data: this.ossSignReq,
+      }).then((res) => {
+        this.ossSign = res.data;
+        this.uploadOssUrl = this.ossSign.host;
+        this.uploadData.policy = this.ossSign.policy;
+        this.uploadData.key = this.ossSign.dir + this.ossSign.objectName;
+        this.uploadData.success_action_status = 200;
+        this.uploadData.OSSAccessKeyId = this.ossSign.accessKey;
+        this.uploadData.signature = this.ossSign.signature;
+        console.log(this.uploadData)
+      }).catch(err => {
+        console.log(err);
+      })
     },
     // 文件个数超出
     handleExceed() {
@@ -186,12 +242,13 @@ export default {
     },
     // 对象转成指定字符串分隔
     listToString(list, separator) {
+      console.log(list)
       let strs = "";
       separator = separator || ",";
       for (let i in list) {
         strs += list[i].url.replace(this.baseUrl, "") + separator;
       }
-      return strs != '' ? strs.substr(0, strs.length - 1) : '';
+      return strs !== '' ? strs.substr(0, strs.length - 1) : '';
     }
   }
 };
@@ -199,17 +256,18 @@ export default {
 <style scoped lang="scss">
 // .el-upload--picture-card 控制加号部分
 ::v-deep.hide .el-upload--picture-card {
-    display: none;
+  display: none;
 }
+
 // 去掉动画效果
 ::v-deep .el-list-enter-active,
 ::v-deep .el-list-leave-active {
-    transition: all 0s;
+  transition: all 0s;
 }
 
 ::v-deep .el-list-enter, .el-list-leave-active {
-    opacity: 0;
-    transform: translateY(0);
+  opacity: 0;
+  transform: translateY(0);
 }
 </style>
 

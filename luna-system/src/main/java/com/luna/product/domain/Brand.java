@@ -5,6 +5,8 @@ import com.luna.common.annotation.Excel;
 import com.luna.common.core.domain.BaseEntity;
 import lombok.Data;
 
+import javax.validation.constraints.Size;
+
 /**
  * 品牌对象 tb_pms_brand
  *
@@ -53,6 +55,7 @@ public class Brand extends BaseEntity {
 
     /** 专区大图 */
     @Excel(name = "专区大图")
+    @Size(max = 512, message = "图片上传数量过多")
     private String            bigPic;
 
     /** 品牌故事 */

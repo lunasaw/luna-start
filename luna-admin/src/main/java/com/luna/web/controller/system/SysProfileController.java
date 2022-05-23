@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.luna.common.annotation.Log;
-import com.luna.common.config.RuoYiConfig;
+import com.luna.common.config.LunaConfig;
 import com.luna.common.constant.UserConstants;
 import com.luna.common.core.controller.BaseController;
 import com.luna.common.core.domain.AjaxResult;
@@ -127,7 +127,7 @@ public class SysProfileController extends BaseController
         if (!file.isEmpty())
         {
             LoginUser loginUser = getLoginUser();
-            String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
+            String avatar = FileUploadUtils.upload(LunaConfig.getAvatarPath(), file);
             if (userService.updateUserAvatar(loginUser.getUsername(), avatar))
             {
                 AjaxResult ajax = AjaxResult.success();

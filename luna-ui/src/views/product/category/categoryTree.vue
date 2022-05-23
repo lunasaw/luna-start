@@ -157,7 +157,7 @@ import {
   categoryCascadeList,
   updateCategory,
   deleteCategory,
-  updateListCategory
+  updateListCategory, deleteBatchCategory
 } from "@/api/product/category";
 import {navStatusSwitchChange} from "@/api/product/category";
 import {showStatusSwitchChange} from "@/api/product/category";
@@ -262,11 +262,18 @@ export default {
 
       let checkedKeys = this.$refs.categoryTree.getCheckedKeys();
       this.$modal.confirm('确认要删除【' + checkedKeys + '】吗？').then(function () {
-
+        return deleteBatchCategory(checkedKeys);
       }).then(() => {
-
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+        this.getCategoryCascadeList();
       }).catch(function () {
-
+        this.$message({
+          message: "删除失败",
+          type: "error"
+        });
       })
       console.log("被选中的元素", checkNodes);
     },
