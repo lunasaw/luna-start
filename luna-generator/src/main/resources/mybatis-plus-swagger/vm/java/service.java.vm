@@ -130,9 +130,8 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         List<${ClassName}VO> list = new ArrayList<>();
         List<${ClassName}> records = ${className}Page.getRecords();
 
-        for (${ClassName} record:
-                          records) {
-                ${ClassName}VO ${className}VO = DO2VOUtils .${className}2 ${ClassName}VO(record);
+        for (${ClassName} record:records) {
+            ${ClassName}VO ${className}VO = DO2VOUtils .${className}2 ${ClassName}VO(record);
             list.add(${className}VO);
         }
         Page<${ClassName}VO> result = new Page<>(${className}Page.getCurrent(), ${className}Page.getSize(), ${className}Page.getTotal());
