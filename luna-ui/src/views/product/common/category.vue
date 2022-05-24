@@ -36,11 +36,12 @@
              show-checkbox
              :default-expand-all=false
              :expand-on-click-node=false
-             :check-on-click-node=true
+             :check-on-click-node='checkableValue'
              :default-expanded-keys="defaultExpandedKeys"
              :draggable='draggable'
              :allow-drop='allowDrop'
              @node-drop='handleDrop'
+             @node-click="handleNodeClick"
              @check-change="handleCheckChange"
              ref="categoryTree"
     >
@@ -159,6 +160,10 @@ export default {
       type: Boolean,
       default: false
     },
+    checkable: {
+      type: Boolean,
+      default: false
+    },
     props: {
       type: Object,
       default: () => ({
@@ -199,6 +204,10 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否可拖拽
+      draggableValue: this.draggable,
+      // 是否可选择
+      checkableValue: this.checkable,
       // 查询参数
       queryParams: {
         parentId: undefined,
@@ -207,30 +216,66 @@ export default {
       form: {},
       // 表单校验
       rules: {
-
+        draggable: [
+          {
+            required: true, message: "请先保存数据", trigger: "blur", validator: (rule, value, callback) => {
+              if (this.draggable) {
+                if (this.form.id) {
+                  callback();
+                } else {
+                  callback(new Error("请先保存数据"));
+                }
+              } else {
+                callback();
+              }
+            }
+          },
+        ],
+        showStatus: [
+          {required: true, message: "显示状态不能为空", trigger: "blur"}
+        ],
+        createTime: [
+          {required: true, message: "创建时间不能为空", trigger: "blur"}
+        ],
+        updateTime: [
+          {required: true, message: "更新时间不能为空", trigger: "blur"}
+        ],
       }
     };
   },
-
+  computed: {},
   watch: {
     value: {
       handler(val) {
         if (val) {
           this.cascadeList = val;
+          this.categoryList = val;
         }
       }
     },
+    "queryParams.parentId": function (val) {
+      this.queryParams.parentId = val;
+      this.getCategoryCascadeList();
+    },
+    "draggable": function (val) {
+      if (!val) {
+        this.getCategoryCascadeList();
+      }
+    }
   },
   created() {
-    console.log(this.value);
-    console.log(this.draggable);
-    console.log(this.props);
-    // categoryCascadeList().then(response => {
-    //   this.cascadeList = response.data;
-    // });
+    categoryCascadeList().then(response => {
+      this.cascadeList = response.data;
+      this.categoryList = response.data;
+    });
     this.cascadeList = this.value;
   },
   methods: {
+    handleNodeClick(data, node, event) {
+      console.log(data, node, event);
+      // 事件回调
+      this.$emit("category-node-click", data, node, event);
+    },
     // 查询全部及联列表
     getCategoryCascadeList() {
       categoryCascadeList(this.queryParams).then(response => {

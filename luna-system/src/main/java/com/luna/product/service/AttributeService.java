@@ -1,17 +1,20 @@
 package com.luna.product.service;
 
-import java.util.List;
+import java.util.*;
 
 import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.AttributeCategory;
+import com.luna.product.domain.req.AttributeReq;
 import com.luna.product.mapper.AttributeCategoryMapper;
 import com.luna.utils.DO2VOUtils;
+import com.luna.utils.Req2DOUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Optional;
+
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -122,18 +125,48 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     /**
      * 分页查询商品属性参数VO视图列表
      *
-     * @param attribute 商品属性参数
+     * @param attributeReq 商品属性参数
      * @param page 分页参数
      * @return 商品属性参数
      */
-    public IPage<AttributeVO> selectVOList(IPage<Attribute> page, Attribute attribute) {
-        IPage<Attribute> attributePage = selectList(page, attribute);
-        List<AttributeVO> list = new ArrayList<>();
+    public IPage<AttributeVO> selectVOList(IPage<Attribute> page, AttributeReq attributeReq) {
+        Long categoryId = attributeReq.getCategoryId();
+        QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(Req2DOUtils.attributeReq2Attribute(attributeReq));
+        List<AttributeCategory> attributeCategories = Lists.newArrayList();
+        if (Objects.nonNull(categoryId)) {
+            AttributeCategory attributeCategory = new AttributeCategory();
+            attributeCategory.setCategoryId(categoryId);
+            attributeCategories = attributeCategoryMapper.selectList(new QueryWrapper<>(attributeCategory));
+            if (CollectionUtils.isEmpty(attributeCategories)) {
+                return Page.of(0, 0);
+            }
+            List<Long> attributeCategoryIds = attributeCategories.stream().map(AttributeCategory::getId).collect(Collectors.toList());
+            queryWrapper.in("product_attribute_category_id", attributeCategoryIds);
+        }
+        for (OrderItem order : page.orders()) {
+            queryWrapper.orderBy(true, order.isAsc(), order.getColumn());
+        }
+        Page<Attribute> selectPage = Page.of(page.getCurrent(), page.getSize());
+        selectPage.setMaxLimit(page.maxLimit());
+        // 构造VO
+        List<AttributeVO> list = Lists.newArrayList();
+        Page<Attribute> attributePage = attributeMapper.selectPage(selectPage, queryWrapper);
         List<Attribute> records = attributePage.getRecords();
 
+        // 条件查询Map直接获取
+        Map<Long, AttributeCategory> categoryMap =
+            attributeCategories.stream().collect(Collectors.toMap(AttributeCategory::getId, Function.identity()));
         for (Attribute record : records) {
-            AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
-            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, attributeCategory.getName());
+            // Map为空 再查一次
+            AttributeCategory attributeCategory = categoryMap.get(record.getProductAttributeCategoryId());
+            String categoryAttributeName = StringUtils.EMPTY;
+            if (attributeCategory != null) {
+                categoryAttributeName = attributeCategory.getName();
+            } else {
+                attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
+                categoryAttributeName = Optional.ofNullable(attributeCategory).map(AttributeCategory::getName).orElse(StringUtils.EMPTY);
+            }
+            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, categoryAttributeName);
             list.add(attributeVO);
         }
         Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());

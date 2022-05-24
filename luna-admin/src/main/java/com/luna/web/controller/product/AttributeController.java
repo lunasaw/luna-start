@@ -4,13 +4,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.product.domain.req.AttributeReq;
 import com.luna.product.domain.vo.AttributeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import java.util.Objects;
-import java.util.ArrayList;
-
 import com.github.pagehelper.PageInfo;
 
 import java.util.stream.Collectors;
@@ -67,7 +66,7 @@ public class AttributeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attribute:list')")
     @ApiOperation(value = "查询商品属性参数列表")
     @GetMapping("/listPage")
-    public TableDataInfo listPage(Attribute attribute) {
+    public TableDataInfo listPage(AttributeReq attribute) {
         Page<Attribute> page = startPageList();
         IPage<AttributeVO> list = attributeService.selectVOList(page, attribute);
         return getDataTable(list);

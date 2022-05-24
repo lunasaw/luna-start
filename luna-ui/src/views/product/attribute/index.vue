@@ -385,6 +385,17 @@ import {attributeCategoryListAll} from "@/api/product/attributeCategory";
 export default {
   name: "Attribute",
   dicts: ['tb_product_category_select', 'tb_product_attribute_support_normal', 'tb_product_attribute_index', 'tb_product_attribute_relation', 'tb_product_attribute_type', 'tb_product_attribute_input', 'tb_attribute_type'],
+  props: {
+    categoryId: {
+      type: Number,
+      default: 0,
+    },
+  },
+  watch: {
+    categoryId(val) {
+      this.queryParams.categoryId = val;
+    }
+  },
   data() {
     return {
       // 遮罩层
@@ -459,6 +470,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryAttributeList();
   },
   methods: {
     getCategoryAttributeList() {
