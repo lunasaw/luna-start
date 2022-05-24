@@ -203,6 +203,19 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     }
 
     /**
+     * 批量修改${functionName}列表
+     *
+     * @param ${className}List ${functionName}列表
+     * @return 结果
+     */
+    public Boolean update${className}Batch(List<${ClassName}> ${className}List) {
+        if (CollectionUtils.isEmpty(${className}List)){
+            return true;
+        }
+        return updateBatchById(${className}List);
+    }
+
+    /**
      * 批量删除${functionName}
      *
      * @param ${pkColumn.javaField}s 需要删除的${functionName}主键

@@ -176,6 +176,9 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
      * @return 结果
      */
     public Boolean updateCategoryBatch(List<Category> categoryList) {
+        if (CollectionUtils.isEmpty(categoryList)){
+            return true;
+        }
         return updateBatchById(categoryList);
     }
 

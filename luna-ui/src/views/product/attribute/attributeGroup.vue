@@ -1,148 +1,17 @@
 <template>
   <div class="app-container">
 
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px"
-             label-position="left">
-      <el-form-item label="上级分类" prop="parentId">
-        <el-cascader
-          v-model="queryParams.parentId"
-          :options="categoryList"
-          :props="{ multiple: false, emitPath: false, checkStrictly: true,
-           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
-          :show-all-levels="false" clearable filterable
-          @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
-      </el-form-item>
-      <el-form-item>
-        <el-switch
-          v-model="draggable"
-          active-text="开启拖拽"
-          inactive-text="关闭拖拽"
-          active-color="#13ce66"
-          inactive-color="#ff4949">
-        </el-switch>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-check" size="mini" @click="saveBatch">保存</el-button>
-        <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteBatch">删除</el-button>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-
-      </el-form-item>
-    </el-form>
 
 
-    <el-row :gutter="20" class="mb8 ml5">
-
-
-      <el-col :span="6">
-        <el-tree class="filter-tree"
-                 :props="props" :data="cascadeList" node-key="id"
-                 show-checkbox
-                 :default-expand-all=false
-                 :expand-on-click-node=false
-                 :check-on-click-node=true
-                 :default-expanded-keys="defaultExpandedKeys"
-                 :draggable='draggable'
-                 :allow-drop='allowDrop'
-                 @node-drop='handleDrop'
-                 @check-change="handleCheckChange"
-                 ref="categoryTree"
-        >
-    <span class="custom-tree-node" slot-scope="{ node, data }">
-        <span>{{ node.label }}</span>
-        <span>
-          <el-button v-if="node.level <= 2"
-                     type="text"
-                     size="mini"
-                     @click="() => append(data)">
-            添加
-          </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => handleUpdate(data)">
-            修改
-          </el-button>
-          <el-button v-if="node.childNodes.length === 0"
-                     type="text"
-                     size="mini"
-                     @click="() => remove(node, data)">
-            删除
-          </el-button>
-        </span>
-      </span>
-        </el-tree>
+    <el-row :gutter="24" class="mb8 ml5">
+      <el-col :span="12">
+        <category  :value="cascadeList" :draggable="draggable"></category>
       </el-col>
-
-
       <el-col :span="14" >
-
+        <el-table v-loading="loading" :data="attributeList" @selection-change="handleSelectionChange">
+        </el-table>
       </el-col>
     </el-row>
-
-
-    <!-- 添加或修改产品分类对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="上级分类" prop="parentId">
-          <el-cascader disabled
-                       v-model="form.parentId"
-                       :options="cascadeList"
-                       :props="{ multiple: false, emitPath: false, checkStrictly: true,
-           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
-                       :show-all-levels="true" clearable filterable
-                       @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
-        </el-form-item>
-        <el-form-item label="分类名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入分类名称"/>
-        </el-form-item>
-        <el-form-item label="分类级别" prop="level">
-          <el-select v-model="form.level" placeholder="请选择分类级别" disabled>
-            <el-option
-              v-for="dict in dict.type.tb_product_level"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="产品数量" prop="productCount">
-          <el-input v-model="form.productCount" placeholder="请输入产品数量"/>
-        </el-form-item>
-        <el-form-item label="分类属性单位" prop="productUnit">
-          <el-input v-model="form.productUnit" placeholder="请输入分类属性单位"/>
-        </el-form-item>
-        <el-form-item label="显示在导航" prop="navStatus">
-          <el-switch v-model="form.navStatus" :active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="显示状态" prop="showStatus">
-          <el-switch v-model="form.showStatus" :active-value="getActiveValue(true)"
-                     :inactive-value="getActiveValue(false)"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort">
-          <el-input v-model="form.sort" placeholder="请输入排序"/>
-        </el-form-item>
-        <el-form-item label="图标">
-          <image-upload v-model="form.icon"/>
-        </el-form-item>
-        <el-form-item label="关键词" prop="keywords">
-          <el-input v-model="form.keywords" placeholder="请输入关键词"/>
-        </el-form-item>
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="form.description" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 
 </template>
@@ -165,10 +34,13 @@ import {
 import {navStatusSwitchChange} from "@/api/product/category";
 import {showStatusSwitchChange} from "@/api/product/category";
 import {deletedSwitchChange} from "@/api/product/attribute";
-
+import category from "@/views/product/common/category";
+import {listAttribute} from "@/api/product/attribute";
 export default {
-  name: "Category",
-  dicts: ['tb_product_level', 'tb_normal_status'],
+  name: "CategoryGroup",
+  components: {
+    category
+  },
   data() {
     return {
       // 遮罩层
@@ -185,6 +57,8 @@ export default {
       draggable: false,
       // 总条数
       total: 0,
+      // 商品属性参数表格数据
+      attributeList: [],
       // 产品分类表格数据
       categoryList: [],
       // 及联列表
@@ -251,12 +125,22 @@ export default {
     }
   },
   created() {
+    this.getList();
     categoryCascadeList().then(response => {
       this.categoryList = response.data;
       this.cascadeList = response.data;
     });
   },
   methods: {
+    /** 查询商品属性参数列表 */
+    getList() {
+      this.loading = true;
+      listAttribute(this.queryParams).then(response => {
+        this.attributeList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
+    },
     append(data) {
       this.handleAdd(data);
     },

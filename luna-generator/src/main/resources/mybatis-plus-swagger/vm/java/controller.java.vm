@@ -175,7 +175,7 @@ public class ${ClassName}Controller extends BaseController {
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<${ClassName}> ${className}List) {
         ${className}List = ${className}List.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        return toAjax(${className}Service.updateBatchById(${className}List));
+        return toAjax(${className}Service.update${className}Batch(${className}List));
     }
 
     /**

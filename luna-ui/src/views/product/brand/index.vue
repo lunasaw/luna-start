@@ -328,8 +328,7 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
-    }
-    ,
+    },
     // 表单重置
     reset() {
       this.form = {
