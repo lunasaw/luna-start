@@ -29,7 +29,7 @@ import com.luna.product.domain.vo.SpuInfoVO;
  * 商品SPU信息Service业务层处理
  *
  * @author luna
- * @date 2022-05-23
+ * @date 2022-05-24
  */
 @Service
 public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
@@ -132,7 +132,7 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         List<SpuInfo> records = spuInfoPage.getRecords();
 
         for (SpuInfo record : records) {
-            String categoryName = Optional.ofNullable(record.getCatalogId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
+            String categoryName = Optional.ofNullable(record.getCategoryId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
                 .orElse(StringUtils.EMPTY);
             String brandName =
                 Optional.ofNullable(record.getBrandId()).map(id -> brandMapper.selectById(id)).map(Brand::getName).orElse(StringUtils.EMPTY);
@@ -143,6 +143,7 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         result.setRecords(list);
         return result;
     }
+
 
     /**
      * 新增商品SPU信息

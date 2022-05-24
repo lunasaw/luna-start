@@ -21,7 +21,7 @@ public class DO2VOUtils {
         spuInfoVO.setId(SpuInfo.getId());
         spuInfoVO.setSpuName(SpuInfo.getSpuName());
         spuInfoVO.setSpuDescription(SpuInfo.getSpuDescription());
-        spuInfoVO.setCatalogId(SpuInfo.getCatalogId());
+        spuInfoVO.setCategoryId(SpuInfo.getCategoryId());
         spuInfoVO.setBrandId(SpuInfo.getBrandId());
         spuInfoVO.setWeight(SpuInfo.getWeight());
         spuInfoVO.setPublishStatus(SpuInfo.getPublishStatus());

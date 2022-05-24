@@ -8,7 +8,7 @@
         <result property="id" column="id"/>
         <result property="spuName" column="spu_name"/>
         <result property="spuDescription" column="spu_description"/>
-        <result property="catalogId" column="catalog_id"/>
+        <result property="categoryId" column="category_id"/>
         <result property="brandId" column="brand_id"/>
         <result property="weight" column="weight"/>
         <result property="publishStatus" column="publish_status"/>
@@ -24,7 +24,7 @@
         select id,
                spu_name,
                spu_description,
-               catalog_id,
+               category_id,
                brand_id,
                weight,
                publish_status,
@@ -43,7 +43,7 @@
             <if test="id != null ">and id = #{id}</if>
             <if test="spuName != null  and spuName != ''">and spu_name like concat('%', #{spuName}, '%')</if>
             <if test="spuDescription != null  and spuDescription != ''">and spu_description = #{spuDescription}</if>
-            <if test="catalogId != null ">and catalog_id = #{catalogId}</if>
+            <if test="categoryId != null ">and category_id = #{categoryId}</if>
             <if test="brandId != null ">and brand_id = #{brandId}</if>
             <if test="weight != null ">and weight = #{weight}</if>
             <if test="publishStatus != null ">and publish_status = #{publishStatus}</if>
@@ -64,7 +64,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="spuName != null and spuName != ''">spu_name,</if>
             <if test="spuDescription != null">spu_description,</if>
-            <if test="catalogId != null">catalog_id,</if>
+            <if test="categoryId != null">category_id,</if>
             <if test="brandId != null">brand_id,</if>
             <if test="weight != null">weight,</if>
             <if test="publishStatus != null">publish_status,</if>
@@ -78,7 +78,7 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="spuName != null and spuName != ''">#{spuName},</if>
             <if test="spuDescription != null">#{spuDescription},</if>
-            <if test="catalogId != null">#{catalogId},</if>
+            <if test="categoryId != null">#{categoryId},</if>
             <if test="brandId != null">#{brandId},</if>
             <if test="weight != null">#{weight},</if>
             <if test="publishStatus != null">#{publishStatus},</if>
@@ -96,7 +96,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="spuName != null and spuName != ''">spu_name = #{spuName},</if>
             <if test="spuDescription != null">spu_description = #{spuDescription},</if>
-            <if test="catalogId != null">catalog_id = #{catalogId},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
             <if test="brandId != null">brand_id = #{brandId},</if>
             <if test="weight != null">weight = #{weight},</if>
             <if test="publishStatus != null">publish_status = #{publishStatus},</if>

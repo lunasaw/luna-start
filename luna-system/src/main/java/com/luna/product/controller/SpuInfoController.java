@@ -35,7 +35,7 @@ import com.luna.common.core.page.TableDataInfo;
  * 商品SPU信息Controller
  *
  * @author luna
- * @date 2022-05-23
+ * @date 2022-05-24
  */
 @RestController
 @RequestMapping("/product/spuInfo")

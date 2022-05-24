@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SpuImagesMapper;
 import com.luna.product.domain.SpuImages;
 import com.luna.product.domain.vo.SpuImagesVO;
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * SPU图片Service业务层处理
@@ -117,8 +117,7 @@ public class SpuImagesService extends ServiceImpl<SpuImagesMapper, SpuImages> {
         List<SpuImagesVO> list = new ArrayList<>();
         List<SpuImages> records = spuImagesPage.getRecords();
 
-        for (SpuImages record:
-                          records) {
+        for (SpuImages record : records) {
                 SpuImagesVO spuImagesVO = DO2VOUtils.spuImages2SpuImagesVO(record);
             list.add(spuImagesVO);
         }

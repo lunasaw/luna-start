@@ -9,7 +9,7 @@ import com.luna.product.domain.vo.SpuInfoVO;
  * 商品SPU信息Controller
  *
  * @author luna
- * @date 2022-05-23
+ * @date 2022-05-24
  */
 public class DO2VOUtils {
 
@@ -17,7 +17,7 @@ public class DO2VOUtils {
         if (SpuImages ==null){
             return null;
         }
-            SpuImagesVO spuImagesVO = new SpuImagesVO();
+        SpuImagesVO spuImagesVO = new SpuImagesVO();
         return spuImagesVO;
     }
 

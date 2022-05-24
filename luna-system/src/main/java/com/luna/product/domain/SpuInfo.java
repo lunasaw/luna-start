@@ -10,7 +10,7 @@ import lombok.Data;
  * 商品SPU信息对象 tb_pms_spu_info
  *
  * @author luna
- * @date 2022-05-23
+ * @date 2022-05-24
  */
 @Data
 @TableName("tb_pms_spu_info")
@@ -31,7 +31,7 @@ public class SpuInfo extends BaseEntity {
 
 /** 所属分类 */
     @Excel(name = "所属分类")
-    private Long              catalogId;
+    private Long              categoryId;
 
 /** 品牌 */
     @Excel(name = "品牌")

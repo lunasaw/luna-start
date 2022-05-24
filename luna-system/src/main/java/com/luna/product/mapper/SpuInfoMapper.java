@@ -9,7 +9,7 @@ import com.luna.product.domain.SpuInfo;
  * 商品SPU信息Mapper接口
  * 
  * @author luna
- * @date 2022-05-23
+ * @date 2022-05-24
  */
 public interface SpuInfoMapper extends BaseMapper<SpuInfo> {
     /**
