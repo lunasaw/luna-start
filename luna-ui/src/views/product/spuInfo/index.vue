@@ -1,47 +1,49 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="商品ID" prop="id"  >
+      <el-form-item label="商品ID" prop="id">
         <el-input
-            v-model="queryParams.id"
-            placeholder="请输入商品ID"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.id"
+          placeholder="请输入商品ID"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="商品名称" prop="spuName"  >
+      <el-form-item label="商品名称" prop="spuName">
         <el-input
-            v-model="queryParams.spuName"
-            placeholder="请输入商品名称"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.spuName"
+          placeholder="请输入商品名称"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属分类" prop="categoryId"  >
+
+      <el-form-item label="上级分类" prop="parentId">
+        <el-cascader
+          v-model="queryParams.categoryId"
+          :options="cascadeList"
+          :props="{ multiple: false, emitPath: false, checkStrictly: false,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id', children: 'childCategory' }"
+          :show-all-levels="false" clearable filterable
+          @keyup.enter.native="handleQuery"></el-cascader>
+      </el-form-item>
+      <el-form-item label="品牌" prop="brandId">
         <el-input
-            v-model="queryParams.categoryId"
-            placeholder="请输入所属分类"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.brandId"
+          placeholder="请输入品牌"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="品牌" prop="brandId"  >
+      <el-form-item label="重量" prop="weight">
         <el-input
-            v-model="queryParams.brandId"
-            placeholder="请输入品牌"
-            clearable
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.weight"
+          placeholder="请输入重量"
+          clearable
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="重量" prop="weight"  >
-        <el-input
-            v-model="queryParams.weight"
-            placeholder="请输入重量"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime" >
+      <el-form-item label="创建时间" prop="createTime">
         <el-date-picker clearable
                         v-model="queryParams.createTime"
                         type="date"
@@ -49,7 +51,7 @@
                         placeholder="请选择创建时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime" >
+      <el-form-item label="更新时间" prop="updateTime">
         <el-date-picker clearable
                         v-model="queryParams.updateTime"
                         type="date"
@@ -72,7 +74,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['product:spuInfo:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -83,7 +86,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['product:spuInfo:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -94,7 +98,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['product:spuInfo:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -104,20 +109,21 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['product:spuInfo:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="spuInfoList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="商品ID" align="center" prop="id" />
-      <el-table-column label="商品名称" align="center" prop="spuName" />
-      <el-table-column label="商品描述" align="center" prop="spuDescription" />
-      <el-table-column label="所属分类" align="center" prop="categoryId" />
-      <el-table-column label="品牌" align="center" prop="brandId" />
-      <el-table-column label="重量" align="center" prop="weight" />
-      <el-table-column label="上架状态" align="center" prop="publishStatus" width="100" >
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="商品ID" align="center" prop="id"/>
+      <el-table-column label="商品名称" align="center" prop="spuName"/>
+      <el-table-column label="商品描述" align="center" prop="spuDescription"/>
+      <el-table-column label="所属分类" align="center" prop="categoryName"/>
+      <el-table-column label="品牌" align="center" prop="brandName"/>
+      <el-table-column label="重量" align="center" prop="weight"/>
+      <el-table-column label="上架状态" align="center" prop="publishStatus" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.publishStatus" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
@@ -125,7 +131,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="是否删除" align="center" prop="deleted" width="100" >
+      <el-table-column label="是否删除" align="center" prop="deleted" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
@@ -133,7 +139,7 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -142,14 +148,16 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['product:spuInfo:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['product:spuInfo:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -164,24 +172,30 @@
 
     <!-- 添加或修改商品SPU信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
-      <el-form-item label="商品名称" prop="spuName">
-        <el-input v-model="form.spuName" placeholder="请输入商品名称"/>
-      </el-form-item>
-        <el-form-item label="商品描述" prop="spuDescription">
-          <el-input v-model="form.spuDescription" type="textarea" placeholder="请输入内容" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="center">
+        <el-form-item label="商品名称" prop="spuName">
+          <el-input v-model="form.spuName" placeholder="请输入商品名称"/>
         </el-form-item>
-      <el-form-item label="所属分类" prop="categoryId">
-        <el-input v-model="form.categoryId" placeholder="请输入所属分类"/>
-      </el-form-item>
-      <el-form-item label="品牌" prop="brandId">
-        <el-input v-model="form.brandId" placeholder="请输入品牌"/>
-      </el-form-item>
-      <el-form-item label="重量" prop="weight">
-        <el-input v-model="form.weight" placeholder="请输入重量"/>
-      </el-form-item>
+        <el-form-item label="商品描述" prop="spuDescription">
+          <el-input v-model="form.spuDescription" type="textarea" placeholder="请输入内容"/>
+        </el-form-item>
+        <el-form-item label="所属分类" prop="parentId">
+          <el-cascader
+            v-model="form.categoryId"
+            :options="cascadeList"
+            :props="{ multiple: false, emitPath: false, checkStrictly: true,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+            :show-all-levels="true" clearable filterable
+            @change="handleChange" @keyup.enter.native="handleQuery"></el-cascader>
+        </el-form-item>
+        <el-form-item label="品牌" prop="brandId">
+          <el-input v-model="form.brandId" placeholder="请输入品牌"/>
+        </el-form-item>
+        <el-form-item label="重量" prop="weight">
+          <el-input v-model="form.weight" placeholder="请输入重量"/>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -193,31 +207,32 @@
 </template>
 
 <script>
-  import {
-    listSpuInfo,
-    getSpuInfo,
-    delSpuInfo,
-    addSpuInfo,
-    addListSpuInfo,
-    listPageSpuInfo,
-    spuInfoListByIds,
-    spuInfoListAll,
-    deleteSpuInfo,
-    deleteBatchSpuInfo,
-    updateSpuInfo,
-    updateListSpuInfo
-  }
-    from
-        "@/api/product/spuInfo";
-          import {publishStatusSwitchChange} from "@/api/product/spuInfo";
-          import {deletedSwitchChange} from "@/api/product/spuInfo";
+import {
+  listSpuInfo,
+  getSpuInfo,
+  delSpuInfo,
+  addSpuInfo,
+  addListSpuInfo,
+  listPageSpuInfo,
+  spuInfoListByIds,
+  spuInfoListAll,
+  deleteSpuInfo,
+  deleteBatchSpuInfo,
+  updateSpuInfo,
+  updateListSpuInfo
+}
+  from
+    "@/api/product/spuInfo";
+import {publishStatusSwitchChange} from "@/api/product/spuInfo";
+import {deletedSwitchChange} from "@/api/product/spuInfo";
+import {categoryCascadeList} from "@/api/product/category";
 
-  export default {
-    name: "SpuInfo",
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
+export default {
+  name: "SpuInfo",
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -230,6 +245,7 @@
       total: 0,
       // 商品SPU信息表格数据
       spuInfoList: [],
+      cascadeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -254,33 +270,40 @@
       // 表单校验
       rules: {
         spuName: [
-          { required: true, message: "商品名称不能为空", trigger: "blur" }
+          {required: true, message: "商品名称不能为空", trigger: "blur"}
         ],
         categoryId: [
-          { required: true, message: "所属分类不能为空", trigger: "blur" }
+          {required: true, message: "所属分类不能为空", trigger: "blur"}
         ],
         brandId: [
-          { required: true, message: "品牌不能为空", trigger: "blur" }
+          {required: true, message: "品牌不能为空", trigger: "blur"}
         ],
         publishStatus: [
-          { required: true, message: "上架状态不能为空", trigger: "blur" }
+          {required: true, message: "上架状态不能为空", trigger: "blur"}
         ],
         deleted: [
-          { required: true, message: "是否删除不能为空", trigger: "blur" }
+          {required: true, message: "是否删除不能为空", trigger: "blur"}
         ],
         createTime: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
+          {required: true, message: "创建时间不能为空", trigger: "blur"}
         ],
         updateTime: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
+          {required: true, message: "更新时间不能为空", trigger: "blur"}
         ],
       }
     };
   },
   created() {
     this.getList();
+    this.getCategoryCascadeList();
   },
   methods: {
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
+      });
+    },
     /** 查询商品SPU信息列表 */
     getList() {
       this.loading = true;
@@ -330,28 +353,28 @@
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
-            // 状态修改
-                  publishStatusSwitchChange(row) {
-              let text = row.publishStatus === 1 ? '启用' : '停用'
-              this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
-                return publishStatusSwitchChange(row.id, row.publishStatus)
-              }).then(() => {
-                this.$modal.msgSuccess ('成功')
-              }).catch(function () {
-                row.publishStatus = row.publishStatus === 1 ? 0 : 1
-              })
-            },
-            // 状态修改
-                  deletedSwitchChange(row) {
-              let text = row.deleted === 1 ? '启用' : '停用'
-              this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
-                return deletedSwitchChange(row.id, row.deleted)
-              }).then(() => {
-                this.$modal.msgSuccess ('成功')
-              }).catch(function () {
-                row.deleted = row.deleted === 1 ? 0 : 1
-              })
-            },
+    // 状态修改
+    publishStatusSwitchChange(row) {
+      let text = row.publishStatus === 1 ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return publishStatusSwitchChange(row.id, row.publishStatus)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.publishStatus = row.publishStatus === 1 ? 0 : 1
+      })
+    },
+    // 状态修改
+    deletedSwitchChange(row) {
+      let text = row.deleted === 1 ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return deletedSwitchChange(row.id, row.deleted)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.deleted = row.deleted === 1 ? 0 : 1
+      })
+    },
     getActiveValue(value) {
       if (value) {
         return Number("1")
@@ -398,12 +421,13 @@
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除商品SPU信息编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除商品SPU信息编号为"' + ids + '"的数据项？').then(function () {
         return delSpuInfo(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

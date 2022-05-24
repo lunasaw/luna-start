@@ -60,6 +60,8 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
     public PageInfo select${ClassName}List(${ClassName} ${className}) {
         List<${ClassName}> list = ${className}Mapper.select${ClassName}List(${className});
         PageInfo pageInfo = new PageInfo<>(list);
+        List<${ClassName}VO> list = convertList(list);
+        pageInfo.setList(list);
         return pageInfo;
     }
 
@@ -127,16 +129,30 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
      */
     public IPage<${ClassName}VO> selectVOList(IPage<${ClassName}> page, ${ClassName} ${className}) {
         IPage<${ClassName}> ${className}Page = selectList(page, ${className});
-        List<${ClassName}VO> list = new ArrayList<>();
         List<${ClassName}> records = ${className}Page.getRecords();
 
-        for (${ClassName} record:records) {
-            ${ClassName}VO ${className}VO = DO2VOUtils .${className}2 ${ClassName}VO(record);
-            list.add(${className}VO);
-        }
+        List<${ClassName}VO> list = convertList(records);
+
         Page<${ClassName}VO> result = new Page<>(${className}Page.getCurrent(), ${className}Page.getSize(), ${className}Page.getTotal());
         result.setRecords(list);
         return result;
+    }
+
+    /**
+    * 构造数据
+    * @param records
+    * @return
+    */
+    public List<SpuInfoVO> convertList(List<${ClassName}> records) {
+        List<${ClassName}VO> list = new ArrayList<>();
+        if (CollectionUtils.isEmpty(records)) {
+            return list;
+        }
+        for (${ClassName} record:records) {
+            ${ClassName}VO ${className}VO = DO2VOUtils .${className}2${ClassName}VO(record);
+            list.add(${className}VO);
+        }
+        return list;
     }
 
 

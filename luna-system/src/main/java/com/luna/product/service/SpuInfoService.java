@@ -61,9 +61,9 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
     public PageInfo selectSpuInfoList(SpuInfo spuInfo) {
         List<SpuInfo> list = spuInfoMapper.selectSpuInfoList(spuInfo);
         PageInfo pageInfo = new PageInfo<>(list);
+        pageInfo.setList(convertList(list));
         return pageInfo;
     }
-
 
     /**
      * 查询全部商品SPU信息列表
@@ -128,22 +128,29 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
      */
     public IPage<SpuInfoVO> selectVOList(IPage<SpuInfo> page, SpuInfo spuInfo) {
         IPage<SpuInfo> spuInfoPage = selectList(page, spuInfo);
-        List<SpuInfoVO> list = new ArrayList<>();
         List<SpuInfo> records = spuInfoPage.getRecords();
 
-        for (SpuInfo record : records) {
-            String categoryName = Optional.ofNullable(record.getCategoryId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
-                .orElse(StringUtils.EMPTY);
-            String brandName =
-                Optional.ofNullable(record.getBrandId()).map(id -> brandMapper.selectById(id)).map(Brand::getName).orElse(StringUtils.EMPTY);
-            SpuInfoVO spuInfoVO = DO2VOUtils.spuInfo2SpuInfoVO(record, categoryName, brandName);
-            list.add(spuInfoVO);
-        }
+        List<SpuInfoVO> list = convertList(records);
         Page<SpuInfoVO> result = new Page<>(spuInfoPage.getCurrent(), spuInfoPage.getSize(), spuInfoPage.getTotal());
         result.setRecords(list);
         return result;
     }
 
+    public List<SpuInfoVO> convertList(List<SpuInfo> records) {
+        List<SpuInfoVO> list = new ArrayList<>();
+        if (CollectionUtils.isEmpty(records)) {
+            return list;
+        }
+        for (SpuInfo record : records) {
+            String categoryName = Optional.ofNullable(record.getCategoryId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
+                .orElse(StringUtils.EMPTY);
+            String brandName =
+                Optional.ofNullable(record.getBrandId()).map(id -> brandMapper.selectBrandById(id)).map(Brand::getName).orElse(StringUtils.EMPTY);
+            SpuInfoVO spuInfoVO = DO2VOUtils.spuInfo2SpuInfoVO(record, categoryName, brandName);
+            list.add(spuInfoVO);
+        }
+        return list;
+    }
 
     /**
      * 新增商品SPU信息
@@ -191,7 +198,6 @@ public class SpuInfoService extends ServiceImpl<SpuInfoMapper, SpuInfo> {
         queryWrapper.in("id", spuInfoIds);
         return spuInfoMapper.delete(queryWrapper);
     }
-
 
     /**
      * 逻辑删除商品SPU信息信息
