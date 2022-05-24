@@ -1,9 +1,6 @@
 package com.luna.utils;
 
-import com.luna.product.domain.Attribute;
-import com.luna.product.domain.AttributeCategory;
-import com.luna.product.domain.Category;
-import com.luna.product.domain.SpuInfo;
+import com.luna.product.domain.*;
 import com.luna.product.domain.vo.*;
 
 /**
@@ -11,6 +8,30 @@ import com.luna.product.domain.vo.*;
  * 2022/5/12
  */
 public class DO2VOUtils {
+
+    public static SpuImagesVO spuImages2SpuImagesVO(SpuImages item, String spuName) {
+        if (item == null) {
+            return null;
+        }
+        SpuImagesVO spuImagesVO = new SpuImagesVO();
+        spuImagesVO.setId(item.getId());
+        spuImagesVO.setSpuId(item.getSpuId());
+        spuImagesVO.setImgName(item.getImgName());
+        spuImagesVO.setImgUrl(item.getImgUrl());
+        spuImagesVO.setImgSort(item.getImgSort());
+        spuImagesVO.setDefaultImg(item.getDefaultImg());
+        spuImagesVO.setSearchValue(item.getSearchValue());
+        spuImagesVO.setCreateBy(item.getCreateBy());
+        spuImagesVO.setCreateTime(item.getCreateTime());
+        spuImagesVO.setDeleted(item.getDeleted());
+        spuImagesVO.setUpdateBy(item.getUpdateBy());
+        spuImagesVO.setUpdateTime(item.getUpdateTime());
+        spuImagesVO.setRemark(item.getRemark());
+        spuImagesVO.setParams(item.getParams());
+
+        spuImagesVO.setSpuName(spuName);
+        return spuImagesVO;
+    }
 
     public static SpuInfoVO spuInfo2SpuInfoVO(SpuInfo SpuInfo, String categoryName, String brandName) {
         if (SpuInfo == null) {

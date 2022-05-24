@@ -2,9 +2,16 @@ package com.luna.product.service;
 
 import java.util.List;
 import com.luna.common.utils.DateUtils;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.Category;
+import com.luna.product.domain.SpuInfo;
+import com.luna.product.mapper.SpuInfoMapper;
+import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import com.github.pagehelper.PageInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -16,7 +23,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SpuImagesMapper;
 import com.luna.product.domain.SpuImages;
 import com.luna.product.domain.vo.SpuImagesVO;
-import com.luna.utils.DO2VOUtils;
 
 /**
  * SPU图片Service业务层处理
@@ -28,6 +34,9 @@ import com.luna.utils.DO2VOUtils;
 public class SpuImagesService extends ServiceImpl<SpuImagesMapper, SpuImages> {
     @Autowired
     private SpuImagesMapper spuImagesMapper;
+
+    @Autowired
+    private SpuInfoMapper   spuInfoMapper;
 
     /**
      * 查询SPU图片
@@ -118,7 +127,9 @@ public class SpuImagesService extends ServiceImpl<SpuImagesMapper, SpuImages> {
         List<SpuImages> records = spuImagesPage.getRecords();
 
         for (SpuImages record : records) {
-                SpuImagesVO spuImagesVO = DO2VOUtils.spuImages2SpuImagesVO(record);
+            String spuName = Optional.ofNullable(record.getSpuId()).map(id -> spuInfoMapper.selectSpuInfoById(id)).map(SpuInfo::getSpuName)
+                .orElse(StringUtils.EMPTY);
+            SpuImagesVO spuImagesVO = DO2VOUtils.spuImages2SpuImagesVO(record, spuName);
             list.add(spuImagesVO);
         }
         Page<SpuImagesVO> result = new Page<>(spuImagesPage.getCurrent(), spuImagesPage.getSize(), spuImagesPage.getTotal());

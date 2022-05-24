@@ -39,4 +39,8 @@ public class SpuImagesVO extends BaseEntity {
     @Excel(name = "是否默认图")
     private Integer           defaultImg;
 
+    /** SPU名称 */
+    @Excel(name = "SPU名称")
+    private String            spuName;
+
 }
