@@ -17,16 +17,6 @@ public class Req2DOUtils {
         attribute.setId(attributeReq.getId());
         attribute.setProductAttributeCategoryId(attributeReq.getProductAttributeCategoryId());
         attribute.setName(attributeReq.getName());
-        attribute.setSelectType(attributeReq.getSelectType());
-        attribute.setInputType(attributeReq.getInputType());
-        attribute.setInputList(attributeReq.getInputList());
-        attribute.setSort(attributeReq.getSort());
-        attribute.setFilterType(attributeReq.getFilterType());
-        attribute.setIcon(attributeReq.getIcon());
-        attribute.setSearchType(attributeReq.getSearchType());
-        attribute.setRelatedStatus(attributeReq.getRelatedStatus());
-        attribute.setHandAddStatus(attributeReq.getHandAddStatus());
-        attribute.setAttrType(attributeReq.getAttrType());
         attribute.setSearchValue(attributeReq.getSearchValue());
         attribute.setCreateBy(attributeReq.getCreateBy());
         attribute.setCreateTime(attributeReq.getCreateTime());

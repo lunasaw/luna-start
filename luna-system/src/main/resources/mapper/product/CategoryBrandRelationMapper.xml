@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.CategoryBrandRelationMapper">
+
+    <resultMap type="CategoryBrandRelation" id="CategoryBrandRelationResult">
+        <result property="id" column="id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectCategoryBrandRelationVo">
+        select id,
+               brand_id,
+               category_id,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_category_brand_relation
+    </sql>
+
+    <select id="selectCategoryBrandRelationList" parameterType="CategoryBrandRelation" resultMap="CategoryBrandRelationResult">
+        <include refid="selectCategoryBrandRelationVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="brandId != null ">and brand_id = #{brandId}</if>
+            <if test="categoryId != null ">and category_id = #{categoryId}</if>
+            <if test="deleted != null ">and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectCategoryBrandRelationById" parameterType="Long" resultMap="CategoryBrandRelationResult">
+        <include refid="selectCategoryBrandRelationVo"/>
+        where id = #{id}
+        limit 1
+    </select>
+
+    <insert id="insertCategoryBrandRelation" parameterType="CategoryBrandRelation" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_category_brand_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="brandId != null">brand_id,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="brandId != null">#{brandId},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCategoryBrandRelation" parameterType="CategoryBrandRelation">
+        update tb_pms_category_brand_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCategoryBrandRelationById" parameterType="Long">
+        delete
+        from tb_pms_category_brand_relation
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCategoryBrandRelationByIds" parameterType="String">
+        delete from tb_pms_category_brand_relation where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

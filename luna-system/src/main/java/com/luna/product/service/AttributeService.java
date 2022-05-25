@@ -131,7 +131,12 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      */
     public IPage<AttributeVO> selectVOList(IPage<Attribute> page, AttributeReq attributeReq) {
         Long categoryId = attributeReq.getCategoryId();
-        QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(Req2DOUtils.attributeReq2Attribute(attributeReq));
+        Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
+        QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(attribute);
+        if (StringUtils.isNotEmpty(attributeReq.getName())) {
+            queryWrapper.like("name", attributeReq.getName());
+            attribute.setName(null);
+        }
         List<AttributeCategory> attributeCategories = Lists.newArrayList();
         if (Objects.nonNull(categoryId)) {
             AttributeCategory attributeCategory = new AttributeCategory();

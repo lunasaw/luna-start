@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="24" class="mb8 ml5">
       <el-col :span="7">
-        <category @category-node-click="categoryNodeClick"></category>
+        <category :showCheckBox=false @category-node-click="categoryNodeClick"></category>
       </el-col>
       <el-col :span="17">
 

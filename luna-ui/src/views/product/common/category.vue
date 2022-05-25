@@ -21,7 +21,7 @@
           inactive-color="#ff4949">
         </el-switch>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="showBatchValue">
         <el-button type="primary" icon="el-icon-check" size="mini" @click="saveBatch">保存</el-button>
         <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteBatch">删除</el-button>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -33,9 +33,9 @@
 
     <el-tree class="filter-tree"
              :props="props" :data="cascadeList" node-key="id"
-             show-checkbox
+             :show-checkbox="showCheckBoxValue"
              :default-expand-all=false
-             :expand-on-click-node=false
+             :expand-on-click-node="expandOnClickValue"
              :check-on-click-node='checkableValue'
              :default-expanded-keys="defaultExpandedKeys"
              :draggable='draggable'
@@ -164,6 +164,18 @@ export default {
       type: Boolean,
       default: false
     },
+    showBatch: {
+      type: Boolean,
+      default: false
+    },
+    expandOnClick: {
+      type: Boolean,
+      default: true
+    },
+    showCheckBox: {
+      type: Boolean,
+      default: false
+    },
     props: {
       type: Object,
       default: () => ({
@@ -208,6 +220,12 @@ export default {
       draggableValue: this.draggable,
       // 是否可选择
       checkableValue: this.checkable,
+      // 是否可选
+      showCheckBoxValue: this.showCheckBox,
+      // 是否批量操作
+      showBatchValue: this.showBatch,
+      // 点击展开
+      expandOnClickValue: this.expandOnClick,
       // 查询参数
       queryParams: {
         parentId: undefined,
