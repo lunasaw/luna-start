@@ -6,8 +6,10 @@ import com.github.pagehelper.PageInfo;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.AttributeCategory;
+import com.luna.product.domain.Category;
 import com.luna.product.domain.req.AttributeReq;
 import com.luna.product.mapper.AttributeCategoryMapper;
+import com.luna.product.mapper.CategoryMapper;
 import com.luna.utils.DO2VOUtils;
 import com.luna.utils.Req2DOUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -27,6 +29,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.AttributeMapper;
 import com.luna.product.domain.Attribute;
 import com.luna.product.domain.vo.AttributeVO;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 商品属性参数Service业务层处理
@@ -42,14 +45,22 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     @Autowired
     private AttributeCategoryMapper attributeCategoryMapper;
 
+    @Autowired
+    private CategoryService         categoryService;
+
+    @Autowired
+    private AttributeCategoryService attributeCategoryService;
+
     /**
      * 查询商品属性参数
      *
      * @param id 商品属性参数主键
      * @return 商品属性参数
      */
-    public Attribute selectAttributeById(Long id) {
-        return attributeMapper.selectAttributeById(id);
+    public AttributeVO selectAttributeById(Long id) {
+        Attribute attribute = attributeMapper.selectAttributeById(id);
+        List<AttributeVO> attributeVOS = convertList(Collections.singletonList(attribute));
+        return attributeVOS.stream().findFirst().orElse(null);
     }
 
     /**
@@ -60,14 +71,23 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      */
     public PageInfo selectAttributeList(Attribute attribute) {
         List<Attribute> list = attributeMapper.selectAttributeList(attribute);
-        List<AttributeVO> attributeVOList = list.stream().map(record -> {
-            AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
-            String name = Optional.ofNullable(attributeCategory).map(AttributeCategory::getName).orElse(StringUtils.EMPTY);
-            return DO2VOUtils.attribute2AttributeVO(record, name);
-        }).collect(Collectors.toList());
+        List<AttributeVO> attributeVOList = convertList(list);
         PageInfo pageInfo = new PageInfo<>(list);
         pageInfo.setList(attributeVOList);
         return pageInfo;
+    }
+
+    private List<AttributeVO> convertList(List<Attribute> list) {
+        List<AttributeVO> attributeVOList = list.stream().map(record -> {
+            AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
+            String name = Optional.ofNullable(attributeCategory).map(AttributeCategory::getName).orElse(StringUtils.EMPTY);
+            Long categoryId = null;
+            if (StringUtils.isNotEmpty(name) && attributeCategory != null) {
+                categoryId = attributeCategory.getCategoryId();
+            }
+            return DO2VOUtils.attribute2AttributeVO(record, name, categoryId);
+        }).collect(Collectors.toList());
+        return attributeVOList;
     }
 
     /**
@@ -171,7 +191,10 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
                 attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(record.getProductAttributeCategoryId());
                 categoryAttributeName = Optional.ofNullable(attributeCategory).map(AttributeCategory::getName).orElse(StringUtils.EMPTY);
             }
-            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, categoryAttributeName);
+            if (attributeCategory != null) {
+                categoryId = attributeCategory.getCategoryId();
+            }
+            AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, categoryAttributeName, categoryId);
             list.add(attributeVO);
         }
         Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());
@@ -185,10 +208,12 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      * @param attributeReq 商品属性参数
      * @return 结果
      */
+    @Transactional(rollbackFor = Exception.class)
     public int insertAttribute(AttributeReq attributeReq) {
-        if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())){
+        if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
             Long categoryId = attributeReq.getCategoryId();
-            String categoryName = attributeReq.getProductAttributeCategoryName();
+            String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
+            attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
         }
         attributeReq.setCreateTime(DateUtils.getNowDate());
         Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
@@ -198,11 +223,17 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     /**
      * 修改商品属性参数
      *
-     * @param attribute 商品属性参数
+     * @param attributeReq 商品属性参数
      * @return 结果
      */
-    public int updateAttribute(Attribute attribute) {
-        attribute.setUpdateTime(DateUtils.getNowDate());
+    public int updateAttribute(AttributeReq attributeReq) {
+        attributeReq.setUpdateTime(DateUtils.getNowDate());
+        if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
+            Long categoryId = attributeReq.getCategoryId();
+            String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
+            attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+        }
+        Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
         return attributeMapper.updateAttribute(attribute);
     }
 

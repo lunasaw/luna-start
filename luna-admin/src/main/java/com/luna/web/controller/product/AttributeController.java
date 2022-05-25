@@ -146,8 +146,8 @@ public class AttributeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attribute:edit')")
     @Log(title = "商品属性参数", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Attribute attribute) {
-        return toAjax(attributeService.updateAttribute(attribute));
+    public AjaxResult edit(@RequestBody AttributeReq attributeReq) {
+        return toAjax(attributeService.updateAttribute(attributeReq));
     }
 
     /**

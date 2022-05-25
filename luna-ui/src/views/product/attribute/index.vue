@@ -259,8 +259,20 @@
     <!-- 添加或修改商品属性参数对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
-        <el-form-item label="属性所属分类ID" prop="productAttributeCategoryId">
-          <el-select v-model="queryParams.productAttributeCategoryId" filterable placeholder="请选择">
+
+
+        <el-form-item label="属性所属分类" prop="categoryId">
+          <el-cascader
+            v-model="form.categoryId"
+            :options="cascadeList"
+            :props="{ multiple: false, emitPath: false, checkStrictly: false,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+            :show-all-levels="true" clearable filterable
+          ></el-cascader>
+        </el-form-item>
+
+        <el-form-item label="属性组名称" prop="productAttributeCategoryId">
+          <el-select v-model="form.productAttributeCategoryId" allow-create filterable placeholder="请选择">
             <el-option
               v-for="item in this.categoryAttributeList"
               :key="item.id"
@@ -269,6 +281,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="属性名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入属性名称"/>
         </el-form-item>
@@ -381,6 +394,8 @@ import {
     "@/api/product/attribute";
 import {deletedSwitchChange} from "@/api/product/attribute";
 import {attributeCategoryListAll} from "@/api/product/attributeCategory";
+import {categoryCascadeList} from "@/api/product/category";
+import {isNumberStr} from "@/utils";
 
 export default {
   name: "Attribute",
@@ -413,6 +428,7 @@ export default {
       // 商品属性参数表格数据
       attributeList: [],
       categoryAttributeList: [],
+      cascadeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -471,8 +487,15 @@ export default {
   created() {
     this.getList();
     this.getCategoryAttributeList();
+    this.getCategoryCascadeList();
   },
   methods: {
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
+      });
+    },
     getCategoryAttributeList() {
       attributeCategoryListAll({}).then(res => {
         this.categoryAttributeList = res.data;
@@ -559,6 +582,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      console.log(!isNumberStr("123123"))
       this.reset();
       const id = row.id || this.ids
       getAttribute(id).then(response => {
@@ -569,8 +593,13 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
+      console.log(!isNumberStr(this.form.productAttributeCategoryId))
       this.$refs["form"].validate(valid => {
         if (valid) {
+          if (!isNumberStr(this.form.productAttributeCategoryId)) {
+            this.form.productAttributeCategoryName = this.form.productAttributeCategoryId;
+            this.form.productAttributeCategoryId = null;
+          }
           if (this.form.id != null) {
             updateAttribute(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");

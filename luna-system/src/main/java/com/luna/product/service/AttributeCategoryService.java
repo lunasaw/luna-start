@@ -72,6 +72,18 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
         return attributeCategoryVO;
     }
 
+    public void insertAttributeCategory(Long categoryId, String attributeCategoryName) {
+        if (categoryId == null || StringUtils.isEmpty(attributeCategoryName)){
+            return;
+        }
+        AttributeCategory attributeCategory = new AttributeCategory();
+        attributeCategory.setCategoryId(categoryId);
+        attributeCategory.setName(attributeCategoryName);
+        attributeCategory.setAttributeCount(0L);
+        attributeCategory.setParamCount(0L);
+        attributeCategoryMapper.insertAttributeCategory(attributeCategory);
+    }
+
     /**
      * 查询全部产品属性分类列表
      *

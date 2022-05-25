@@ -1,6 +1,7 @@
 package com.luna.product.service;
 
-import java.util.List;
+import java.util.*;
+
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.Brand;
@@ -9,8 +10,6 @@ import com.luna.product.mapper.BrandMapper;
 import com.luna.product.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Optional;
 
 import com.github.pagehelper.PageInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -48,8 +47,11 @@ public class CategoryBrandRelationService extends ServiceImpl<CategoryBrandRelat
      * @param id 品牌分类关联主键
      * @return 品牌分类关联
      */
-    public CategoryBrandRelation selectCategoryBrandRelationById(Long id) {
-        return categoryBrandRelationMapper.selectCategoryBrandRelationById(id);
+    public CategoryBrandRelationVO selectCategoryBrandRelationById(Long id) {
+        List<CategoryBrandRelationVO> relationVOS =
+            convertList(Collections.singletonList(categoryBrandRelationMapper.selectCategoryBrandRelationById(id)));
+
+        return relationVOS.stream().findFirst().orElse(null);
     }
 
     /**

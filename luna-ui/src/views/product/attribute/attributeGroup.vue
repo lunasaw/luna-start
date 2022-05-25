@@ -143,7 +143,7 @@
               <el-cascader
                 v-model="form.categoryId"
                 :options="cascadeList"
-                :props="{ multiple: false, emitPath: false, checkStrictly: true,
+                :props="{ multiple: false, emitPath: false, checkStrictly: false,
            placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
                 :show-all-levels="true" clearable filterable
             ></el-cascader>
@@ -269,6 +269,7 @@ import {
   updateAttribute
 } from "@/api/product/attribute";
 import {categoryCascadeList} from "@/api/product/category";
+import {isNumberStr} from "@/utils";
 
 export default {
   name: "CategoryGroup",
@@ -484,7 +485,8 @@ export default {
               this.getList();
             });
           } else {
-            if (!this.form.productAttributeCategoryId.isNumber()) {
+            if (!isNumberStr(this.form.productAttributeCategoryId)) {
+              console.log(this.form.productAttributeCategoryId)
               this.form.productAttributeCategoryName = this.form.productAttributeCategoryId;
               this.form.productAttributeCategoryId = null;
             }

@@ -342,6 +342,10 @@ export default {
       getBrandRelation(id).then(response => {
         this.form = response.data;
         this.open = true;
+        this.brandList.push({
+          id: this.form.brandId,
+          name: this.form.brandName
+        })
         this.title = "修改品牌分类关联";
       });
     },

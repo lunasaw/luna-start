@@ -2,6 +2,9 @@ package com.luna.utils;
 
 import com.luna.product.domain.*;
 import com.luna.product.domain.vo.*;
+import org.assertj.core.util.Lists;
+
+import java.util.List;
 
 /**
  * @author luna
@@ -82,7 +85,15 @@ public class DO2VOUtils {
         return spuInfoVO;
     }
 
-    public static AttributeVO attribute2AttributeVO(Attribute Attribute, String categoryAttributeName) {
+    public static AttributeVO attribute2AttributeVO(Attribute Attribute, String categoryAttributeName, List<Long> categoryList) {
+        return attribute2AttributeVO(Attribute, categoryAttributeName, null, categoryList);
+    }
+
+    public static AttributeVO attribute2AttributeVO(Attribute Attribute, String categoryAttributeName, Long categoryId) {
+        return attribute2AttributeVO(Attribute, categoryAttributeName, categoryId, Lists.emptyList());
+    }
+
+    public static AttributeVO attribute2AttributeVO(Attribute Attribute, String categoryAttributeName, Long categoryId, List<Long> categoryList) {
         if (Attribute == null) {
             return null;
         }
@@ -110,6 +121,8 @@ public class DO2VOUtils {
         attributeVO.setRemark(Attribute.getRemark());
         attributeVO.setParams(Attribute.getParams());
 
+        attributeVO.setCategoryId(categoryId);
+        attributeVO.setCategoryIds(categoryList);
         return attributeVO;
 
     }

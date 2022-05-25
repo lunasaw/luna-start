@@ -189,6 +189,18 @@ public class CategoryService extends ServiceImpl<CategoryMapper, Category> {
         category.setLevel(level);
     }
 
+    public List<Long> getParentList(Long categroyId) {
+        ArrayList<Long> arrayList = Lists.newArrayList();
+        if (null == categroyId || categroyId == 0){
+            return arrayList;
+        }
+        arrayList.add(categroyId);
+        Category category = selectCategoryById(categroyId);
+        arrayList.addAll(getParentList(category.getParentId()));
+        Collections.reverse(arrayList);
+        return arrayList;
+    }
+
     /**
      * 批量删除产品分类
      *

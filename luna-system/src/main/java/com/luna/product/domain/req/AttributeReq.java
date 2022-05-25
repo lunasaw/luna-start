@@ -6,6 +6,8 @@ import com.luna.common.core.domain.BaseEntity;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 商品属性参数对象 tb_pms_attribute
  *
@@ -70,5 +72,7 @@ public class AttributeReq extends BaseEntity {
     private Integer           attrType;
 
     private Long              categoryId;
+
+    private List<Long>        categoryIds;
 
 }

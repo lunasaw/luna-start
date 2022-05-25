@@ -4,6 +4,8 @@ import com.luna.common.annotation.Excel;
 import com.luna.common.core.domain.BaseEntity;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 商品属性参数视图对象
  *
@@ -68,5 +70,9 @@ public class AttributeVO extends BaseEntity {
     /** 属性的类型 */
     @Excel(name = "属性的类型")
     private Integer           attrType;
+
+    private List<Long>        categoryIds;
+
+    private Long              categoryId;
 
 }
