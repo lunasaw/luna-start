@@ -272,7 +272,10 @@
         </el-form-item>
 
         <el-form-item label="属性组名称" prop="productAttributeCategoryId">
-          <el-select v-model="form.productAttributeCategoryId" allow-create filterable placeholder="请选择">
+          <el-select v-model="form.productAttributeCategoryId"
+                     remote
+                     :remote-method="getCategoryAttributeListSearch"
+                     allow-create filterable placeholder="请选择">
             <el-option
               v-for="item in this.categoryAttributeList"
               :key="item.id"
@@ -306,7 +309,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="可选值列表" prop="inputList">
-          <el-input v-model="form.inputList" placeholder="请输入可选值列表"/>
+          <el-select v-model="form.inputListStr"
+                     multiple
+                     allow-create filterable placeholder="请选择">
+            <el-option
+              v-for="item in form.inputListStr"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入排序"/>
@@ -393,9 +405,10 @@ import {
   from
     "@/api/product/attribute";
 import {deletedSwitchChange} from "@/api/product/attribute";
-import {attributeCategoryListAll} from "@/api/product/attributeCategory";
+import {attributeCategoryListAll, listAttributeCategory} from "@/api/product/attributeCategory";
 import {categoryCascadeList} from "@/api/product/category";
 import {isNumberStr} from "@/utils";
+import {listBrand} from "@/api/product/brand";
 
 export default {
   name: "Attribute",
@@ -490,6 +503,20 @@ export default {
     this.getCategoryCascadeList();
   },
   methods: {
+    getCategoryAttributeListSearch(value) {
+      if (!value) {
+        this.categoryAttributeList = [];
+        return;
+      }
+      let query = {
+        name : value
+      }
+      listAttributeCategory(query).then(res => {
+        this.categoryAttributeList = res.rows;
+      }).catch(() => {
+        this.categoryAttributeList = [];
+      });
+    },
     // 查询全部及联列表
     getCategoryCascadeList() {
       categoryCascadeList().then(response => {
@@ -582,7 +609,6 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log(!isNumberStr("123123"))
       this.reset();
       const id = row.id || this.ids
       getAttribute(id).then(response => {
@@ -613,6 +639,7 @@ export default {
               this.getList();
             });
           }
+          this.getCategoryAttributeList();
         }
       });
     },

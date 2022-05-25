@@ -75,4 +75,7 @@ public class AttributeReq extends BaseEntity {
 
     private List<Long>        categoryIds;
 
+    @Excel(name = "可选值列表")
+    private List<String>      inputListStr;
+
 }

@@ -1,10 +1,12 @@
 package com.luna.utils;
 
+import com.google.common.base.Splitter;
 import com.luna.product.domain.*;
 import com.luna.product.domain.vo.*;
 import org.assertj.core.util.Lists;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luna
@@ -105,6 +107,8 @@ public class DO2VOUtils {
         attributeVO.setSelectType(Attribute.getSelectType());
         attributeVO.setInputType(Attribute.getInputType());
         attributeVO.setInputList(Attribute.getInputList());
+        List<String> strings = Optional.ofNullable(Attribute.getInputList()).map(e -> Splitter.on(",").splitToList(e)).orElse(Lists.newArrayList());
+        attributeVO.setInputListStr(strings);
         attributeVO.setSort(Attribute.getSort());
         attributeVO.setFilterType(Attribute.getFilterType());
         attributeVO.setIcon(Attribute.getIcon());

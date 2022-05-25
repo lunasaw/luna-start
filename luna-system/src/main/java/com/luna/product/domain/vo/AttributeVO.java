@@ -43,6 +43,9 @@ public class AttributeVO extends BaseEntity {
     @Excel(name = "可选值列表")
     private String            inputList;
 
+    @Excel(name = "可选值列表")
+    private List<String>      inputListStr;
+
     /** 排序 */
     @Excel(name = "排序")
     private Long              sort;

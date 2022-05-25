@@ -213,7 +213,10 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
-            attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            if (aLong != null){
+                attributeReq.setProductAttributeCategoryId(aLong);
+            }
         }
         attributeReq.setCreateTime(DateUtils.getNowDate());
         Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
@@ -231,7 +234,10 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
-            attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            if (aLong != null){
+                attributeReq.setProductAttributeCategoryId(aLong);
+            }
         }
         Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
         return attributeMapper.updateAttribute(attribute);

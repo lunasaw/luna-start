@@ -72,16 +72,21 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
         return attributeCategoryVO;
     }
 
-    public void insertAttributeCategory(Long categoryId, String attributeCategoryName) {
+    public Long  insertAttributeCategory(Long categoryId, String attributeCategoryName) {
         if (categoryId == null || StringUtils.isEmpty(attributeCategoryName)){
-            return;
+            return null;
         }
         AttributeCategory attributeCategory = new AttributeCategory();
-        attributeCategory.setCategoryId(categoryId);
         attributeCategory.setName(attributeCategoryName);
+        attributeCategory.setCategoryId(categoryId);
+        AttributeCategory category = attributeCategoryMapper.selectOne(new QueryWrapper<>(attributeCategory));
+        if (category != null){
+            return category.getId();
+        }
         attributeCategory.setAttributeCount(0L);
         attributeCategory.setParamCount(0L);
         attributeCategoryMapper.insertAttributeCategory(attributeCategory);
+        return attributeCategory.getId();
     }
 
     /**

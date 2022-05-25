@@ -150,7 +150,10 @@
             </el-form-item>
 
             <el-form-item label="属性组名称" prop="productAttributeCategoryId">
-              <el-select v-model="form.productAttributeCategoryId" allow-create filterable placeholder="请选择">
+              <el-select v-model="form.productAttributeCategoryId"
+                         remote
+                         :remote-method="getCategoryAttributeListSearch"
+                         allow-create filterable placeholder="请选择">
                 <el-option
                   v-for="item in this.categoryAttributeList"
                   :key="item.id"
@@ -183,7 +186,16 @@
               </el-select>
             </el-form-item>
             <el-form-item label="可选值列表" prop="inputList">
-              <el-input v-model="form.inputList" placeholder="请输入可选值列表"/>
+              <el-select v-model="form.inputListStr"
+                         multiple
+                         allow-create filterable placeholder="请选择">
+                <el-option
+                  v-for="item in form.inputListStr"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                ></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="排序" prop="sort">
               <el-input v-model="form.sort" placeholder="请输入排序"/>
@@ -259,7 +271,7 @@
 <script>
 import category from "@/views/product/common/category";
 import attribute from "@/views/product/attribute/index";
-import {attributeCategoryListAll} from "@/api/product/attributeCategory";
+import {attributeCategoryListAll, listAttributeCategory} from "@/api/product/attributeCategory";
 import {
   addAttribute,
   delAttribute,
@@ -364,6 +376,20 @@ export default {
     this.getCategoryCascadeList();
   },
   methods: {
+    getCategoryAttributeListSearch(value) {
+      if (!value) {
+        this.categoryAttributeList = [];
+        return;
+      }
+      let query = {
+        name : value
+      }
+      listAttributeCategory(query).then(res => {
+        this.categoryAttributeList = res.rows;
+      }).catch(() => {
+        this.categoryAttributeList = [];
+      });
+    },
     categoryNodeClick(data, node, instance) {
       // 获取分类Id传入，查询
       this.clickedNode = data;
@@ -469,7 +495,7 @@ export default {
       const id = row.id || this.ids
       getAttribute(id).then(response => {
         this.form = response.data;
-        this.form.categoryId = this.clickedNode.id;
+        this.form.categoryId = row.categoryId;
         this.open = true;
         this.title = "修改商品属性参数";
       });
