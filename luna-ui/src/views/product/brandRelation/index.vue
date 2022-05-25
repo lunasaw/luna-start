@@ -10,20 +10,27 @@
         />
       </el-form-item>
       <el-form-item label="品牌名称" prop="brandId">
-        <el-input
-          v-model="queryParams.brandId"
-          placeholder="请输入品牌名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.brandId"
+                   remote
+                   filterable
+                   :remote-method="getBrandList"
+                   placeholder="请选择品牌名称">
+          <el-option
+            v-for="item in this.brandList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="分类名称" prop="categoryId">
-        <el-input
+      <el-form-item label="上级分类" prop="parentId">
+        <el-cascader
           v-model="queryParams.categoryId"
-          placeholder="请输入分类名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+          :options="cascadeList"
+          :props="{ multiple: false, emitPath: true, checkStrictly: false,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+          :show-all-levels="false" clearable filterable
+          @keyup.enter.native="handleQuery"></el-cascader>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -84,8 +91,8 @@
     <el-table v-loading="loading" :data="brandRelationList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="关联ID" align="center" prop="id"/>
-      <el-table-column label="品牌名称" align="center" prop="brandId"/>
-      <el-table-column label="分类名称" align="center" prop="categoryId"/>
+      <el-table-column label="品牌名称" align="center" prop="brandName"/>
+      <el-table-column label="分类名称" align="center" prop="categoryName"/>
       <el-table-column label="是否删除" align="center" prop="deleted" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
@@ -129,10 +136,26 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
         <el-form-item label="品牌名称" prop="brandId">
-          <el-input v-model="form.brandId" placeholder="请输入品牌名称"/>
+          <el-select v-model="form.brandId"
+                     remote
+                     filterable
+                     :remote-method="getBrandList"
+                     placeholder="请选择品牌名称">
+            <el-option
+              v-for="item in this.brandList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="分类名称" prop="categoryId">
-          <el-input v-model="form.categoryId" placeholder="请输入分类名称"/>
+        <el-form-item label="分类名称" prop="parentId">
+          <el-cascader
+            v-model="form.categoryId"
+            :options="cascadeList"
+            :props="{ multiple: false, emitPath: true, checkStrictly: false,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+            :show-all-levels="true" clearable filterable></el-cascader>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
@@ -164,6 +187,8 @@ import {
   from
     "@/api/product/brandRelation";
 import {deletedSwitchChange} from "@/api/product/brandRelation";
+import {categoryCascadeList} from "@/api/product/category";
+import {listBrand} from "@/api/product/brand";
 
 export default {
   name: "BrandRelation",
@@ -183,6 +208,10 @@ export default {
       total: 0,
       // 品牌分类关联表格数据
       brandRelationList: [],
+      // 及联列表
+      cascadeList: [],
+      // 品牌搜索列表
+      brandList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -214,8 +243,29 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryCascadeList();
   },
   methods: {
+    getBrandList(value) {
+      if (!value) {
+        this.brandList = [];
+        return;
+      }
+      let query = {
+        name : value
+      }
+      listBrand(query).then(res => {
+        this.brandList = res.rows;
+      }).catch(() => {
+        this.brandList = [];
+      });
+    },
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
+      });
+    },
     /** 查询品牌分类关联列表 */
     getList() {
       this.loading = true;

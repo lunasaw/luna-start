@@ -123,8 +123,8 @@ public class AttributeController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:attribute:add')")
     @Log(title = "商品属性参数", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Attribute attribute) {
-        return toAjax(attributeService.insertAttribute(attribute));
+    public AjaxResult add(@RequestBody AttributeReq attributeReq) {
+        return toAjax(attributeService.insertAttribute(attributeReq));
     }
 
     /**

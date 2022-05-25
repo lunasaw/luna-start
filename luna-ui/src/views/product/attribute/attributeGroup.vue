@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="24" class="mb8 ml5">
       <el-col :span="7">
-        <category :showCheckBox=false @category-node-click="categoryNodeClick"></category>
+        <category :showCheckBox=true @category-node-click="categoryNodeClick"></category>
       </el-col>
       <el-col :span="17">
 
@@ -139,8 +139,18 @@
         <!-- 添加或修改商品属性参数对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
           <el-form ref="form" :model="form" :rules="rules" label-width="110px" label-position="center">
-            <el-form-item label="属性所属分类" prop="productAttributeCategoryId">
-              <el-select v-model="queryParams.productAttributeCategoryId" allow-create filterable placeholder="请选择">
+            <el-form-item label="属性所属分类" prop="categoryId">
+              <el-cascader
+                v-model="form.categoryId"
+                :options="cascadeList"
+                :props="{ multiple: false, emitPath: false, checkStrictly: true,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+                :show-all-levels="true" clearable filterable
+            ></el-cascader>
+            </el-form-item>
+
+            <el-form-item label="属性组名称" prop="productAttributeCategoryId">
+              <el-select v-model="form.productAttributeCategoryId" allow-create filterable placeholder="请选择">
                 <el-option
                   v-for="item in this.categoryAttributeList"
                   :key="item.id"
@@ -258,6 +268,7 @@ import {
   listAttribute, listPageAttribute,
   updateAttribute
 } from "@/api/product/attribute";
+import {categoryCascadeList} from "@/api/product/category";
 
 export default {
   name: "CategoryGroup",
@@ -288,6 +299,10 @@ export default {
       attributeList: [],
       // 属性分类列表
       categoryAttributeList: [],
+      // 及联列表
+      cascadeList: [],
+      // 当前点击的属性分类
+      clickedNode: {},
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -345,10 +360,12 @@ export default {
   created() {
     this.getList();
     this.getCategoryAttributeList();
+    this.getCategoryCascadeList();
   },
   methods: {
     categoryNodeClick(data, node, instance) {
       // 获取分类Id传入，查询
+      this.clickedNode = data;
       this.getCategoryAttributeList({
         categoryId: data.id
       });
@@ -358,6 +375,12 @@ export default {
     getCategoryAttributeList(data) {
       attributeCategoryListAll(data).then(res => {
         this.categoryAttributeList = res.data;
+      });
+    },
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
       });
     },
     /** 查询商品属性参数列表 */
@@ -445,6 +468,7 @@ export default {
       const id = row.id || this.ids
       getAttribute(id).then(response => {
         this.form = response.data;
+        this.form.categoryId = this.clickedNode.id;
         this.open = true;
         this.title = "修改商品属性参数";
       });
@@ -460,6 +484,14 @@ export default {
               this.getList();
             });
           } else {
+            if (!this.form.productAttributeCategoryId.isNumber()) {
+              this.form.productAttributeCategoryName = this.form.productAttributeCategoryId;
+              this.form.productAttributeCategoryId = null;
+            }
+            if (!this.form.categoryId){
+              this.$modal.msgSuccess("请选择商品分类");
+              return;
+            }
             addAttribute(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

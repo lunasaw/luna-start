@@ -33,7 +33,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="产品评论数量" prop="productCommentCount">
+      <el-form-item label="评论数量" prop="productCommentCount" >
         <el-input
           v-model="queryParams.productCommentCount"
           placeholder="请输入产品评论数量"
@@ -118,6 +118,18 @@
           ></el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="关联分类" align="center" width="100" >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-share"
+            @click="handleRelationCategory(scope.row)"
+            v-hasPermi="['product:brand:edit']"
+          >关联分类
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="产品数量" align="center" prop="productCount"/>
       <el-table-column label="产品评论数量" align="center" prop="productCommentCount"/>
       <el-table-column label="品牌logo" align="center" prop="logo" width="100">
@@ -147,14 +159,6 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['product:brand:remove']"
           >删除
-          </el-button>
-
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="uploadOss(scope)"
-          >测试
           </el-button>
         </template>
       </el-table-column>
@@ -210,7 +214,95 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-  </div>
+
+    <!-- 品牌关联对话框-->
+    <el-dialog title="品牌关联" :visible.sync="openRelation" width="700px" append-to-body>
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleRelationAdd"
+            v-hasPermi="['product:brandRelation:add']"
+          >新增
+          </el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="danger"
+            plain
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multipleRelation"
+            @click="handleRelationDelete"
+            v-hasPermi="['product:brandRelation:remove']"
+          >删除
+          </el-button>
+        </el-col>
+      </el-row>
+      <el-table v-loading="loading" :data="brandRelationList" @selection-change="handleSelectionChangeRelation">
+        <el-table-column type="selection" width="55" align="center"/>
+        <el-table-column label="关联ID" align="center" prop="id"/>
+        <el-table-column label="品牌名称" align="center" prop="brandName"/>
+        <el-table-column label="分类名称" align="center" prop="categoryName"/>
+        <el-table-column label="是否删除" align="center" prop="deleted" width="100">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
+                       :inactive-value=getActiveValue(false)
+                       @change="deletedSwitchChange(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" align="center" prop="remark"/>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleRelationDelete(scope.row)"
+              v-hasPermi="['product:brandRelation:remove']"
+            >删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="relationTotal>0"
+        :total="relationTotal"
+        :page.sync="queryRelationParams.pageNum"
+        :limit.sync="queryRelationParams.pageSize"
+        @pagination="handleRelationCategory"
+      />
+    </el-dialog>
+
+    <!-- 添加或修改品牌分类关联对话框 -->
+    <el-dialog title="品牌关联新增" :visible.sync="openRelationAdd" width="500px" append-to-body>
+      <el-form ref="relationForm" :model="relationForm" label-width="100px" label-position="left">
+        <el-form-item label="品牌名称" prop="name">
+          <el-input v-model="relationForm.name" disabled placeholder="请输入品牌名"/>
+        </el-form-item>
+        <el-form-item label="分类名称" prop="categoryId">
+          <el-cascader
+            v-model="relationForm.categoryId"
+            :options="cascadeList"
+            :props="{ multiple: false, emitPath: false, checkStrictly: false,
+           placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
+            :show-all-levels="true" clearable filterable></el-cascader>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="relationForm.remark" type="textarea" placeholder="请输入内容"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitRelationForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+     </div>
 </template>
 
 <script>
@@ -219,6 +311,14 @@ import {factoryStatusSwitchChange} from "@/api/product/brand";
 import {showStatusSwitchChange} from "@/api/product/brand";
 import {getOssPolicy} from "@/api/monitor/server";
 import ossUpload from "@/components/ImageUpload/ossUpload";
+import {
+  addBrandRelation,
+  delBrandRelation,
+  deletedSwitchChange,
+  listBrandRelation,
+  updateBrandRelation
+} from "@/api/product/brandRelation";
+import {categoryCascadeList} from "@/api/product/category";
 
 export default {
   name: "Brand",
@@ -236,16 +336,30 @@ export default {
       single: true,
       // 非多个禁用
       multiple: true,
+      // 非多个禁用
+      multipleRelation: true,
       // 显示搜索条件
       showSearch: true,
       // 总条数
       total: 0,
+      // 关联总条数
+      relationTotal: 0,
       // 品牌表格数据
       brandList: [],
+      // 品牌分类关联表格数据
+      brandRelationList: [],
+      // 及联列表
+      cascadeList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否显示关联弹出层
+      openRelation: false,
+      // 临时操作品牌Id
+      tempBrandId: "",
+      // 是否显示关联新增弹出层
+      openRelationAdd: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -258,8 +372,14 @@ export default {
         productCount: null,
         productCommentCount: null,
       },
+      queryRelationParams: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       // 表单参数
       form: {},
+      // 表单参数
+      relationForm: {},
       // 表单校验
       rules: {
         name: [
@@ -295,14 +415,56 @@ export default {
         showStatus: [
           {required: true, message: "是否展示不能为空", trigger: "blur"}
         ],
-      }
+      },
     };
   },
   created() {
     this.getList();
+    this.getCategoryCascadeList();
   }
   ,
   methods: {
+    // 查询全部及联列表
+    getCategoryCascadeList() {
+      categoryCascadeList().then(response => {
+        this.cascadeList = response.data;
+      });
+    },
+    getBrandList(value) {
+      if (!value) {
+        this.brandList = [];
+        return;
+      }
+      let query = {
+        name : value
+      }
+      listBrand(query).then(res => {
+        this.brandList = res.rows;
+      }).catch(() => {
+        this.brandList = [];
+      });
+    },
+    // 状态修改
+    deletedSwitchChange(row) {
+      let text = row.deleted === 1 ? '启用' : '停用'
+      this.$modal.confirm('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+        return deletedSwitchChange(row.id, row.deleted)
+      }).then(() => {
+        this.$modal.msgSuccess('成功')
+      }).catch(function () {
+        row.deleted = row.deleted === 1 ? 0 : 1
+      })
+    },
+    handleRelationCategory(row) {
+      this.queryRelationParams.brandId = row.id;
+      this.relationForm.brandId = row.id;
+      this.relationForm.name = row.name;
+      listBrandRelation(this.queryRelationParams).then(res => {
+        this.brandRelationList = res.rows;
+        this.relationTotal = res.total;
+        this.openRelation = true;
+      })
+    },
     uploadOss(row) {
       let data = {
         ileName: "luna.png",
@@ -312,8 +474,7 @@ export default {
       getOssPolicy(data).then(res => {
         console.log(res);
       });
-    }
-    ,
+    },
     /** 查询品牌列表 */
     getList() {
       this.loading = true;
@@ -322,11 +483,11 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
-    }
-    ,
+    },
     // 取消按钮
     cancel() {
       this.open = false;
+      this.openRelationAdd = false;
       this.reset();
     },
     // 表单重置
@@ -344,28 +505,31 @@ export default {
         bigPic: null,
         brandStory: null
       };
+      this.relationForm.categoryId = null;
       this.resetForm("form");
-    }
-    ,
+      this.resetForm("relationForm");
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
-    }
-    ,
+    },
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
-    }
-    ,
+    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    }
-    ,
+    },
+
+    handleSelectionChangeRelation(selection) {
+      this.idsRelation = selection.map(item => item.id)
+      this.multipleRelation = !selection.length
+    },
     // 状态修改
     factoryStatusSwitchChange(row) {
       let text = row.factoryStatus === 1 ? '启用' : '停用'
@@ -376,8 +540,7 @@ export default {
       }).catch(function () {
         row.factoryStatus = row.factoryStatus === 1 ? 0 : 1
       })
-    }
-    ,
+    },
     // 状态修改
     showStatusSwitchChange(row) {
       let text = row.showStatus === '1' ? '启用' : '停用'
@@ -388,23 +551,20 @@ export default {
       }).catch(function () {
         row.showStatus = row.showStatus === '1' ? '0' : '1'
       })
-    }
-    ,
+    },
     getActiveValue(value) {
       if (value) {
         return Number("1")
       } else {
         return Number("0")
       }
-    }
-    ,
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
       this.title = "添加品牌";
-    }
-    ,
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -414,8 +574,7 @@ export default {
         this.open = true;
         this.title = "修改品牌";
       });
-    }
-    ,
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
@@ -435,8 +594,43 @@ export default {
           }
         }
       });
-    }
-    ,
+    },
+
+    /** 提交按钮 */
+    submitRelationForm() {
+      console.log(this.relationForm)
+      this.$refs["relationForm"].validate(valid => {
+        if (valid) {
+          if (this.relationForm.brandId != null) {
+            addBrandRelation(this.relationForm).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.openRelationAdd = false;
+              this.handleRelationCategory({
+                id: this.relationForm.brandId
+              })
+            });
+          }
+        }
+      });
+    },
+    /** 新增按钮操作 */
+    handleRelationAdd() {
+      this.reset();
+      this.openRelationAdd = true;
+    },
+    /** 删除关联按钮操作 */
+    handleRelationDelete(row) {
+      const ids = row.id || this.idsRelation;
+      this.$modal.confirm('是否确认删除品牌分类关联编号为"' + ids + '"的数据项？').then(function () {
+        return delBrandRelation(ids);
+      }).then(() => {
+        this.listBrandRelation({
+          brandId: this.relationForm.brandId
+        });
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
@@ -447,8 +641,7 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {
       });
-    }
-    ,
+    },
     /** 导出按钮操作 */
     handleExport() {
       this.download('product/brand/export', {

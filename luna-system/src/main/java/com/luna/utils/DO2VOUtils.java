@@ -109,6 +109,7 @@ public class DO2VOUtils {
         attributeVO.setUpdateTime(Attribute.getUpdateTime());
         attributeVO.setRemark(Attribute.getRemark());
         attributeVO.setParams(Attribute.getParams());
+
         return attributeVO;
 
     }

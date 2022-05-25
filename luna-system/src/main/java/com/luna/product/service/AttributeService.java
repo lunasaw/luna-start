@@ -182,11 +182,16 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     /**
      * 新增商品属性参数
      *
-     * @param attribute 商品属性参数
+     * @param attributeReq 商品属性参数
      * @return 结果
      */
-    public int insertAttribute(Attribute attribute) {
-        attribute.setCreateTime(DateUtils.getNowDate());
+    public int insertAttribute(AttributeReq attributeReq) {
+        if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())){
+            Long categoryId = attributeReq.getCategoryId();
+            String categoryName = attributeReq.getProductAttributeCategoryName();
+        }
+        attributeReq.setCreateTime(DateUtils.getNowDate());
+        Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
         return attributeMapper.insertAttribute(attribute);
     }
 
