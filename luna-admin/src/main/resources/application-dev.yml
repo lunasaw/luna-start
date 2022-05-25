@@ -2,6 +2,14 @@ luna:
     # 文件路径 示例（ Windows配置D:/luna/uploadPath，Linux配置 /home/luna/uploadPath）
     profile: /Users/luna/Document/project/luna/uploadPath
 
+    ali:
+      bucket-name: bucket-name
+      domain:
+      server-url:
+      access-key: xxxxxx
+      secret-key: xxxxx
+      endpoint: oss-cn-beijing.aliyuncs.com
+      enable-cname: false
 # 日志配置
 logging:
     level:
@@ -79,8 +87,8 @@ spring:
                 allow:
                 url-pattern: /druid/*
                 # 控制台管理用户名和密码
-                login-username: luna
-                login-password: 123456
+                login-username: xxx
+                login-password: xxx
             filter:
                 stat:
                     enabled: true
