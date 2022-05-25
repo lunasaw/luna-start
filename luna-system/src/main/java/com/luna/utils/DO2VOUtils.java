@@ -9,6 +9,28 @@ import com.luna.product.domain.vo.*;
  */
 public class DO2VOUtils {
 
+    public static CategoryBrandRelationVO categoryBrandRelation2CategoryBrandRelationVO(CategoryBrandRelation CategoryBrandRelation, String brandName,
+        String categoryName) {
+        if (CategoryBrandRelation == null) {
+            return null;
+        }
+        CategoryBrandRelationVO categoryBrandRelationVO = new CategoryBrandRelationVO();
+        categoryBrandRelationVO.setId(CategoryBrandRelation.getId());
+        categoryBrandRelationVO.setBrandId(CategoryBrandRelation.getBrandId());
+        categoryBrandRelationVO.setCategoryId(CategoryBrandRelation.getCategoryId());
+        categoryBrandRelationVO.setBrandName(brandName);
+        categoryBrandRelationVO.setCategoryName(categoryName);
+        categoryBrandRelationVO.setSearchValue(CategoryBrandRelation.getSearchValue());
+        categoryBrandRelationVO.setCreateBy(CategoryBrandRelation.getCreateBy());
+        categoryBrandRelationVO.setCreateTime(CategoryBrandRelation.getCreateTime());
+        categoryBrandRelationVO.setDeleted(CategoryBrandRelation.getDeleted());
+        categoryBrandRelationVO.setUpdateBy(CategoryBrandRelation.getUpdateBy());
+        categoryBrandRelationVO.setUpdateTime(CategoryBrandRelation.getUpdateTime());
+        categoryBrandRelationVO.setRemark(CategoryBrandRelation.getRemark());
+        categoryBrandRelationVO.setParams(CategoryBrandRelation.getParams());
+        return categoryBrandRelationVO;
+    }
+
     public static SpuImagesVO spuImages2SpuImagesVO(SpuImages item, String spuName) {
         if (item == null) {
             return null;

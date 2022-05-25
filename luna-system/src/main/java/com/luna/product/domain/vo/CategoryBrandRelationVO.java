@@ -19,11 +19,17 @@ public class CategoryBrandRelationVO extends BaseEntity {
     private Long              id;
 
     /** 品牌名称 */
-    @Excel(name = "品牌名称")
     private Long              brandId;
 
     /** 分类名称 */
-    @Excel(name = "分类名称")
     private Long              categoryId;
+
+    /** 品牌名称 */
+    @Excel(name = "品牌名称")
+    private String            brandName;
+
+    /** 分类名称 */
+    @Excel(name = "分类名称")
+    private String            categoryName;
 
 }

@@ -75,8 +75,8 @@ public class CategoryBrandRelationController extends BaseController {
     @PreAuthorize("@ss.hasPermi('product:brandRelation:list')")
     @ApiOperation(value = "查询全部品牌分类关联列表")
     @GetMapping("/listAll")
-    public List<CategoryBrandRelation> listAll(CategoryBrandRelation categoryBrandRelation) {
-        List<CategoryBrandRelation> list = categoryBrandRelationService.selectAllList(categoryBrandRelation);
+    public List<CategoryBrandRelationVO> listAll(CategoryBrandRelation categoryBrandRelation) {
+        List<CategoryBrandRelationVO> list = categoryBrandRelationService.selectAllList(categoryBrandRelation);
         return list;
     }
 
@@ -99,8 +99,8 @@ public class CategoryBrandRelationController extends BaseController {
     @Log(title = "品牌分类关联", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, CategoryBrandRelation categoryBrandRelation) {
-        List<CategoryBrandRelation> list = categoryBrandRelationService.selectAllList(categoryBrandRelation);
-        ExcelUtil<CategoryBrandRelation> util = new ExcelUtil<CategoryBrandRelation>(CategoryBrandRelation.class);
+        List<CategoryBrandRelationVO> list = categoryBrandRelationService.selectAllList(categoryBrandRelation);
+        ExcelUtil<CategoryBrandRelationVO> util = new ExcelUtil<CategoryBrandRelationVO>(CategoryBrandRelationVO.class);
         util.exportExcel(response, list, "品牌分类关联数据");
     }
 

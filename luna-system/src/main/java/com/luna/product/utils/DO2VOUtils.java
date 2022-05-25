@@ -11,12 +11,6 @@ import com.luna.product.domain.vo.CategoryBrandRelationVO;
  */
 public class DO2VOUtils {
 
-    public static CategoryBrandRelationVO categoryBrandRelation2CategoryBrandRelationVO(CategoryBrandRelation CategoryBrandRelation) {
-        if (CategoryBrandRelation == null) {
-            return null;
-        }
-        CategoryBrandRelationVO categoryBrandRelationVO = new CategoryBrandRelationVO();
-        return categoryBrandRelationVO;
-    }
+
 
 }

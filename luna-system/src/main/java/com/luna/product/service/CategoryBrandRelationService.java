@@ -2,10 +2,16 @@ package com.luna.product.service;
 
 import java.util.List;
 import com.luna.common.utils.DateUtils;
-import com.luna.product.domain.vo.SpuInfoVO;
+import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.Brand;
+import com.luna.product.domain.Category;
+import com.luna.product.mapper.BrandMapper;
+import com.luna.product.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import com.github.pagehelper.PageInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -17,7 +23,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.CategoryBrandRelationMapper;
 import com.luna.product.domain.CategoryBrandRelation;
 import com.luna.product.domain.vo.CategoryBrandRelationVO;
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * 品牌分类关联Service业务层处理
@@ -29,6 +35,12 @@ import com.luna.product.utils.DO2VOUtils;
 public class CategoryBrandRelationService extends ServiceImpl<CategoryBrandRelationMapper, CategoryBrandRelation> {
     @Autowired
     private CategoryBrandRelationMapper categoryBrandRelationMapper;
+
+    @Autowired
+    private BrandMapper                 brandMapper;
+
+    @Autowired
+    private CategoryMapper              categoryMapper;
 
     /**
      * 查询品牌分类关联
@@ -60,19 +72,19 @@ public class CategoryBrandRelationService extends ServiceImpl<CategoryBrandRelat
      * @param categoryBrandRelation 品牌分类关联
      * @return 品牌分类关联
      */
-    public List<CategoryBrandRelation> selectAllList(CategoryBrandRelation categoryBrandRelation) {
+    public List<CategoryBrandRelationVO> selectAllList(CategoryBrandRelation categoryBrandRelation) {
 
         QueryWrapper<CategoryBrandRelation> queryWrapper = new QueryWrapper<CategoryBrandRelation>(categoryBrandRelation);
-        ArrayList<CategoryBrandRelation> list = Lists.newArrayList();
+        ArrayList<CategoryBrandRelationVO> list = Lists.newArrayList();
         Page<CategoryBrandRelation> of = Page.of(0, 2000);
         while (true) {
             Page<CategoryBrandRelation> categoryBrandRelationPage = categoryBrandRelationMapper.selectPage(of, queryWrapper);
-            List<CategoryBrandRelation> categoryBrandRelations = categoryBrandRelationPage.getRecords();
-            if (CollectionUtils.isEmpty(categoryBrandRelations)) {
+            List<CategoryBrandRelationVO> relationVOS = convertList(categoryBrandRelationPage.getRecords());
+            if (CollectionUtils.isEmpty(relationVOS)) {
                 break;
             }
             of.setCurrent(of.getCurrent() + 1);
-            list.addAll(categoryBrandRelations);
+            list.addAll(relationVOS);
         }
 
         return list;
@@ -139,7 +151,13 @@ public class CategoryBrandRelationService extends ServiceImpl<CategoryBrandRelat
             return list;
         }
         for (CategoryBrandRelation record : records) {
-            CategoryBrandRelationVO categoryBrandRelationVO = DO2VOUtils.categoryBrandRelation2CategoryBrandRelationVO(record);
+            String categoryName = Optional.ofNullable(record.getCategoryId()).map(id -> categoryMapper.selectCategoryById(id)).map(Category::getName)
+                .orElse(StringUtils.EMPTY);
+            String brandName = Optional.ofNullable(record.getBrandId()).map(id -> brandMapper.selectBrandById(id)).map(Brand::getName)
+                .orElse(StringUtils.EMPTY);
+
+            CategoryBrandRelationVO categoryBrandRelationVO =
+                DO2VOUtils.categoryBrandRelation2CategoryBrandRelationVO(record, brandName, categoryName);
             list.add(categoryBrandRelationVO);
         }
         return list;
