@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.luna.product.domain.req.AttributeFixReq;
 import com.luna.product.domain.req.AttributeReq;
 import com.luna.product.domain.vo.AttributeVO;
 import io.swagger.annotations.Api;
@@ -69,6 +70,19 @@ public class AttributeController extends BaseController {
     public TableDataInfo listPage(AttributeReq attribute) {
         Page<Attribute> page = startPageList();
         IPage<AttributeVO> list = attributeService.selectVOList(page, attribute);
+        return getDataTable(list);
+    }
+
+
+    /**
+     * 分页查询商品属性参数列表 排除当前组
+     */
+    @PreAuthorize("@ss.hasPermi('product:attribute:list')")
+    @ApiOperation(value = "查询商品属性参数列表")
+    @GetMapping("/listPageFilter")
+    public TableDataInfo listPageFilter(AttributeReq attribute) {
+        Page<Attribute> page = startPageList();
+        IPage<AttributeVO> list = attributeService.listPageFilter(page, attribute);
         return getDataTable(list);
     }
 
@@ -161,6 +175,18 @@ public class AttributeController extends BaseController {
         attributeList = attributeList.stream().filter(Objects::nonNull).collect(Collectors.toList());
         return toAjax(attributeService.updateBatchById(attributeList));
     }
+
+    /**
+     * 批量修改商品属性参数
+     */
+    @ApiOperation(value = "修改商品属性参数")
+    @PreAuthorize("@ss.hasPermi('product:attribute:edit')")
+    @Log(title = "商品属性参数", businessType = BusinessType.UPDATE)
+    @PutMapping("/fixCategory")
+    public AjaxResult fixCategory(@RequestBody AttributeFixReq attributeFixReq) {
+        return toAjax(attributeService.fixCategory(attributeFixReq));
+    }
+
 
     /**
      * 删除商品属性参数

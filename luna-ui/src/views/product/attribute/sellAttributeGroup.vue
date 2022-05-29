@@ -8,7 +8,7 @@
 
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
           <el-form-item label="属性分类" prop="productAttributeCategoryId">
-            <el-select v-model="queryParams.productAttributeCategoryId" filterable placeholder="请选择">
+            <el-select v-model="queryParams.productAttributeCategoryId" filterable placeholder="请选择" clearable="">
               <el-option
                 v-for="item in this.categoryAttributeList"
                 :key="item.id"
@@ -245,7 +245,7 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="属性的类型" prop="attrType">
-              <el-select v-model="form.attrType" placeholder="请选择属性的类型">
+              <el-select v-model="form.attrType" placeholder="请选择属性的类型" disabled>
                 <el-option
                   v-for="dict in dict.type.tb_attribute_type"
                   :key="dict.value"
@@ -333,7 +333,7 @@ export default {
         searchType: null,
         relatedStatus: null,
         handAddStatus: null,
-        attrType: null,
+        attrType: 2,
         deleted: null,
         createTime: null,
       },
@@ -442,15 +442,15 @@ export default {
         productAttributeCategoryId: null,
         name: null,
         selectType: null,
-        inputType: null,
+        inputType: 0,
         inputList: null,
-        sort: null,
-        filterType: null,
+        sort: 0,
+        filterType: 1,
         icon: null,
-        searchType: null,
+        searchType: 0,
         relatedStatus: 0,
         handAddStatus: 0,
-        attrType: null,
+        attrType: 2,
         deleted: null,
         createBy: null,
         createTime: null,

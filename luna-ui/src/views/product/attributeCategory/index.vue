@@ -116,6 +116,14 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-s-tools"
+            @click="handleRelation(scope.row)"
+            v-hasPermi="['product:attributeCategory:list']"
+          >关联
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['product:attributeCategory:edit']"
@@ -171,6 +179,116 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+
+    <!-- 属性关联对话框-->
+    <el-dialog title="属性关联" :visible.sync="openAttr" width="1000px" append-to-body>
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleRelationAdd"
+            v-hasPermi="['product:attributeCategory:add']"
+          >新增
+          </el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="danger"
+            plain
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multipleRelation"
+            @click="handleRelationDelete"
+            v-hasPermi="['product:attributeCategory:remove']"
+          >删除
+          </el-button>
+        </el-col>
+      </el-row>
+      <el-table v-loading="loading" :data="attrList" @selection-change="handleSelectionChangeRelation">
+
+        <el-table-column type="selection" width="55" align="center"/>
+        <el-table-column label="属性ID" align="center" prop="id" sortable/>
+        <el-table-column label="属性所属分类" align="center" prop="productAttributeCategoryName"/>
+        <el-table-column label="属性名称" align="center" prop="name" sortable/>
+        <el-table-column label="可选值列表" align="center" prop="inputList"/>
+        <el-table-column label="属性的类型" align="center" prop="attrType">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.tb_attribute_type" :value="scope.row.attrType"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleRelationDelete(scope.row)"
+              v-hasPermi="['product:brandRelation:remove']"
+            >删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="relationTotal>0"
+        :total="relationTotal"
+        :page.sync="queryRelationParams.pageNum"
+        :limit.sync="queryRelationParams.pageSize"
+        @pagination="handleRelationCategory"
+      />
+    </el-dialog>
+
+    <!-- 属性关联对话框-->
+    <el-dialog title="新增属性关联" :visible.sync="openAddAttr" width="1000px" append-to-body>
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="danger"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleRelationEdit"
+            v-hasPermi="['product:attribute:edit']"
+          >关联
+          </el-button>
+        </el-col>
+      </el-row>
+      <el-table v-loading="loading" :data="attrAddList" @selection-change="handleSelectionAddChangeRelation">
+
+        <el-table-column type="selection" width="55" align="center"/>
+        <el-table-column label="属性ID" align="center" prop="id" sortable/>
+        <el-table-column label="属性所属分类" align="center" prop="productAttributeCategoryName"/>
+        <el-table-column label="属性名称" align="center" prop="name" sortable/>
+        <el-table-column label="可选值列表" align="center" prop="inputList"/>
+        <el-table-column label="属性的类型" align="center" prop="attrType">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.tb_attribute_type" :value="scope.row.attrType"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              type="danger"
+              icon="el-icon-edit"
+              size="mini"
+              @click="handleRelationEdit(scope.row)"
+            >关联
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="relationAddTotal>0"
+        :total="relationAddTotal"
+        :page.sync="queryAddRelationParams.pageNum"
+        :limit.sync="queryAddRelationParams.pageSize"
+        @pagination="handleAddRelationCategory"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -192,32 +310,57 @@ import {
     "@/api/product/attributeCategory";
 import {deletedSwitchChange} from "@/api/product/attributeCategory";
 import {categoryCascadeList} from "@/api/product/category";
+import {
+  delAttribute,
+  fixCategory,
+  listAttribute,
+  listPageAttribute,
+  listPageFilterAttribute
+} from "@/api/product/attribute";
+import {listBrandRelation} from "@/api/product/brandRelation";
 
 export default {
   name: "AttributeCategory",
-  dicts: ['tb_product_level', 'tb_normal_status'],
+  dicts: ['tb_product_level', 'tb_normal_status', 'tb_product_category_select', 'tb_product_attribute_support_normal', 'tb_product_attribute_index', 'tb_product_attribute_relation', 'tb_product_attribute_type', 'tb_product_attribute_input', 'tb_attribute_type'],
   data() {
     return {
       // 遮罩层
       loading: true,
       // 选中数组
       ids: [],
+      // 属性选中列表
+      idsRelation: [],
+      idsRelationAdd: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
       multiple: true,
+      // 属性列表非多个禁用
+      multipleRelation: true,
       // 显示搜索条件
       showSearch: true,
       // 总条数
       total: 0,
+      // 关联总条数
+      relationTotal: 0,
+      // 关联属性总条数
+      relationAddTotal: 0,
       // 产品属性分类表格数据
       attributeCategoryList: [],
       // 及联列表
       cascadeList: [],
+      // 属性列表
+      attrList: [],
+      // 候选属性列表
+      attrAddList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否显示关联弹出框
+      openAttr: false,
+      // 是否显示新增关联弹出框
+      openAddAttr: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -228,8 +371,20 @@ export default {
         paramCount: null,
         deleted: null
       },
+      queryRelationParams: {
+        pageNum: 1,
+        pageSize: 10,
+      },
+      queryAddRelationParams: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       // 表单参数
       form: {},
+      // 表单参数
+      relationForm: {},
+      // 表单参数
+      relationAddForm: {},
       // 表单校验
       rules: {
         createTime: [
@@ -249,6 +404,34 @@ export default {
     this.getCategoryCascadeList();
   },
   methods: {
+    handleRelationCategory(row) {
+      this.queryRelationParams.productAttributeCategoryId = row.id;
+      this.relationForm.categortyId = row.categortyId;
+      this.relationForm.categortyName = row.categortyName;
+      listBrandRelation(this.queryRelationParams).then(res => {
+        this.attrList = res.rows;
+        this.relationTotal = res.total;
+        this.openRelation = true;
+      })
+    },
+    handleAddRelationCategory(row) {
+      let query = {
+        categoryId: this.queryRelationParams.categoryId,
+        productAttributeCategoryId: this.attrCateId,
+      }
+      listPageFilterAttribute(query).then(response => {
+        this.attrAddList = response.rows;
+        this.relationAddTotal = response.total;
+        console.log(this.attrAddList);
+      });
+    },
+    handleSelectionChangeRelation(selection) {
+      this.idsRelation = selection.map(item => item.id)
+      this.multipleRelation = !selection.length
+    },
+    handleSelectionAddChangeRelation(selection) {
+      this.idsRelationAdd = selection.map(item => item.id)
+    },
     /** 查询产品属性分类列表 */
     getList() {
       this.loading = true;
@@ -334,6 +517,92 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改产品属性分类";
+      });
+    },
+    /** 属性关联按钮操作 */
+    handleRelation(row) {
+      // 列出当前分组所有属性
+      let attrCateId = row.id;
+      this.queryRelationParams.categoryId = row.categoryId;
+      this.queryRelationParams.productAttributeCategoryId = attrCateId;
+      let query = {
+        productAttributeCategoryId: attrCateId,
+      }
+      listAttribute(query).then(response => {
+        this.attrList = response.rows;
+        this.relationTotal = response.total;
+        console.log(this.queryRelationParams);
+        this.attrCateId = attrCateId;
+        this.openAttr = true;
+      });
+    },
+    handleRelationAdd() {
+      // 弹出添加对话框
+      this.openAddAttr = true;
+      // 查询分组所属分类的全部属性
+      let query = {
+        categoryId: this.queryRelationParams.categoryId,
+        productAttributeCategoryId: this.attrCateId,
+      }
+      listPageFilterAttribute(query).then(response => {
+        this.attrAddList = response.rows;
+        this.relationAddTotal = response.total;
+        console.log(this.attrAddList);
+      });
+    },
+    handleRelationDelete(row) {
+      const ids = row.id || this.idsRelation;
+      this.$modal.confirm('是否确认删除商品属性参数编号为"' + ids + '"的数据项？').then(function () {
+        return delAttribute(ids);
+      }).then(() => {
+        let query = {
+          productAttributeCategoryId: this.queryRelationParams.productAttributeCategoryId
+        }
+        listAttribute(query).then(response => {
+          this.attrList = response.rows;
+          this.relationTotal = response.total;
+          console.log(this.queryRelationParams);
+          this.attrCateId = attrCateId;
+          this.openAttr = true;
+        });
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {
+      });
+    },
+    handleRelationEdit(row) {
+      const ids = row.id || this.idsRelationAdd;
+      if (ids.length < 0) {
+        return;
+      }
+      console.log(ids)
+      this.$modal.confirm('是否确认关联产品属性编号为"' + ids + '"的数据项？').then(function () {
+      }).then(() => {
+        let data = [];
+        if (ids.length >= 1) {
+          data = ids;
+        } else {
+          data.push(ids);
+        }
+        let query = {
+          attrIds: data,
+          productAttributeCategoryId: this.queryRelationParams.productAttributeCategoryId
+        }
+        fixCategory(query).then(res => {
+          if (res.data < 0) {
+            return;
+          }
+          this.openAddAttr = false;
+          let queryList = {
+            productAttributeCategoryId: this.attrCateId,
+          }
+          listAttribute(queryList).then(response => {
+            this.attrList = response.rows;
+            this.relationTotal = response.total;
+            console.log(this.attrAddList);
+          });
+        })
+
+      }).catch(() => {
       });
     },
     /** 提交按钮 */

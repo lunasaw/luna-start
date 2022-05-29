@@ -9,6 +9,23 @@ export function listAttribute(query) {
   })
 }
 
+// 批量设置属性分组关联
+export function fixCategory(query) {
+  return request({
+    url: '/product/attribute/fixCategory',
+    method: 'put',
+    data: query
+  })
+}
+
+export function listPageFilterAttribute(query) {
+  return request({
+    url: '/product/attribute/listPageFilter',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询商品属性参数列表
 export function listPageAttribute(query) {
   return request({

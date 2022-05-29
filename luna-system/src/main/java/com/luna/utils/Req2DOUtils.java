@@ -25,7 +25,9 @@ public class Req2DOUtils {
         attribute.setInputType(attributeReq.getInputType());
         attribute.setInputList(attributeReq.getInputList());
         String inputList = Optional.ofNullable(attributeReq.getInputListStr()).map(e -> Joiner.on(",").join(e)).orElse(StringUtils.EMPTY);
-        attribute.setInputList(inputList);
+        if (StringUtils.isNotEmpty(inputList)){
+            attribute.setInputList(inputList);
+        }
         attribute.setSort(attributeReq.getSort());
         attribute.setFilterType(attributeReq.getFilterType());
         attribute.setIcon(attributeReq.getIcon());

@@ -268,6 +268,7 @@
             :props="{ multiple: false, emitPath: false, checkStrictly: false,
            placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
             :show-all-levels="true" clearable filterable
+            @change="handleCategoryChange"
           ></el-cascader>
         </el-form-item>
 
@@ -503,6 +504,16 @@ export default {
     this.getCategoryCascadeList();
   },
   methods: {
+    handleCategoryChange(val) {
+      let query = {
+        categoryId : val
+      }
+      listAttributeCategory(query).then(res => {
+        this.categoryAttributeList = res.rows;
+      }).catch(() => {
+        this.categoryAttributeList = [];
+      });
+    },
     getCategoryAttributeListSearch(value) {
       if (!value) {
         this.categoryAttributeList = [];

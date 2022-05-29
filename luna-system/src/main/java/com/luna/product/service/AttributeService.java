@@ -7,6 +7,7 @@ import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.AttributeCategory;
 import com.luna.product.domain.Category;
+import com.luna.product.domain.req.AttributeFixReq;
 import com.luna.product.domain.req.AttributeReq;
 import com.luna.product.mapper.AttributeCategoryMapper;
 import com.luna.product.mapper.CategoryMapper;
@@ -40,13 +41,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     @Autowired
-    private AttributeMapper         attributeMapper;
+    private AttributeMapper          attributeMapper;
 
     @Autowired
-    private AttributeCategoryMapper attributeCategoryMapper;
+    private AttributeCategoryMapper  attributeCategoryMapper;
 
     @Autowired
-    private CategoryService         categoryService;
+    private CategoryService          categoryService;
 
     @Autowired
     private AttributeCategoryService attributeCategoryService;
@@ -149,6 +150,48 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      * @param page 分页参数
      * @return 商品属性参数
      */
+    public IPage<AttributeVO> listPageFilter(IPage<Attribute> page, AttributeReq attributeReq) {
+        Long categoryId = attributeReq.getCategoryId();
+        Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
+        List<Long> attributeCategoryIds = Lists.newArrayList();
+        List<AttributeCategory> attributeCategories = Lists.newArrayList();
+        if (Objects.nonNull(categoryId)) {
+            AttributeCategory attributeCategory = new AttributeCategory();
+            attributeCategory.setCategoryId(categoryId);
+            QueryWrapper<AttributeCategory> categoryQueryWrapper = new QueryWrapper<>(attributeCategory);
+            if (attributeReq.getCategoryId() != null) {
+                categoryQueryWrapper.ne("id", attributeReq.getProductAttributeCategoryId());
+            }
+            attributeCategories = attributeCategoryMapper.selectList(categoryQueryWrapper);
+            if (CollectionUtils.isEmpty(attributeCategories)) {
+                return Page.of(0, 0);
+            }
+            attributeCategoryIds = attributeCategories.stream().map(AttributeCategory::getId).collect(Collectors.toList());
+        }
+        if (CollectionUtils.isEmpty(attributeCategoryIds)){
+            return Page.of(0, 0);
+        }
+        Page<Attribute> selectPage = Page.of(page.getCurrent(), page.getSize());
+        QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(attribute);
+        attribute.setProductAttributeCategoryId(null);
+        queryWrapper.in("product_attribute_category_id", attributeCategoryIds);
+        selectPage.setMaxLimit(page.maxLimit());
+        // 构造VO
+        List<AttributeVO> list = Lists.newArrayList();
+        Page<Attribute> attributePage = attributeMapper.selectPage(selectPage, queryWrapper);
+        list = convertData(categoryId, attributeCategories, attributePage.getRecords());
+        Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());
+        result.setRecords(list);
+        return result;
+    }
+
+    /**
+     * 分页查询商品属性参数VO视图列表
+     *
+     * @param attributeReq 商品属性参数
+     * @param page 分页参数
+     * @return 商品属性参数
+     */
     public IPage<AttributeVO> selectVOList(IPage<Attribute> page, AttributeReq attributeReq) {
         Long categoryId = attributeReq.getCategoryId();
         Attribute attribute = Req2DOUtils.attributeReq2Attribute(attributeReq);
@@ -179,6 +222,14 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         List<Attribute> records = attributePage.getRecords();
 
         // 条件查询Map直接获取
+        list = convertData(categoryId, attributeCategories, records);
+        Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());
+        result.setRecords(list);
+        return result;
+    }
+
+    public List<AttributeVO>  convertData(Long categoryId, List<AttributeCategory> attributeCategories,List<Attribute> records) {
+        List<AttributeVO> list = Lists.newArrayList();
         Map<Long, AttributeCategory> categoryMap =
             attributeCategories.stream().collect(Collectors.toMap(AttributeCategory::getId, Function.identity()));
         for (Attribute record : records) {
@@ -197,9 +248,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
             AttributeVO attributeVO = DO2VOUtils.attribute2AttributeVO(record, categoryAttributeName, categoryId);
             list.add(attributeVO);
         }
-        Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());
-        result.setRecords(list);
-        return result;
+        return list;
     }
 
     /**
@@ -214,7 +263,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
             Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
-            if (aLong != null){
+            if (aLong != null) {
                 attributeReq.setProductAttributeCategoryId(aLong);
             }
         }
@@ -235,7 +284,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
             Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
-            if (aLong != null){
+            if (aLong != null) {
                 attributeReq.setProductAttributeCategoryId(aLong);
             }
         }
@@ -262,5 +311,28 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
     public int deleteById(Attribute attribute) {
         QueryWrapper<Attribute> queryWrapper = new QueryWrapper<Attribute>(attribute);
         return attributeMapper.delete(queryWrapper);
+    }
+
+    public int fixCategory(AttributeFixReq attributeFixReq) {
+        List<Long> attrIds = attributeFixReq.getAttrIds();
+        if (CollectionUtils.isEmpty(attrIds)){
+            return 0;
+        }
+        Long productAttributeCategoryId = attributeFixReq.getProductAttributeCategoryId();
+        if (null == productAttributeCategoryId){
+            return 0;
+        }
+        AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(productAttributeCategoryId);
+        if (null == attributeCategory){
+            return 0;
+        }
+
+        List<Attribute> attributes = attributeMapper.selectBatchIds(attrIds);
+        for (Attribute attribute : attributes) {
+            attribute.setProductAttributeCategoryId(productAttributeCategoryId);
+            attributeMapper.updateAttribute(attribute);
+        }
+
+        return attributes.size();
     }
 }
