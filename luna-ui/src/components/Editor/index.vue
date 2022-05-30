@@ -10,7 +10,7 @@
       :headers="headers"
       style="display: none"
       ref="upload"
-      v-if="this.type == 'url'"
+      v-if="this.type === 'url'"
     >
     </el-upload>
     <div class="editor" ref="editor" :style="styles"></div>

@@ -8,7 +8,7 @@
           @change="getBrandListWithCategory"
           :props="{ multiple: false, emitPath: false, checkStrictly: false,
            placeholder: '请选择上级分类', expandTrigger: 'hover',label	: 'name',value: 'id',children: 'childCategory' }"
-          :show-all-levels="false" clearable filterable
+          :show-all-levels="true" clearable filterable
         ></el-cascader>
       </el-form-item>
       <el-form-item label="商品名称：" prop="name">
