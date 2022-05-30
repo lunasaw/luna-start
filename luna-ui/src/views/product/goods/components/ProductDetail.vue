@@ -6,18 +6,46 @@
       <el-step title="填写商品属性"></el-step>
       <el-step title="选择商品关联"></el-step>
     </el-steps>
-    <product-info-detail
-      v-show="showStatus[0]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep">
-    </product-info-detail>
+    <el-tabs>
+      <product-info-detail
+        v-show="showStatus[0]"
+        v-model="productParam"
+        :is-edit="isEdit"
+        @nextStep="nextStep">
+      </product-info-detail>
+      <product-sale-detail
+        v-show="showStatus[1]"
+        v-model="productParam"
+        :is-edit="isEdit"
+        @nextStep="nextStep"
+        @prevStep="prevStep">
+      </product-sale-detail>
+      <product-attr-detail
+        v-show="showStatus[2]"
+        v-model="productParam"
+        :is-edit="isEdit"
+        :show="showStatus[2]"
+        @nextStep="nextStep"
+        @prevStep="prevStep">
+      </product-attr-detail>
+      <product-relation-detail
+        v-show="showStatus[3]"
+        v-model="productParam"
+        :is-edit="isEdit"
+        @prevStep="prevStep"
+        @finishCommit="finishCommit">
+      </product-relation-detail>
+    </el-tabs>
+
   </el-card>
 </template>
 <script>
 import {categoryCascadeList} from "@/api/product/category";
 import {listBrand} from "@/api/product/brand";
 import ProductInfoDetail from "@/views/product/goods/components/ProductInfoDetail";
+import ProductSaleDetail from "@/views/product/goods/components/ProductSaleDetail";
+import ProductAttrDetail from "@/views/product/goods/components/ProductAttrDetail";
+import ProductRelationDetail from "@/views/product/goods/components/ProductRelationDetail";
 
 const defaultProductParam = {
   albumPics: '',
@@ -82,7 +110,7 @@ const defaultProductParam = {
 };
 export default {
   name: 'ProductDetail',
-  components: {ProductInfoDetail},
+  components: {ProductInfoDetail, ProductSaleDetail, ProductAttrDetail, ProductRelationDetail},
   props: {
     isEdit: {
       type: Boolean,
@@ -118,6 +146,33 @@ export default {
         this.showStatus[this.active] = true;
       }
     },
+    finishCommit(isEdit) {
+      this.$confirm('是否要提交该产品', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if(isEdit){
+          // updateProduct(this.$route.query.id,this.productParam).then(response=>{
+          //   this.$message({
+          //     type: 'success',
+          //     message: '提交成功',
+          //     duration:1000
+          //   });
+          //   this.$router.back();
+          // });
+        }else{
+          // createProduct(this.productParam).then(response=>{
+          //   this.$message({
+          //     type: 'success',
+          //     message: '提交成功',
+          //     duration:1000
+          //   });
+          //   location.reload();
+          // });
+        }
+      })
+    }
   }
 }
 </script>
