@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-position="left">
       <el-form-item label="分类" prop="categoryId">
         <el-cascader
           v-model="queryParams.categoryId"
@@ -33,6 +33,16 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="属性类型" prop="attrType" >
+        <el-select v-model="queryParams.attrType" placeholder="请选择属性类型" clearable>
+          <el-option
+            v-for="dict in dict.type.tb_attribute_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="是否删除" prop="navStatus">
         <el-switch v-model="queryParams.deleted" :active-value=getActiveValue(true)
@@ -102,6 +112,11 @@
       <el-table-column label="分类属性名" align="center" prop="name"/>
       <el-table-column label="属性数量" align="center" prop="attributeCount" sortable/>
       <el-table-column label="参数数量" align="center" prop="paramCount" sortable/>
+      <el-table-column label="属性的类型" align="center" prop="attrType">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.tb_attribute_type" :value="scope.row.attrType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="是否删除" align="center" prop="deleted" width="100">
         <template slot-scope="scope">
@@ -169,6 +184,16 @@
         </el-form-item>
         <el-form-item label="参数数量" prop="paramCount">
           <el-input v-model="form.paramCount" placeholder="请输入参数数量"/>
+        </el-form-item>
+        <el-form-item label="属性类型" prop="attrType">
+          <el-select v-model="form.attrType" placeholder="请选择属性的类型">
+            <el-option
+              v-for="dict in dict.type.tb_attribute_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>

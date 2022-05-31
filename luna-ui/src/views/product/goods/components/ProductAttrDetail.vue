@@ -270,7 +270,8 @@ export default {
     getProductAttrCateList() {
       let param = {
         pageNum: 1, pageSize: 100,
-        categoryId: this.value.productCategoryId
+        categoryId: this.value.productCategoryId,
+        attrType: 0
       };
       attributeCategoryListAll(param).then(res => {
         this.productAttributeCategoryOptions = res.data;

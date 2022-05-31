@@ -379,9 +379,10 @@ export default {
   methods: {
     handleCategoryChange(val) {
       let query = {
-        categoryId : val
+        categoryId : val,
+        attrType: 0
       }
-      listAttributeCategory(query).then(res => {
+      attributeCategoryListAll(query).then(res => {
         this.categoryAttributeList = res.rows;
       }).catch(() => {
         this.categoryAttributeList = [];
@@ -393,6 +394,9 @@ export default {
         return;
       }
       let query = {
+        pageNum: 1,
+        pageSize: 10,
+        attrType: 0,
         name : value
       }
       listAttributeCategory(query).then(res => {
@@ -405,6 +409,7 @@ export default {
       // 获取分类Id传入，查询
       this.clickedNode = data;
       this.getCategoryAttributeList({
+        attrType: 0,
         categoryId: data.id
       });
       this.queryParams.categoryId = data.id;
