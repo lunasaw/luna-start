@@ -80,11 +80,11 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         while (true) {
             Page<${ClassName}> ${className}Page = ${className}Mapper.selectPage(of, queryWrapper);
             List<${ClassName}VO> resultList = convertList(${className}Page.getRecords());
-            if (CollectionUtils.isEmpty(${className}s)) {
+            if (CollectionUtils.isEmpty(resultList)) {
                 break;
             }
             of.setCurrent(of.getCurrent() + 1);
-            list.addAll(${className}s);
+            list.addAll(resultList);
         }
 
         return list;

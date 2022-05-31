@@ -1,16 +1,22 @@
 package com.luna.product.utils;
 
-import com.luna.product.domain.CategoryBrandRelation;
-import com.luna.product.domain.vo.CategoryBrandRelationVO;
+import com.luna.product.domain.SkuImages;
+import com.luna.product.domain.vo.SkuImagesVO;
 
 /**
- * 品牌分类关联Controller
+ * sku图片Controller
  *
  * @author luna
- * @date 2022-05-25
+ * @date 2022-05-31
  */
 public class DO2VOUtils {
 
-
+    public static SkuImagesVO skuImages2SkuImagesVO (SkuImages SkuImages) {
+        if (SkuImages ==null){
+            return null;
+        }
+            SkuImagesVO skuImagesVO = new SkuImagesVO();
+        return skuImagesVO;
+    }
 
 }

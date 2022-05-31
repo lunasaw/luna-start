@@ -1,45 +1,21 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-position="left">
-      <el-form-item label="id" prop="id"  >
+      <el-form-item label="sku_id" prop="skuId"   label-width="110px" >
         <el-input
-            v-model="queryParams.id"
-            placeholder="请输入id"
+            v-model="queryParams.skuId"
+            placeholder="请输入sku_id"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="SPU_ID" prop="spuId"   label-width="110px" >
-        <el-input
-            v-model="queryParams.spuId"
-            placeholder="请输入SPU_ID"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="图片名" prop="imgName"  >
-        <el-input
-            v-model="queryParams.imgName"
-            placeholder="请输入图片名"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="顺序" prop="imgSort"  >
+      <el-form-item label="排序" prop="imgSort"  >
         <el-input
             v-model="queryParams.imgSort"
-            placeholder="请输入顺序"
+            placeholder="请输入排序"
             clearable
             @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime" >
-        <el-date-picker clearable
-                        v-model="queryParams.createTime"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="请选择创建时间">
-        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -55,7 +31,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['product:spuImages:add']"
+          v-hasPermi="['skuImages:skuImages:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -66,7 +42,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['product:spuImages:edit']"
+          v-hasPermi="['skuImages:skuImages:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -77,7 +53,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['product:spuImages:remove']"
+          v-hasPermi="['skuImages:skuImages:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -87,36 +63,27 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['product:spuImages:export']"
+          v-hasPermi="['skuImages:skuImages:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="spuImagesList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="skuImagesList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <el-table-column label="SPU_ID" align="center" prop="spuId" />
-      <el-table-column label="图片名" align="center" prop="imgName" />
+      <el-table-column label="sku_id" align="center" prop="skuId" />
       <el-table-column label="图片地址" align="center" prop="imgUrl" width="100" >
         <template slot-scope="scope">
           <image-preview :src="scope.row.imgUrl" :width="50" :height="50"/>
         </template>
       </el-table-column>
-      <el-table-column label="顺序" align="center" prop="imgSort" />
+      <el-table-column label="排序" align="center" prop="imgSort" />
       <el-table-column label="是否默认图" align="center" prop="defaultImg" width="100" >
         <template slot-scope="scope">
           <el-switch v-model="scope.row.defaultImg" :active-value=getActiveValue(true)
                      :inactive-value=getActiveValue(false)
                      @change="defaultImgSwitchChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否删除" align="center" prop="deleted" width="100" >
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.deleted" :active-value=getActiveValue(true)
-                     :inactive-value=getActiveValue(false)
-                     @change="deletedSwitchChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
@@ -128,14 +95,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['product:spuImages:edit']"
+            v-hasPermi="['skuImages:skuImages:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['product:spuImages:remove']"
+            v-hasPermi="['skuImages:skuImages:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -149,20 +116,17 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改SPU图片对话框 -->
+    <!-- 添加或修改sku图片对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
-      <el-form-item label="SPU_ID" prop="spuId">
-        <el-input v-model="form.spuId" placeholder="请输入SPU_ID"/>
-      </el-form-item>
-      <el-form-item label="图片名" prop="imgName">
-        <el-input v-model="form.imgName" placeholder="请输入图片名"/>
+      <el-form-item label="sku_id" prop="skuId">
+        <el-input v-model="form.skuId" placeholder="请输入sku_id"/>
       </el-form-item>
       <el-form-item label="图片地址">
         <image-upload v-model="form.imgUrl"/>
       </el-form-item>
-      <el-form-item label="顺序" prop="imgSort">
-        <el-input v-model="form.imgSort" placeholder="请输入顺序"/>
+      <el-form-item label="排序" prop="imgSort">
+        <el-input v-model="form.imgSort" placeholder="请输入排序"/>
       </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -178,26 +142,26 @@
 
 <script>
   import {
-    listSpuImages,
-    getSpuImages,
-    delSpuImages,
-    addSpuImages,
-    addListSpuImages,
-    listPageSpuImages,
-    spuImagesListByIds,
-    spuImagesListAll,
-    deleteSpuImages,
-    deleteBatchSpuImages,
-    updateSpuImages,
-    updateListSpuImages
+    listSkuImages,
+    getSkuImages,
+    delSkuImages,
+    addSkuImages,
+    addListSkuImages,
+    listPageSkuImages,
+    skuImagesListByIds,
+    skuImagesListAll,
+    deleteSkuImages,
+    deleteBatchSkuImages,
+    updateSkuImages,
+    updateListSkuImages
   }
     from
-        "@/api/product/spuImages";
-          import {defaultImgSwitchChange} from "@/api/product/spuImages";
-          import {deletedSwitchChange} from "@/api/product/spuImages";
+        "@/api/skuImages/skuImages";
+          import {defaultImgSwitchChange} from "@/api/skuImages/skuImages";
+          import {deletedSwitchChange} from "@/api/skuImages/skuImages";
 
   export default {
-    name: "SpuImages",
+    name: "SkuImages",
     data() {
       return {
         // 遮罩层
@@ -212,8 +176,8 @@
       showSearch: true,
       // 总条数
       total: 0,
-      // SPU图片表格数据
-      spuImagesList: [],
+      // sku图片表格数据
+      skuImagesList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -222,25 +186,16 @@
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        id: null,
-        spuId: null,
-        imgName: null,
+        skuId: null,
         imgUrl: null,
         imgSort: null,
         defaultImg: null,
         deleted: null,
-        createTime: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        imgName: [
-          { required: true, message: "图片名不能为空", trigger: "blur" }
-        ],
-        imgUrl: [
-          { required: true, message: "图片地址不能为空", trigger: "blur" }
-        ],
         deleted: [
           { required: true, message: "是否删除不能为空", trigger: "blur" }
         ],
@@ -257,11 +212,11 @@
     this.getList();
   },
   methods: {
-    /** 查询SPU图片列表 */
+    /** 查询sku图片列表 */
     getList() {
       this.loading = true;
-      listSpuImages(this.queryParams).then(response => {
-        this.spuImagesList = response.rows;
+      listSkuImages(this.queryParams).then(response => {
+        this.skuImagesList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -275,8 +230,7 @@
     reset() {
       this.form = {
         id: null,
-        spuId: null,
-        imgName: null,
+        skuId: null,
         imgUrl: null,
         imgSort: null,
         defaultImg: null,
@@ -338,16 +292,16 @@
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加SPU图片";
+      this.title = "添加sku图片";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getSpuImages(id).then(response => {
+      getSkuImages(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改SPU图片";
+        this.title = "修改sku图片";
       });
     },
     /** 提交按钮 */
@@ -355,13 +309,13 @@
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateSpuImages(this.form).then(response => {
+            updateSkuImages(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSpuImages(this.form).then(response => {
+            addSkuImages(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -373,8 +327,8 @@
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除SPU图片编号为"' + ids + '"的数据项？').then(function() {
-        return delSpuImages(ids);
+      this.$modal.confirm('是否确认删除sku图片编号为"' + ids + '"的数据项？').then(function() {
+        return delSkuImages(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -382,9 +336,9 @@
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('product/spuImages/export', {
+      this.download('skuImages/skuImages/export', {
         ...this.queryParams
-      }, `spuImages_${new Date().getTime()}.xlsx`)
+      }, `skuImages_${new Date().getTime()}.xlsx`)
     }
   }
 };

@@ -138,7 +138,7 @@
         </el-card>
       </el-form-item>
       <el-form-item label="商品相册：">
-        <image-upload v-model="selectProductPics"/>
+        <image-upload v-model="value.selectProductPics" :limit="value.picLimit"/>
       </el-form-item>
       <el-form-item label="规格参数：">
         <el-tabs v-model="activeHtmlName" type="card">
@@ -208,41 +208,6 @@ export default {
     productId() {
       return this.value.id;
     },
-    //商品的主图和画册图片
-    selectProductPics: {
-      get: function () {
-        let pics = '';
-        if (this.value.pic === undefined || this.value.pic == null || this.value.pic === '') {
-          return pics;
-        }
-        // pics.push(this.value.pic);
-        // if (this.value.albumPics === undefined || this.value.albumPics == null || this.value.albumPics === '') {
-        //   return pics;
-        // }
-        // let albumPics = this.value.albumPics.split(',');
-        // for (let i = 0; i < albumPics.length; i++) {
-        //   pics.push(albumPics[i]);
-        // }
-        // return pics;
-      },
-      set: function (newValue) {
-        if (newValue == null || newValue.length === 0) {
-          this.value.pic = null;
-          this.value.albumPics = null;
-        } else {
-          this.value.pic = newValue[0];
-          this.value.albumPics = '';
-          if (newValue.length > 1) {
-            for (let i = 1; i < newValue.length; i++) {
-              this.value.albumPics += newValue[i];
-              if (i !== newValue.length - 1) {
-                this.value.albumPics += ',';
-              }
-            }
-          }
-        }
-      }
-    }
   },
   created() {
     this.getProductAttrCateList();

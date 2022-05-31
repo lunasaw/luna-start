@@ -55,6 +55,8 @@ const defaultProductParam = {
   description: '',
   detailDesc: '',
   detailHtml: '',
+  selectProductPics: '',
+  picLimit: 5,
   detailMobileHtml: '',
   detailTitle: '',
   feightTemplateId: 0,
@@ -162,6 +164,7 @@ export default {
           //   this.$router.back();
           // });
         }else{
+          console.log(this.productParam);
           // createProduct(this.productParam).then(response=>{
           //   this.$message({
           //     type: 'success',
