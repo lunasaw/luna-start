@@ -35,6 +35,14 @@ export function listPageAttribute(query) {
   })
 }
 
+// 查询商品属性参数列表
+export function listPageAttributeSelect(query) {
+  return request({
+    url: '/product/attribute/listPageVoList',
+    method: 'get',
+    params: query
+  })
+}
 
 // 查询全部商品属性参数列表
 export function attributeListAll(query) {

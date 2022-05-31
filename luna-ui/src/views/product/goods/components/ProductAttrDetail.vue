@@ -118,18 +118,23 @@
       </el-form-item>
       <el-form-item label="商品参数：">
         <el-card shadow="never" class="cardBg">
-          <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
-            <div class="paramInputLabel">{{ item.name }}:</div>
-            <el-select v-if="item.inputType===1" class="paramInput" v-model="selectProductParam[index].value">
-              <el-option
-                v-for="item in getParamInputList(item.inputList)"
-                :key="item"
-                :label="item"
-                :value="item">
-              </el-option>
-            </el-select>
-            <el-input v-else class="paramInput" v-model="selectProductParam[index].value"></el-input>
-          </div>
+          <el-tabs tab-position="left" style="height: 200px;" >
+            <el-tab-pane :label="itemOuter.name" v-for="(itemOuter) in selectProductParam">
+              <div v-for="(item,index) in itemOuter.selectParam" :class="{littleMarginTop:index!==0}">
+                <div class="paramInputLabel">{{ item.name }}:</div>
+                <el-select v-if="item.inputType===1" class="paramInput" v-model="item.value">
+                  <el-option
+                    v-for="itemParam in getParamInputList(item.inputList)"
+                    :key="itemParam"
+                    :label="itemParam"
+                    :value="itemParam">
+                  </el-option>
+                </el-select>
+                <el-input v-else class="paramInput" v-model="item.value"></el-input>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+
         </el-card>
       </el-form-item>
       <el-form-item label="商品相册：">
@@ -154,7 +159,7 @@
 </template>
 
 <script>
-import {listPageAttribute} from "@/api/product/attribute";
+import {listPageAttribute, listPageAttributeSelect} from "@/api/product/attribute";
 import {attributeCategoryListAll} from "@/api/product/attributeCategory";
 import ImageUpload from '@/components/ImageUpload'
 export default {
@@ -181,6 +186,8 @@ export default {
       selectProductAttr: [],
       //选中的商品参数
       selectProductParam: [],
+      //选中的商品标题
+      selectProductParamTitle: [],
       //选中的商品属性图片
       selectProductAttrPics: [],
       //可手动添加的商品属性
@@ -269,64 +276,91 @@ export default {
         this.productAttributeCategoryOptions = res.data;
       });
     },
+    getProductAttrSelectList(type, cid){
+      let param = {
+        pageNum: 1,
+        pageSize: 100,
+        attrType: type,
+        categoryId: this.value.productCategoryId
+      };
+      listPageAttributeSelect(param).then(res => {
+        this.doRefreshData(type, res);
+      });
+    },
     getProductAttrList(type, cid) {
       let param = {
         pageNum: 1,
         pageSize: 100,
-        productAttributeCategoryId: cid,
         attrType: type,
         categoryId: this.value.productCategoryId
       };
+      if (type === 0){
+        param.productAttributeCategoryId = cid;
+      }
       listPageAttribute(param).then(response => {
-        let list = response.rows;
-        if (type === 0) {
-          this.selectProductAttr = [];
-          for (let i = 0; i < list.length; i++) {
-            let options = [];
-            let values = [];
-            if (this.isEdit) {
-              if (list[i].handAddStatus === 1) {
-                //编辑状态下获取手动添加编辑属性
-                options = this.getEditAttrOptions(list[i].id);
-              }
-              //编辑状态下获取选中属性
-              values = this.getEditAttrValues(i);
-            }
-            if (options.length === 0) {
-              options = list[i].inputListStr;
-            }
-            this.selectProductAttr.push({
-              id: list[i].id,
-              name: list[i].name,
-              handAddStatus: list[i].handAddStatus,
-              inputList: list[i].inputList,
-              values: values,
-              options: options
-            });
-          }
+        this.doRefreshData(type, response)
+      });
+    },
+    doRefreshData(type, response){
+      let list = response.rows;
+      if (type === 0) {
+        this.selectProductAttr = [];
+        for (let i = 0; i < list.length; i++) {
+          let options = [];
+          let values = [];
           if (this.isEdit) {
-            //编辑模式下刷新商品属性图片
-            this.refreshProductAttrPics();
+            if (list[i].handAddStatus === 1) {
+              //编辑状态下获取手动添加编辑属性
+              options = this.getEditAttrOptions(list[i].id);
+            }
+            //编辑状态下获取选中属性
+            values = this.getEditAttrValues(i);
           }
-        } else {
-          this.selectProductParam = [];
-          for (let i = 0; i < list.length; i++) {
+          if (options.length === 0) {
+            options = list[i].inputListStr;
+          }
+          this.selectProductAttr.push({
+            id: list[i].id,
+            name: list[i].name,
+            handAddStatus: list[i].handAddStatus,
+            inputList: list[i].inputList,
+            values: values,
+            options: options
+          });
+        }
+        if (this.isEdit) {
+          //编辑模式下刷新商品属性图片
+          this.refreshProductAttrPics();
+        }
+      } else {
+        this.selectProductParam = [];
+        for (let i = 0; i <  response.data.length; i++) {
+          let optionsValue = [];
+          let temp = response.data[i];
+          for (let j = 0; j < temp.attributes.length; j++) {
             let value = null;
+            let tempData = temp.attributes[j];
             if (this.isEdit) {
               //编辑模式下获取参数属性
-              value = this.getEditParamValue(list[i].id);
+              value = this.getEditParamValue(tempData.id);
             }
-            this.selectProductParam.push({
-              id: list[i].id,
-              name: list[i].name,
+            optionsValue.push({
+              id: tempData.id,
+              name: tempData.name,
               value: value,
-              selectType: list[i].selectType,
-              inputType: list[i].inputType,
-              inputList: list[i].inputList
+              selectType: tempData.selectType,
+              inputType: tempData.inputType,
+              inputList: tempData.inputList
             });
           }
+          this.selectProductParam.push({
+            id: temp.productAttributeCategoryId,
+            name: temp.productAttributeCategoryName,
+            selectParam: optionsValue,
+          });
         }
-      });
+        console.log(this.selectProductParam)
+      }
     },
     //获取设置的可手动添加属性值
     getEditAttrOptions(id) {
@@ -383,7 +417,7 @@ export default {
     },
     handleProductAttrChange(value) {
       this.getProductAttrList(0, value);
-      this.getProductAttrList(1, value);
+      this.getProductAttrSelectList(1, value);
     },
     getInputListArr(inputList) {
       return inputList.split(',');
@@ -581,11 +615,14 @@ export default {
         }
       }
       for (let i = 0; i < this.selectProductParam.length; i++) {
-        let param = this.selectProductParam[i];
-        this.value.productAttributeValueList.push({
-          productAttributeId: param.id,
-          value: param.value
-        });
+        let tempData = this.selectProductParam[i];
+        for (let j = 0; j < tempData.length; j++) {
+          let param = tempData[j];
+          this.value.productAttributeValueList.push({
+            productAttributeId: param.id,
+            value: param.value
+          });
+        }
       }
     },
     //合并商品属性图片

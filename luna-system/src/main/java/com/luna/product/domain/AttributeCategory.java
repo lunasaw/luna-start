@@ -35,4 +35,8 @@ public class AttributeCategory extends BaseEntity {
     @Excel(name = "参数数量")
     private Long              paramCount;
 
+    /** 属性类型 */
+    @Excel(name = "属性类型")
+    private Integer           attrType;
+
 }

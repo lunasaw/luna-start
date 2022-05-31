@@ -3,12 +3,15 @@ package com.luna.product.service;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.luna.common.constant.Constant;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.PageUtils;
 import com.luna.common.utils.StringUtils;
+import com.luna.product.domain.Attribute;
 import com.luna.product.domain.Category;
 import com.luna.product.domain.vo.AttributeCategoryVO;
 import com.luna.product.domain.vo.CategoryVO;
+import com.luna.product.mapper.AttributeMapper;
 import com.luna.product.mapper.CategoryMapper;
 import com.luna.utils.DO2VOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,9 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
     @Autowired
     private CategoryMapper          categoryMapper;
 
+    @Autowired
+    private AttributeMapper         attributeMapper;
+
     /**
      * 查询产品属性分类
      *
@@ -72,19 +78,34 @@ public class AttributeCategoryService extends ServiceImpl<AttributeCategoryMappe
         return attributeCategoryVO;
     }
 
-    public Long  insertAttributeCategory(Long categoryId, String attributeCategoryName) {
-        if (categoryId == null || StringUtils.isEmpty(attributeCategoryName)){
+    public Long insertAttributeCategory(Integer attrType, Long categoryId, String attributeCategoryName) {
+        if (categoryId == null || StringUtils.isEmpty(attributeCategoryName)) {
             return null;
         }
         AttributeCategory attributeCategory = new AttributeCategory();
         attributeCategory.setName(attributeCategoryName);
         attributeCategory.setCategoryId(categoryId);
+        attributeCategory.setAttrType(attrType);
         AttributeCategory category = attributeCategoryMapper.selectOne(new QueryWrapper<>(attributeCategory));
-        if (category != null){
+        if (category != null) {
+            Attribute attribute = new Attribute();
+            attribute.setProductAttributeCategoryId(category.getId());
+            Long aLong = attributeMapper.selectCount(new QueryWrapper<>(attribute));
+            if (Constant.NUMBER_ONE == attrType) {
+                category.setParamCount(aLong);
+            } else {
+                category.setAttributeCount(aLong);
+            }
             return category.getId();
         }
-        attributeCategory.setAttributeCount(0L);
-        attributeCategory.setParamCount(0L);
+        if (Constant.NUMBER_ONE == attrType) {
+            category.setParamCount(1L);
+            category.setAttributeCount(0L);
+        } else {
+            category.setAttributeCount(1L);
+            category.setParamCount(0L);
+        }
+        attributeCategory.setAttrType(attrType);
         attributeCategoryMapper.insertAttributeCategory(attributeCategory);
         return attributeCategory.getId();
     }

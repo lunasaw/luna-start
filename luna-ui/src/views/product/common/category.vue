@@ -14,7 +14,7 @@
       </el-form-item>
       <el-form-item>
         <el-switch
-          v-model="draggable"
+          v-model="draggableValue"
           active-text="开启拖拽"
           inactive-text="关闭拖拽"
           active-color="#13ce66"
@@ -30,7 +30,6 @@
       </el-form-item>
     </el-form>
 
-
     <el-tree class="filter-tree"
              :props="props" :data="cascadeList" node-key="id"
              :show-checkbox="showCheckBoxValue"
@@ -38,11 +37,13 @@
              :expand-on-click-node="expandOnClickValue"
              :check-on-click-node='checkableValue'
              :default-expanded-keys="defaultExpandedKeys"
-             :draggable='draggable'
+             :draggable='draggableValue'
              :allow-drop='allowDrop'
+             :filter-node-method="filterNode"
              @node-drop='handleDrop'
              @node-click="handleNodeClick"
              @check-change="handleCheckChange"
+             @node-expand="handleNodeExpand"
              ref="categoryTree"
     >
 
@@ -187,7 +188,6 @@ export default {
       })
     }
   },
-
   data() {
     return {
       // 遮罩层
@@ -214,6 +214,7 @@ export default {
       defaultExpandedKeys: [],
       // 弹出层标题
       title: "",
+      filterText: '',
       // 是否显示弹出层
       open: false,
       // 是否可拖拽
@@ -269,13 +270,16 @@ export default {
           this.cascadeList = val;
           this.categoryList = val;
         }
-      }
+      },
+    },
+    "filterText": function(val) {
+      this.$refs.categoryTree.filter(val);
     },
     "queryParams.parentId": function (val) {
       this.queryParams.parentId = val;
       this.getCategoryCascadeList();
     },
-    "draggable": function (val) {
+    "draggableValue": function (val) {
       if (!val) {
         this.getCategoryCascadeList();
       }
@@ -289,8 +293,13 @@ export default {
     this.cascadeList = this.value;
   },
   methods: {
+    filterNode(value, data) {
+      console.log(value, data);
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
+    },
     handleNodeClick(data, node, event) {
-      console.log(data, node, event);
+      // console.log(data, node, event);
       // 事件回调
       this.$emit("category-node-click", data, node, event);
     },
@@ -321,10 +330,10 @@ export default {
           type: "error"
         });
       })
-      console.log("被选中的元素", checkNodes);
+      // console.log("被选中的元素", checkNodes);
     },
     remove(node, data) {
-      console.log(node, data)
+      // console.log(node, data)
       let param = {
         id: data.id,
         parentId: data.parentId
@@ -348,7 +357,7 @@ export default {
       });
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log('tree drop: ', '当前拖拽节点', draggingNode, '当前拖拽目的节点', dropNode, dropType);
+      // console.log('tree drop: ', '当前拖拽节点', draggingNode, '当前拖拽目的节点', dropNode, dropType);
       // 当前节点对父节点
       let parentId = this.parentId;
       if (dropType === 'inner') {
@@ -364,7 +373,7 @@ export default {
       } else {
         childNodes = dropNode.parent.childNodes;
       }
-      console.log("childNodes", childNodes);
+      // console.log("childNodes", childNodes);
       // 2. 获取当前节点的顺序
       let index = 0;
       childNodes.forEach(e => {
@@ -372,9 +381,9 @@ export default {
         if (e.data.id === draggingNode.data.id) {
           // 如果是当前正在拖拽对节点
           let catLevel = draggingNode.data.level;
-          console.log('当前节点等级', e.level, '目标节点等级', catLevel);
+          // console.log('当前节点等级', e.level, '目标节点等级', catLevel);
           if (e.level !== catLevel) {
-            console.log('当前节点等级', e.level, '目标节点等级', catLevel);
+            // console.log('当前节点等级', e.level, '目标节点等级', catLevel);
             catLevel = e.level;
             // 是外部的话 还需要修改子节点层级
             this.updateChildNodeLevel(e);
@@ -397,10 +406,10 @@ export default {
       // 当前节点对最近节点
       // 当前节点对最近节点的父节点
       this.parentId.push(parentId);
-      console.log(this.updateNodes);
+      // console.log(this.updateNodes);
     },
     updateChildNodeLevel(node) {
-      console.log('更新子节点层级', node);
+      // console.log('更新子节点层级', node);
       node.childNodes.forEach(e => {
         this.updateNodes.push({
           id: e.data.id,
@@ -415,11 +424,11 @@ export default {
     allowDrop(draggingNode, dropNode, type) {
       // 拖拽节点 拖拽到目标节点 的某个位置
       let maxLevel = this.countNodeLevel(draggingNode);
-      console.log(maxLevel);
-      console.log('============' + draggingNode.data.name);
-      console.log(draggingNode);
-      console.log('============' + dropNode.data.name);
-      console.log(dropNode);
+      // console.log(maxLevel);
+      // console.log('============' + draggingNode.data.name);
+      // console.log(draggingNode);
+      // console.log('============' + dropNode.data.name);
+      // console.log(dropNode);
       // 深度 = 最大深度 - 当前深度 + 1
       let dep = Math.abs(maxLevel - draggingNode.level + 1);
       if (type === 'inner') {
@@ -443,7 +452,13 @@ export default {
       return maxLevel;
     },
     handleCheckChange() {
-      console.log(this.ids);
+
+    },
+    handleNodeExpand(data, node, expanded) {
+      this.defaultExpandedKeys = [data.id];
+      node.childNodes.forEach(e => {
+        this.defaultExpandedKeys.push(e.data.id);
+      });
     },
     handleChange(val) {
     },
@@ -521,7 +536,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(data) {
-      console.log(data)
+      // console.log(data)
       this.reset();
       this.open = true;
       this.form.parentId = data.id;

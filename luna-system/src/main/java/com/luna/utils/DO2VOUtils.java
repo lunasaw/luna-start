@@ -150,6 +150,9 @@ public class DO2VOUtils {
         attributeCategoryVO.setUpdateTime(attributeCategory.getUpdateTime());
         attributeCategoryVO.setRemark(attributeCategory.getRemark());
         attributeCategoryVO.setParams(attributeCategory.getParams());
+
+        attributeCategoryVO.setAttrType(attributeCategory.getAttrType());
+
         return attributeCategoryVO;
     }
 

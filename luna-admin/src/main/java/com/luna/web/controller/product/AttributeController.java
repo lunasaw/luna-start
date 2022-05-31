@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.domain.req.AttributeFixReq;
 import com.luna.product.domain.req.AttributeReq;
+import com.luna.product.domain.vo.AttributeSelectVO;
 import com.luna.product.domain.vo.AttributeVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +74,17 @@ public class AttributeController extends BaseController {
         return getDataTable(list);
     }
 
+
+    /**
+     * 查询商品参数属性列表
+     */
+    @PreAuthorize("@ss.hasPermi('product:attribute:list')")
+    @ApiOperation(value = "查询商品属性参数列表")
+    @GetMapping("/listPageVoList")
+    public AjaxResult selectSelectVOList(AttributeReq attribute) {
+        List<AttributeSelectVO> selectVOS = attributeService.selectSelectVOList(attribute);
+        return AjaxResult.success(selectVOS);
+    }
 
     /**
      * 分页查询商品属性参数列表 排除当前组

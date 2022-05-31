@@ -64,7 +64,7 @@ public class Attribute extends BaseEntity {
     private Integer           handAddStatus;
 
     /** 属性的类型 */
-    @Excel(name = "属性的类型")
+    @Excel(name = "属性的类型 0规格 1参数")
     private Integer           attrType;
 
 }

@@ -245,7 +245,7 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="属性的类型" prop="attrType">
-              <el-select v-model="form.attrType" placeholder="请选择属性的类型">
+              <el-select v-model="form.attrType" placeholder="请选择属性的类型" disabled>
                 <el-option
                   v-for="dict in dict.type.tb_attribute_type"
                   :key="dict.value"

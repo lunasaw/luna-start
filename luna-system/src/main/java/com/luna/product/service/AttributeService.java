@@ -3,12 +3,14 @@ package com.luna.product.service;
 import java.util.*;
 
 import com.github.pagehelper.PageInfo;
+import com.luna.common.text.NumberUtil;
 import com.luna.common.utils.DateUtils;
 import com.luna.common.utils.StringUtils;
 import com.luna.product.domain.AttributeCategory;
 import com.luna.product.domain.Category;
 import com.luna.product.domain.req.AttributeFixReq;
 import com.luna.product.domain.req.AttributeReq;
+import com.luna.product.domain.vo.AttributeSelectVO;
 import com.luna.product.mapper.AttributeCategoryMapper;
 import com.luna.product.mapper.CategoryMapper;
 import com.luna.utils.DO2VOUtils;
@@ -168,7 +170,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
             }
             attributeCategoryIds = attributeCategories.stream().map(AttributeCategory::getId).collect(Collectors.toList());
         }
-        if (CollectionUtils.isEmpty(attributeCategoryIds)){
+        if (CollectionUtils.isEmpty(attributeCategoryIds)) {
             return Page.of(0, 0);
         }
         Page<Attribute> selectPage = Page.of(page.getCurrent(), page.getSize());
@@ -183,6 +185,38 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         Page<AttributeVO> result = new Page<>(attributePage.getCurrent(), attributePage.getSize(), attributePage.getTotal());
         result.setRecords(list);
         return result;
+    }
+
+    /**
+     * 分页查询商品属性参数VO视图列表
+     *
+     * @param attributeReq 商品属性参数
+     * @return 商品属性参数
+     */
+    public List<AttributeSelectVO> selectSelectVOList(AttributeReq attributeReq) {
+        ArrayList<AttributeSelectVO> arrayList = Lists.newArrayList();
+        IPage<Attribute> page = new Page<>(0, 100);
+        while (true) {
+            IPage<AttributeVO> attributeVOIPage = selectVOList(page, attributeReq);
+            page.setCurrent(page.getCurrent() + 1);
+            List<AttributeVO> records = attributeVOIPage.getRecords();
+            if (CollectionUtils.isEmpty(records)) {
+                break;
+            }
+
+            Map<Long, List<AttributeVO>> attributeVOMap =
+                records.stream().collect(Collectors.groupingBy(AttributeVO::getProductAttributeCategoryId));
+
+            attributeVOMap.forEach((k, v) -> {
+                AttributeSelectVO attributeSelectVO = new AttributeSelectVO();
+                attributeSelectVO.setProductAttributeCategoryId(k);
+                attributeSelectVO.setProductAttributeCategoryName(v.get(0).getProductAttributeCategoryName());
+                attributeSelectVO.setAttributes(v);
+                arrayList.add(attributeSelectVO);
+            });
+        }
+
+        return arrayList;
     }
 
     /**
@@ -228,7 +262,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         return result;
     }
 
-    public List<AttributeVO>  convertData(Long categoryId, List<AttributeCategory> attributeCategories,List<Attribute> records) {
+    public List<AttributeVO> convertData(Long categoryId, List<AttributeCategory> attributeCategories, List<Attribute> records) {
         List<AttributeVO> list = Lists.newArrayList();
         Map<Long, AttributeCategory> categoryMap =
             attributeCategories.stream().collect(Collectors.toMap(AttributeCategory::getId, Function.identity()));
@@ -262,7 +296,7 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
         if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
-            Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            Long aLong = attributeCategoryService.insertAttributeCategory(attributeReq.getAttrType(), categoryId, attributeCategoryName);
             if (aLong != null) {
                 attributeReq.setProductAttributeCategoryId(aLong);
             }
@@ -280,10 +314,10 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
      */
     public int updateAttribute(AttributeReq attributeReq) {
         attributeReq.setUpdateTime(DateUtils.getNowDate());
-        if (StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
+        if (attributeReq.getProductAttributeCategoryId() == null && StringUtils.isNotEmpty(attributeReq.getProductAttributeCategoryName())) {
             Long categoryId = attributeReq.getCategoryId();
             String attributeCategoryName = attributeReq.getProductAttributeCategoryName();
-            Long aLong = attributeCategoryService.insertAttributeCategory(categoryId, attributeCategoryName);
+            Long aLong = attributeCategoryService.insertAttributeCategory(attributeReq.getAttrType(), categoryId, attributeCategoryName);
             if (aLong != null) {
                 attributeReq.setProductAttributeCategoryId(aLong);
             }
@@ -315,15 +349,15 @@ public class AttributeService extends ServiceImpl<AttributeMapper, Attribute> {
 
     public int fixCategory(AttributeFixReq attributeFixReq) {
         List<Long> attrIds = attributeFixReq.getAttrIds();
-        if (CollectionUtils.isEmpty(attrIds)){
+        if (CollectionUtils.isEmpty(attrIds)) {
             return 0;
         }
         Long productAttributeCategoryId = attributeFixReq.getProductAttributeCategoryId();
-        if (null == productAttributeCategoryId){
+        if (null == productAttributeCategoryId) {
             return 0;
         }
         AttributeCategory attributeCategory = attributeCategoryMapper.selectAttributeCategoryById(productAttributeCategoryId);
-        if (null == attributeCategory){
+        if (null == attributeCategory) {
             return 0;
         }
 
