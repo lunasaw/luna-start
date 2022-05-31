@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SkuInfoMapper;
 import com.luna.product.domain.SkuInfo;
 import com.luna.product.domain.vo.SkuInfoVO;
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * sku信息Service业务层处理

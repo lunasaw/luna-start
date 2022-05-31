@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SkuSaleAttrValueMapper;
 import com.luna.product.domain.SkuSaleAttrValue;
 import com.luna.product.domain.vo.SkuSaleAttrValueVO;
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * sku销售属性&值Service业务层处理
@@ -137,7 +137,7 @@ public class SkuSaleAttrValueService extends ServiceImpl<SkuSaleAttrValueMapper,
             return list;
         }
         for (SkuSaleAttrValue record:records) {
-            SkuSaleAttrValueVO skuSaleAttrValueVO = DO2VOUtils .skuSaleAttrValue2SkuSaleAttrValueVO(record);
+            SkuSaleAttrValueVO skuSaleAttrValueVO = DO2VOUtils.skuSaleAttrValue2SkuSaleAttrValueVO(record);
             list.add(skuSaleAttrValueVO);
         }
         return list;

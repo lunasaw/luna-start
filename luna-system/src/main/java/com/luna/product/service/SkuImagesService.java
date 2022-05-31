@@ -16,7 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.luna.product.mapper.SkuImagesMapper;
 import com.luna.product.domain.SkuImages;
 import com.luna.product.domain.vo.SkuImagesVO;
-import com.luna.product.utils.DO2VOUtils;
+import com.luna.utils.DO2VOUtils;
 
 /**
  * sku图片Service业务层处理
@@ -137,7 +137,7 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
             return list;
         }
         for (SkuImages record:records) {
-            SkuImagesVO skuImagesVO = DO2VOUtils .skuImages2SkuImagesVO(record);
+            SkuImagesVO skuImagesVO = DO2VOUtils.skuImages2SkuImagesVO(record);
             list.add(skuImagesVO);
         }
         return list;

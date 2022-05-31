@@ -11,12 +11,6 @@ import com.luna.product.domain.vo.SkuSaleAttrValueVO;
  */
 public class DO2VOUtils {
 
-    public static SkuSaleAttrValueVO skuSaleAttrValue2SkuSaleAttrValueVO (SkuSaleAttrValue SkuSaleAttrValue) {
-        if (SkuSaleAttrValue ==null){
-            return null;
-        }
-            SkuSaleAttrValueVO skuSaleAttrValueVO = new SkuSaleAttrValueVO();
-        return skuSaleAttrValueVO;
-    }
+
 
 }

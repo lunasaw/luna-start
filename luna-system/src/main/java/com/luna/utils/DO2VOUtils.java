@@ -14,6 +14,79 @@ import java.util.Optional;
  */
 public class DO2VOUtils {
 
+    public static SkuImagesVO skuImages2SkuImagesVO(SkuImages skuImages) {
+        if (skuImages == null){
+            return null;
+        }
+        SkuImagesVO skuImagesVO = new SkuImagesVO();
+        skuImagesVO.setId(skuImages.getId());
+        skuImagesVO.setSkuId(skuImages.getSkuId());
+        skuImagesVO.setImgUrl(skuImages.getImgUrl());
+        skuImagesVO.setImgSort(skuImages.getImgSort());
+        skuImagesVO.setDefaultImg(skuImages.getDefaultImg());
+        skuImagesVO.setSearchValue(skuImages.getSearchValue());
+        skuImagesVO.setCreateBy(skuImages.getCreateBy());
+        skuImagesVO.setCreateTime(skuImages.getCreateTime());
+        skuImagesVO.setDeleted(skuImages.getDeleted());
+        skuImagesVO.setUpdateBy(skuImages.getUpdateBy());
+        skuImagesVO.setUpdateTime(skuImages.getUpdateTime());
+        skuImagesVO.setRemark(skuImages.getRemark());
+        skuImagesVO.setParams(skuImages.getParams());
+        return skuImagesVO;
+    }
+
+    public static SkuInfoVO skuInfo2SkuInfoVO (SkuInfo SkuInfo) {
+
+        if (SkuInfo ==null){
+            return null;
+        }
+        SkuInfoVO skuInfoVO = new SkuInfoVO();
+        skuInfoVO.setSkuId(SkuInfo.getSkuId());
+        skuInfoVO.setSpuId(SkuInfo.getSpuId());
+        skuInfoVO.setSkuName(SkuInfo.getSkuName());
+        skuInfoVO.setSkuDesc(SkuInfo.getSkuDesc());
+        skuInfoVO.setCatalogId(SkuInfo.getCatalogId());
+        skuInfoVO.setBrandId(SkuInfo.getBrandId());
+        skuInfoVO.setSkuDefaultImg(SkuInfo.getSkuDefaultImg());
+        skuInfoVO.setSkuTitle(SkuInfo.getSkuTitle());
+        skuInfoVO.setSkuSubtitle(SkuInfo.getSkuSubtitle());
+        skuInfoVO.setPrice(SkuInfo.getPrice());
+        skuInfoVO.setSaleCount(SkuInfo.getSaleCount());
+        skuInfoVO.setSearchValue(SkuInfo.getSearchValue());
+        skuInfoVO.setCreateBy(SkuInfo.getCreateBy());
+        skuInfoVO.setCreateTime(SkuInfo.getCreateTime());
+        skuInfoVO.setDeleted(SkuInfo.getDeleted());
+        skuInfoVO.setUpdateBy(SkuInfo.getUpdateBy());
+        skuInfoVO.setUpdateTime(SkuInfo.getUpdateTime());
+        skuInfoVO.setRemark(SkuInfo.getRemark());
+        skuInfoVO.setParams(SkuInfo.getParams());
+        return skuInfoVO;
+    }
+
+
+    public static SkuSaleAttrValueVO skuSaleAttrValue2SkuSaleAttrValueVO (SkuSaleAttrValue SkuSaleAttrValue) {
+
+        if (SkuSaleAttrValue ==null){
+            return null;
+        }
+        SkuSaleAttrValueVO skuSaleAttrValueVO = new SkuSaleAttrValueVO();
+        skuSaleAttrValueVO.setId(SkuSaleAttrValue.getId());
+        skuSaleAttrValueVO.setSkuId(SkuSaleAttrValue.getSkuId());
+        skuSaleAttrValueVO.setAttrId(SkuSaleAttrValue.getAttrId());
+        skuSaleAttrValueVO.setAttrName(SkuSaleAttrValue.getAttrName());
+        skuSaleAttrValueVO.setAttrValue(SkuSaleAttrValue.getAttrValue());
+        skuSaleAttrValueVO.setAttrSort(SkuSaleAttrValue.getAttrSort());
+        skuSaleAttrValueVO.setSearchValue(SkuSaleAttrValue.getSearchValue());
+        skuSaleAttrValueVO.setCreateBy(SkuSaleAttrValue.getCreateBy());
+        skuSaleAttrValueVO.setCreateTime(SkuSaleAttrValue.getCreateTime());
+        skuSaleAttrValueVO.setDeleted(SkuSaleAttrValue.getDeleted());
+        skuSaleAttrValueVO.setUpdateBy(SkuSaleAttrValue.getUpdateBy());
+        skuSaleAttrValueVO.setUpdateTime(SkuSaleAttrValue.getUpdateTime());
+        skuSaleAttrValueVO.setRemark(SkuSaleAttrValue.getRemark());
+        skuSaleAttrValueVO.setParams(SkuSaleAttrValue.getParams());
+        return skuSaleAttrValueVO;
+    }
+
     public static CategoryBrandRelationVO categoryBrandRelation2CategoryBrandRelationVO(CategoryBrandRelation CategoryBrandRelation, String brandName,
         String categoryName) {
         if (CategoryBrandRelation == null) {
