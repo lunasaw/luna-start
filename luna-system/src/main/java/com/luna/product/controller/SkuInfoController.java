@@ -38,7 +38,7 @@ import com.luna.common.core.page.TableDataInfo;
  * @date 2022-05-31
  */
 @RestController
-@RequestMapping("/skuInfo/skuInfo")
+@RequestMapping("/product/skuInfo")
 @Api(tags = "sku信息")
 public class SkuInfoController extends BaseController {
     @Autowired
@@ -47,7 +47,7 @@ public class SkuInfoController extends BaseController {
     /**
      * 查询sku信息列表
      */
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:list')")
     @GetMapping("/list")
     public TableDataInfo list(SkuInfo skuInfo) {
         startPage();
@@ -60,7 +60,7 @@ public class SkuInfoController extends BaseController {
     /**
      * 分页查询sku信息列表
      */
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:list')")
     @ApiOperation(value = "查询sku信息列表")
     @GetMapping("/listPage")
     public TableDataInfo listPage(SkuInfo skuInfo) {
@@ -72,7 +72,7 @@ public class SkuInfoController extends BaseController {
     /**
      * 查询全部sku信息列表
      */
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:list')")
     @ApiOperation(value = "查询全部sku信息列表")
     @GetMapping("/listAll")
     public List<SkuInfoVO> listAll(SkuInfo skuInfo) {
@@ -83,7 +83,7 @@ public class SkuInfoController extends BaseController {
     /**
      * ids批量查询品牌列表
      */
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:list')")
     @ApiOperation(value = "ids查询sku信息列表")
     @GetMapping("/listByIds")
     public AjaxResult listByIds(List<Long> ids) {
@@ -95,7 +95,7 @@ public class SkuInfoController extends BaseController {
      * 导出sku信息列表
      */
     @ApiOperation(value = "导出sku信息列表")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:export')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:export')")
     @Log(title = "sku信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SkuInfo skuInfo) {
@@ -108,7 +108,7 @@ public class SkuInfoController extends BaseController {
      * 获取sku信息详细信息
      */
     @ApiOperation(value = "获取sku信息详细信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:query')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:query')")
     @GetMapping(value = "/{skuId}")
     public AjaxResult getInfo(@PathVariable("skuId") Long skuId) {
         return AjaxResult.success(skuInfoService.selectSkuInfoBySkuId(skuId));
@@ -118,7 +118,7 @@ public class SkuInfoController extends BaseController {
      * 新增sku信息
      */
     @ApiOperation(value = "新增sku信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:add')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:add')")
     @Log(title = "sku信息", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SkuInfo skuInfo) {
@@ -128,7 +128,7 @@ public class SkuInfoController extends BaseController {
     /**
      * 批量新增
      */
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:add')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:add')")
     @ApiOperation(value = "批量新增sku信息列表")
     @Log(title = "sku信息", businessType = BusinessType.INSERT)
     @PostMapping("/addList")
@@ -137,11 +137,12 @@ public class SkuInfoController extends BaseController {
         return skuInfoService.saveBatch(skuInfoList);
     }
 
+
     /**
      * 修改sku信息
      */
     @ApiOperation(value = "修改sku信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:edit')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:edit')")
     @Log(title = "sku信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SkuInfo skuInfo) {
@@ -152,7 +153,7 @@ public class SkuInfoController extends BaseController {
      * 批量修改sku信息
      */
     @ApiOperation(value = "修改sku信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:edit')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:edit')")
     @Log(title = "sku信息", businessType = BusinessType.UPDATE)
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<SkuInfo> skuInfoList) {
@@ -164,7 +165,7 @@ public class SkuInfoController extends BaseController {
      * 删除sku信息
      */
     @ApiOperation(value = "删除sku信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:remove')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:remove')")
     @Log(title = "sku信息", businessType = BusinessType.DELETE)
     @DeleteMapping("/{skuIds}")
     public AjaxResult removeByIds(@PathVariable Long[] skuIds) {
@@ -175,12 +176,13 @@ public class SkuInfoController extends BaseController {
      * 逻辑删除sku信息
      */
     @ApiOperation(value = "逻辑删除sku信息")
-    @PreAuthorize("@ss.hasPermi('skuInfo:skuInfo:remove')")
+    @PreAuthorize("@ss.hasPermi('product:skuInfo:remove')")
     @Log(title = "sku信息", businessType = BusinessType.DELETE)
     @DeleteMapping("delete")
     public AjaxResult remove(@RequestBody SkuInfo skuInfo) {
         return toAjax(skuInfoService.delete(skuInfo));
     }
+
 
     /**
      * 批量逻辑删除sku信息

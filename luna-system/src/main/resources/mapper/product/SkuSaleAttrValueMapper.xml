@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.SkuSaleAttrValueMapper">
+
+    <resultMap type="SkuSaleAttrValue" id="SkuSaleAttrValueResult">
+        <result property="id" column="id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="attrId" column="attr_id"/>
+        <result property="attrName" column="attr_name"/>
+        <result property="attrValue" column="attr_value"/>
+        <result property="attrSort" column="attr_sort"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSkuSaleAttrValueVo">
+        select id,
+               sku_id,
+               attr_id,
+               attr_name,
+               attr_value,
+               attr_sort,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_sku_sale_attr_value
+    </sql>
+
+    <select id="selectSkuSaleAttrValueList" parameterType="SkuSaleAttrValue" resultMap="SkuSaleAttrValueResult">
+        <include refid="selectSkuSaleAttrValueVo"/>
+        <where>
+            <if test="skuId != null ">and sku_id = #{skuId}</if>
+            <if test="attrId != null ">and attr_id = #{attrId}</if>
+            <if test="attrName != null  and attrName != ''">and attr_name like concat('%', #{attrName}, '%')</if>
+            <if test="attrValue != null  and attrValue != ''">and attr_value = #{attrValue}</if>
+            <if test="attrSort != null ">and attr_sort = #{attrSort}</if>
+        </where>
+    </select>
+
+    <select id="selectSkuSaleAttrValueById" parameterType="Long" resultMap="SkuSaleAttrValueResult">
+        <include refid="selectSkuSaleAttrValueVo"/>
+        where id = #{id}
+        limit 1
+    </select>
+
+    <insert id="insertSkuSaleAttrValue" parameterType="SkuSaleAttrValue" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_sku_sale_attr_value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="skuId != null">sku_id,</if>
+            <if test="attrId != null">attr_id,</if>
+            <if test="attrName != null">attr_name,</if>
+            <if test="attrValue != null">attr_value,</if>
+            <if test="attrSort != null">attr_sort,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="skuId != null">#{skuId},</if>
+            <if test="attrId != null">#{attrId},</if>
+            <if test="attrName != null">#{attrName},</if>
+            <if test="attrValue != null">#{attrValue},</if>
+            <if test="attrSort != null">#{attrSort},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSkuSaleAttrValue" parameterType="SkuSaleAttrValue">
+        update tb_pms_sku_sale_attr_value
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="skuId != null">sku_id = #{skuId},</if>
+            <if test="attrId != null">attr_id = #{attrId},</if>
+            <if test="attrName != null">attr_name = #{attrName},</if>
+            <if test="attrValue != null">attr_value = #{attrValue},</if>
+            <if test="attrSort != null">attr_sort = #{attrSort},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSkuSaleAttrValueById" parameterType="Long">
+        delete
+        from tb_pms_sku_sale_attr_value
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSkuSaleAttrValueByIds" parameterType="String">
+        delete from tb_pms_sku_sale_attr_value where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

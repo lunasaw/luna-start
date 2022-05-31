@@ -6,7 +6,7 @@ import com.luna.common.core.domain.BaseEntity;
 import lombok.Data;
 
 /**
- * sku图片对象 tb_pms_sku_images
+ * SKU图片对象 tb_pms_sku_images
  *
  * @author luna
  * @date 2022-05-31

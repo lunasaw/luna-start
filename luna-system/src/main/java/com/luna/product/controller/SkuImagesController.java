@@ -32,22 +32,22 @@ import com.luna.common.utils.poi.ExcelUtil;
 import com.luna.common.core.page.TableDataInfo;
 
 /**
- * sku图片Controller
+ * SKU图片Controller
  *
  * @author luna
  * @date 2022-05-31
  */
 @RestController
-@RequestMapping("/skuImages/skuImages" )
-@Api(tags = "sku图片" )
+@RequestMapping("/product/skuImages")
+@Api(tags = "SKU图片")
 public class SkuImagesController extends BaseController {
     @Autowired
     private SkuImagesService skuImagesService;
 
     /**
-     * 查询sku图片列表
+     * 查询SKU图片列表
      */
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:list')")
     @GetMapping("/list")
     public TableDataInfo list(SkuImages skuImages) {
         startPage();
@@ -58,10 +58,10 @@ public class SkuImagesController extends BaseController {
     }
 
     /**
-     * 分页查询sku图片列表
+     * 分页查询SKU图片列表
      */
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:list')" )
-    @ApiOperation(value = "查询sku图片列表" )
+    @PreAuthorize("@ss.hasPermi('product:skuImages:list')")
+    @ApiOperation(value = "查询SKU图片列表")
     @GetMapping("/listPage" )
     public TableDataInfo listPage(SkuImages skuImages) {
         Page<SkuImages> page = startPageList();
@@ -70,10 +70,10 @@ public class SkuImagesController extends BaseController {
     }
 
     /**
-     * 查询全部sku图片列表
+     * 查询全部SKU图片列表
      */
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:list')" )
-    @ApiOperation(value = "查询全部sku图片列表" )
+    @PreAuthorize("@ss.hasPermi('product:skuImages:list')")
+    @ApiOperation(value = "查询全部SKU图片列表")
     @GetMapping("/listAll" )
     public List<SkuImagesVO> listAll(SkuImages skuImages) {
         List<SkuImagesVO> list = skuImagesService.selectAllList(skuImages);
@@ -83,8 +83,8 @@ public class SkuImagesController extends BaseController {
     /**
      * ids批量查询品牌列表
      */
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:list')")
-    @ApiOperation(value = "ids查询sku图片列表")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:list')")
+    @ApiOperation(value = "ids查询SKU图片列表")
     @GetMapping("/listByIds")
     public AjaxResult listByIds(List<Long> ids) {
         List<SkuImages> list = skuImagesService.selectSkuImagesByIds(ids);
@@ -92,34 +92,34 @@ public class SkuImagesController extends BaseController {
     }
 
     /**
-     * 导出sku图片列表
+     * 导出SKU图片列表
      */
-    @ApiOperation(value = "导出sku图片列表")
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:export')")
-    @Log(title = "sku图片", businessType = BusinessType.EXPORT)
+    @ApiOperation(value = "导出SKU图片列表")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:export')")
+    @Log(title = "SKU图片", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SkuImages skuImages) {
         List<SkuImagesVO> list = skuImagesService.selectAllList(skuImages);
         ExcelUtil<SkuImagesVO> util = new ExcelUtil<SkuImagesVO>(SkuImagesVO. class);
-        util.exportExcel(response, list, "sku图片数据");
+        util.exportExcel(response, list, "SKU图片数据");
     }
 
     /**
-     * 获取sku图片详细信息
+     * 获取SKU图片详细信息
      */
-    @ApiOperation(value = "获取sku图片详细信息")
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:query')")
+    @ApiOperation(value = "获取SKU图片详细信息")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id" ) Long id) {
         return AjaxResult.success(skuImagesService.selectSkuImagesById(id));
     }
 
     /**
-     * 新增sku图片
+     * 新增SKU图片
      */
-    @ApiOperation(value = "新增sku图片" )
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:add')" )
-    @Log(title = "sku图片" , businessType = BusinessType.INSERT)
+    @ApiOperation(value = "新增SKU图片")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:add')")
+    @Log(title = "SKU图片", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SkuImages skuImages) {
         return toAjax(skuImagesService.insertSkuImages(skuImages));
@@ -128,9 +128,9 @@ public class SkuImagesController extends BaseController {
     /**
      * 批量新增
      */
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:add')" )
-    @ApiOperation(value = "批量新增sku图片列表" )
-    @Log(title = "sku图片" , businessType = BusinessType.INSERT)
+    @PreAuthorize("@ss.hasPermi('product:skuImages:add')")
+    @ApiOperation(value = "批量新增SKU图片列表")
+    @Log(title = "SKU图片", businessType = BusinessType.INSERT)
     @PostMapping("/addList" )
     public Boolean addList(List<SkuImages> skuImagesList) {
         skuImagesList = skuImagesList.stream().filter(e-> Objects.nonNull(e.getId())).collect(Collectors.toList());
@@ -139,22 +139,22 @@ public class SkuImagesController extends BaseController {
 
 
     /**
-     * 修改sku图片
+     * 修改SKU图片
      */
-    @ApiOperation(value = "修改sku图片" )
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:edit')" )
-    @Log(title = "sku图片" , businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "修改SKU图片")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:edit')")
+    @Log(title = "SKU图片", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SkuImages skuImages) {
         return toAjax(skuImagesService.updateSkuImages(skuImages));
     }
 
     /**
-     * 批量修改sku图片
+     * 批量修改SKU图片
      */
-    @ApiOperation(value = "修改sku图片" )
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:edit')" )
-    @Log(title = "sku图片" , businessType = BusinessType.UPDATE)
+    @ApiOperation(value = "修改SKU图片")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:edit')")
+    @Log(title = "SKU图片", businessType = BusinessType.UPDATE)
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<SkuImages> skuImagesList) {
         skuImagesList = skuImagesList.stream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -162,22 +162,22 @@ public class SkuImagesController extends BaseController {
     }
 
     /**
-     * 删除sku图片
+     * 删除SKU图片
      */
-    @ApiOperation(value = "删除sku图片" )
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:remove')" )
-    @Log(title = "sku图片" , businessType = BusinessType.DELETE)
+    @ApiOperation(value = "删除SKU图片")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:remove')")
+    @Log(title = "SKU图片", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}" )
     public AjaxResult removeByIds(@PathVariable Long[] ids) {
         return toAjax(skuImagesService.deleteSkuImagesByIds(ids));
     }
 
     /**
-     * 逻辑删除sku图片
+     * 逻辑删除SKU图片
      */
-    @ApiOperation(value = "逻辑删除sku图片")
-    @PreAuthorize("@ss.hasPermi('skuImages:skuImages:remove')")
-    @Log(title = "sku图片", businessType = BusinessType.DELETE)
+    @ApiOperation(value = "逻辑删除SKU图片")
+    @PreAuthorize("@ss.hasPermi('product:skuImages:remove')")
+    @Log(title = "SKU图片", businessType = BusinessType.DELETE)
     @DeleteMapping("delete")
     public AjaxResult remove(@RequestBody SkuImages skuImages) {
         return toAjax(skuImagesService.delete(skuImages));
@@ -185,11 +185,11 @@ public class SkuImagesController extends BaseController {
 
 
     /**
-     * 批量逻辑删除sku图片
+     * 批量逻辑删除SKU图片
      */
-    @ApiOperation(value = "逻辑批量删除sku图片")
+    @ApiOperation(value = "逻辑批量删除SKU图片")
     @PreAuthorize("@ss.hasPermi('product:category:remove')")
-    @Log(title = "sku图片", businessType = BusinessType.DELETE)
+    @Log(title = "SKU图片", businessType = BusinessType.DELETE)
     @DeleteMapping("deleteBatch")
     public AjaxResult removeBatch(@RequestBody List<Long> skuImagesIds) {
         return toAjax(skuImagesService.deleteIds(skuImagesIds));

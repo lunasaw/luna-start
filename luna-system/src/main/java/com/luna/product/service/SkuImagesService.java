@@ -19,7 +19,7 @@ import com.luna.product.domain.vo.SkuImagesVO;
 import com.luna.utils.DO2VOUtils;
 
 /**
- * sku图片Service业务层处理
+ * SKU图片Service业务层处理
  *
  * @author luna
  * @date 2022-05-31
@@ -30,20 +30,20 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     private SkuImagesMapper skuImagesMapper;
 
     /**
-     * 查询sku图片
+     * 查询SKU图片
      *
-     * @param id sku图片主键
-     * @return sku图片
+     * @param id SKU图片主键
+     * @return SKU图片
      */
     public SkuImages selectSkuImagesById(Long id) {
         return skuImagesMapper.selectSkuImagesById(id);
     }
 
     /**
-     * 查询sku图片列表
+     * 查询SKU图片列表
      *
-     * @param skuImages sku图片
-     * @return sku图片
+     * @param skuImages SKU图片
+     * @return SKU图片
      */
     public PageInfo selectSkuImagesList(SkuImages skuImages) {
         List<SkuImages> list = skuImagesMapper.selectSkuImagesList(skuImages);
@@ -55,10 +55,10 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
 
 
     /**
-     * 查询全部sku图片列表
+     * 查询全部SKU图片列表
      *
-     * @param skuImages sku图片
-     * @return sku图片
+     * @param skuImages SKU图片
+     * @return SKU图片
      */
     public List<SkuImagesVO> selectAllList(SkuImages skuImages) {
 
@@ -79,11 +79,11 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-    * ids查询品牌列表
-    *
-     * @param ids sku图片
-     * @return sku图片
-    */
+     * ids查询品牌列表
+     *
+     * @param ids SKU图片
+     * @return SKU图片
+     */
     public List<SkuImages> selectSkuImagesByIds(List<Long> ids){
         if (CollectionUtils.isEmpty(ids)){
             return new ArrayList<>();
@@ -92,11 +92,11 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 分页查询sku图片列表
+     * 分页查询SKU图片列表
      *
-     * @param skuImages sku图片
+     * @param skuImages SKU图片
      * @param page 分页参数
-     * @return sku图片
+     * @return SKU图片
      */
     public IPage<SkuImages> selectList(IPage<SkuImages> page, SkuImages skuImages) {
         QueryWrapper<SkuImages> queryWrapper = new QueryWrapper<SkuImages>(skuImages);
@@ -109,11 +109,11 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 分页查询sku图片VO视图列表
+     * 分页查询SKU图片VO视图列表
      *
-     * @param skuImages sku图片
+     * @param skuImages SKU图片
      * @param page 分页参数
-     * @return sku图片
+     * @return SKU图片
      */
     public IPage<SkuImagesVO> selectVOList(IPage<SkuImages> page, SkuImages skuImages) {
         IPage<SkuImages> skuImagesPage = selectList(page, skuImages);
@@ -145,9 +145,9 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
 
 
     /**
-     * 新增sku图片
+     * 新增SKU图片
      *
-     * @param skuImages sku图片
+     * @param skuImages SKU图片
      * @return 结果
      */
     public int insertSkuImages(SkuImages skuImages) {
@@ -156,9 +156,9 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 修改sku图片
+     * 修改SKU图片
      *
-     * @param skuImages sku图片
+     * @param skuImages SKU图片
      * @return 结果
      */
     public int updateSkuImages(SkuImages skuImages) {
@@ -167,9 +167,9 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 批量修改sku图片列表
+     * 批量修改SKU图片列表
      *
-     * @param skuImagesList sku图片列表
+     * @param skuImagesList SKU图片列表
      * @return 结果
      */
     public Boolean updateskuImagesBatch(List<SkuImages> skuImagesList) {
@@ -180,9 +180,9 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 批量删除sku图片
+     * 批量删除SKU图片
      *
-     * @param ids 需要删除的sku图片主键
+     * @param ids 需要删除的SKU图片主键
      * @return 结果
      */
     public int deleteSkuImagesByIds(Long[] ids) {
@@ -190,9 +190,9 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
     }
 
     /**
-     * 批量逻辑删除sku图片
+     * 批量逻辑删除SKU图片
      *
-     * @param skuImagesIds sku图片
+     * @param skuImagesIds SKU图片
      * @return 结果
      */
     public int deleteIds(List<Long> skuImagesIds) {
@@ -206,7 +206,7 @@ public class SkuImagesService extends ServiceImpl<SkuImagesMapper, SkuImages> {
 
 
     /**
-     * 逻辑删除sku图片信息
+     * 逻辑删除SKU图片信息
      *
      * @param skuImages skuImages 主键
      * @return 结果

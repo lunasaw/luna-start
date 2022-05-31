@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.SkuInfoMapper">
+
+    <resultMap type="SkuInfo" id="SkuInfoResult">
+        <result property="skuId" column="sku_id"/>
+        <result property="spuId" column="spu_id"/>
+        <result property="skuName" column="sku_name"/>
+        <result property="skuDesc" column="sku_desc"/>
+        <result property="catalogId" column="catalog_id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="skuDefaultImg" column="sku_default_img"/>
+        <result property="skuTitle" column="sku_title"/>
+        <result property="skuSubtitle" column="sku_subtitle"/>
+        <result property="price" column="price"/>
+        <result property="saleCount" column="sale_count"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSkuInfoVo">
+        select sku_id,
+               spu_id,
+               sku_name,
+               sku_desc,
+               catalog_id,
+               brand_id,
+               sku_default_img,
+               sku_title,
+               sku_subtitle,
+               price,
+               sale_count,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_sku_info
+    </sql>
+
+    <select id="selectSkuInfoList" parameterType="SkuInfo" resultMap="SkuInfoResult">
+        <include refid="selectSkuInfoVo"/>
+        <where>
+            <if test="skuId != null ">and sku_id = #{skuId}</if>
+            <if test="spuId != null ">and spu_id = #{spuId}</if>
+            <if test="skuName != null  and skuName != ''">and sku_name like concat('%', #{skuName}, '%')</if>
+            <if test="skuDesc != null  and skuDesc != ''">and sku_desc = #{skuDesc}</if>
+            <if test="catalogId != null ">and catalog_id = #{catalogId}</if>
+            <if test="brandId != null ">and brand_id = #{brandId}</if>
+            <if test="skuDefaultImg != null  and skuDefaultImg != ''">and sku_default_img = #{skuDefaultImg}</if>
+            <if test="skuTitle != null  and skuTitle != ''">and sku_title like concat('%', #{skuTitle}, '%')</if>
+            <if test="skuSubtitle != null  and skuSubtitle != ''">and sku_subtitle like concat('%', #{skuSubtitle}, '%')</if>
+            <if test="price != null ">and price = #{price}</if>
+            <if test="saleCount != null ">and sale_count = #{saleCount}</if>
+        </where>
+    </select>
+
+    <select id="selectSkuInfoBySkuId" parameterType="Long" resultMap="SkuInfoResult">
+        <include refid="selectSkuInfoVo"/>
+        where sku_id = #{skuId}
+        limit 1
+    </select>
+
+    <insert id="insertSkuInfo" parameterType="SkuInfo" useGeneratedKeys="true" keyProperty="skuId">
+        insert into tb_pms_sku_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="spuId != null">spu_id,</if>
+            <if test="skuName != null">sku_name,</if>
+            <if test="skuDesc != null">sku_desc,</if>
+            <if test="catalogId != null">catalog_id,</if>
+            <if test="brandId != null">brand_id,</if>
+            <if test="skuDefaultImg != null">sku_default_img,</if>
+            <if test="skuTitle != null">sku_title,</if>
+            <if test="skuSubtitle != null">sku_subtitle,</if>
+            <if test="price != null">price,</if>
+            <if test="saleCount != null">sale_count,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="spuId != null">#{spuId},</if>
+            <if test="skuName != null">#{skuName},</if>
+            <if test="skuDesc != null">#{skuDesc},</if>
+            <if test="catalogId != null">#{catalogId},</if>
+            <if test="brandId != null">#{brandId},</if>
+            <if test="skuDefaultImg != null">#{skuDefaultImg},</if>
+            <if test="skuTitle != null">#{skuTitle},</if>
+            <if test="skuSubtitle != null">#{skuSubtitle},</if>
+            <if test="price != null">#{price},</if>
+            <if test="saleCount != null">#{saleCount},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSkuInfo" parameterType="SkuInfo">
+        update tb_pms_sku_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="spuId != null">spu_id = #{spuId},</if>
+            <if test="skuName != null">sku_name = #{skuName},</if>
+            <if test="skuDesc != null">sku_desc = #{skuDesc},</if>
+            <if test="catalogId != null">catalog_id = #{catalogId},</if>
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="skuDefaultImg != null">sku_default_img = #{skuDefaultImg},</if>
+            <if test="skuTitle != null">sku_title = #{skuTitle},</if>
+            <if test="skuSubtitle != null">sku_subtitle = #{skuSubtitle},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="saleCount != null">sale_count = #{saleCount},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where sku_id = #{skuId}
+    </update>
+
+    <delete id="deleteSkuInfoBySkuId" parameterType="Long">
+        delete
+        from tb_pms_sku_info
+        where sku_id = #{skuId}
+    </delete>
+
+    <delete id="deleteSkuInfoBySkuIds" parameterType="String">
+        delete from tb_pms_sku_info where sku_id in
+        <foreach item="skuId" collection="array" open="(" separator="," close=")">
+            #{skuId}
+        </foreach>
+    </delete>
+</mapper>

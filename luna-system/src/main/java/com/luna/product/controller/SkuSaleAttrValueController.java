@@ -38,7 +38,7 @@ import com.luna.common.core.page.TableDataInfo;
  * @date 2022-05-31
  */
 @RestController
-@RequestMapping("/skuAttrValue/skuAttrValue" )
+@RequestMapping("/product/skuAttrValue")
 @Api(tags = "sku销售属性&值" )
 public class SkuSaleAttrValueController extends BaseController {
     @Autowired
@@ -47,7 +47,7 @@ public class SkuSaleAttrValueController extends BaseController {
     /**
      * 查询sku销售属性&值列表
      */
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:list')")
     @GetMapping("/list")
     public TableDataInfo list(SkuSaleAttrValue skuSaleAttrValue) {
         startPage();
@@ -60,7 +60,7 @@ public class SkuSaleAttrValueController extends BaseController {
     /**
      * 分页查询sku销售属性&值列表
      */
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:list')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:list')")
     @ApiOperation(value = "查询sku销售属性&值列表" )
     @GetMapping("/listPage" )
     public TableDataInfo listPage(SkuSaleAttrValue skuSaleAttrValue) {
@@ -72,7 +72,7 @@ public class SkuSaleAttrValueController extends BaseController {
     /**
      * 查询全部sku销售属性&值列表
      */
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:list')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:list')")
     @ApiOperation(value = "查询全部sku销售属性&值列表" )
     @GetMapping("/listAll" )
     public List<SkuSaleAttrValueVO> listAll(SkuSaleAttrValue skuSaleAttrValue) {
@@ -83,7 +83,7 @@ public class SkuSaleAttrValueController extends BaseController {
     /**
      * ids批量查询品牌列表
      */
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:list')")
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:list')")
     @ApiOperation(value = "ids查询sku销售属性&值列表")
     @GetMapping("/listByIds")
     public AjaxResult listByIds(List<Long> ids) {
@@ -95,7 +95,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 导出sku销售属性&值列表
      */
     @ApiOperation(value = "导出sku销售属性&值列表")
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:export')")
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:export')")
     @Log(title = "sku销售属性&值", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SkuSaleAttrValue skuSaleAttrValue) {
@@ -108,7 +108,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 获取sku销售属性&值详细信息
      */
     @ApiOperation(value = "获取sku销售属性&值详细信息")
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:query')")
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id" ) Long id) {
         return AjaxResult.success(skuSaleAttrValueService.selectSkuSaleAttrValueById(id));
@@ -118,7 +118,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 新增sku销售属性&值
      */
     @ApiOperation(value = "新增sku销售属性&值" )
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:add')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:add')")
     @Log(title = "sku销售属性&值" , businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SkuSaleAttrValue skuSaleAttrValue) {
@@ -128,7 +128,7 @@ public class SkuSaleAttrValueController extends BaseController {
     /**
      * 批量新增
      */
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:add')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:add')")
     @ApiOperation(value = "批量新增sku销售属性&值列表" )
     @Log(title = "sku销售属性&值" , businessType = BusinessType.INSERT)
     @PostMapping("/addList" )
@@ -142,7 +142,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 修改sku销售属性&值
      */
     @ApiOperation(value = "修改sku销售属性&值" )
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:edit')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:edit')")
     @Log(title = "sku销售属性&值" , businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SkuSaleAttrValue skuSaleAttrValue) {
@@ -153,7 +153,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 批量修改sku销售属性&值
      */
     @ApiOperation(value = "修改sku销售属性&值" )
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:edit')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:edit')")
     @Log(title = "sku销售属性&值" , businessType = BusinessType.UPDATE)
     @PutMapping("/editList")
     public AjaxResult editList(@RequestBody List<SkuSaleAttrValue> skuSaleAttrValueList) {
@@ -165,7 +165,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 删除sku销售属性&值
      */
     @ApiOperation(value = "删除sku销售属性&值" )
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:remove')" )
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:remove')")
     @Log(title = "sku销售属性&值" , businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}" )
     public AjaxResult removeByIds(@PathVariable Long[] ids) {
@@ -176,7 +176,7 @@ public class SkuSaleAttrValueController extends BaseController {
      * 逻辑删除sku销售属性&值
      */
     @ApiOperation(value = "逻辑删除sku销售属性&值")
-    @PreAuthorize("@ss.hasPermi('skuAttrValue:skuAttrValue:remove')")
+    @PreAuthorize("@ss.hasPermi('product:skuAttrValue:remove')")
     @Log(title = "sku销售属性&值", businessType = BusinessType.DELETE)
     @DeleteMapping("delete")
     public AjaxResult remove(@RequestBody SkuSaleAttrValue skuSaleAttrValue) {

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luna.product.mapper.SkuImagesMapper">
+
+    <resultMap type="SkuImages" id="SkuImagesResult">
+        <result property="id" column="id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="imgSort" column="img_sort"/>
+        <result property="defaultImg" column="default_img"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSkuImagesVo">
+        select id,
+               sku_id,
+               img_url,
+               img_sort,
+               default_img,
+               deleted,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_pms_sku_images
+    </sql>
+
+    <select id="selectSkuImagesList" parameterType="SkuImages" resultMap="SkuImagesResult">
+        <include refid="selectSkuImagesVo"/>
+        <where>
+            <if test="skuId != null ">and sku_id = #{skuId}</if>
+            <if test="imgUrl != null  and imgUrl != ''">and img_url = #{imgUrl}</if>
+            <if test="imgSort != null ">and img_sort = #{imgSort}</if>
+            <if test="defaultImg != null ">and default_img = #{defaultImg}</if>
+            <if test="deleted != null ">and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectSkuImagesById" parameterType="Long" resultMap="SkuImagesResult">
+        <include refid="selectSkuImagesVo"/>
+        where id = #{id}
+        limit 1
+    </select>
+
+    <insert id="insertSkuImages" parameterType="SkuImages" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_pms_sku_images
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="skuId != null">sku_id,</if>
+            <if test="imgUrl != null">img_url,</if>
+            <if test="imgSort != null">img_sort,</if>
+            <if test="defaultImg != null">default_img,</if>
+            <if test="deleted != null">deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="skuId != null">#{skuId},</if>
+            <if test="imgUrl != null">#{imgUrl},</if>
+            <if test="imgSort != null">#{imgSort},</if>
+            <if test="defaultImg != null">#{defaultImg},</if>
+            <if test="deleted != null">#{deleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSkuImages" parameterType="SkuImages">
+        update tb_pms_sku_images
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="skuId != null">sku_id = #{skuId},</if>
+            <if test="imgUrl != null">img_url = #{imgUrl},</if>
+            <if test="imgSort != null">img_sort = #{imgSort},</if>
+            <if test="defaultImg != null">default_img = #{defaultImg},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSkuImagesById" parameterType="Long">
+        delete
+        from tb_pms_sku_images
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSkuImagesByIds" parameterType="String">
+        delete from tb_pms_sku_images where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

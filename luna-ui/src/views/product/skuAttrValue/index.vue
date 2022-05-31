@@ -1,66 +1,42 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-position="left">
-      <el-form-item label="skuId" prop="skuId"  >
+      <el-form-item label="sku_id" prop="skuId"   label-width="110px" >
         <el-input
             v-model="queryParams.skuId"
-            placeholder="请输入skuId"
+            placeholder="请输入sku_id"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="spuId" prop="spuId"  >
+      <el-form-item label="attr_id" prop="attrId"   label-width="110px" >
         <el-input
-            v-model="queryParams.spuId"
-            placeholder="请输入spuId"
+            v-model="queryParams.attrId"
+            placeholder="请输入attr_id"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="sku名称" prop="skuName"  >
+      <el-form-item label="销售属性名" prop="attrName"  >
         <el-input
-            v-model="queryParams.skuName"
-            placeholder="请输入sku名称"
+            v-model="queryParams.attrName"
+            placeholder="请输入销售属性名"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属分类id" prop="catalogId"   label-width="110px" >
+      <el-form-item label="销售属性值" prop="attrValue"  >
         <el-input
-            v-model="queryParams.catalogId"
-            placeholder="请输入所属分类id"
+            v-model="queryParams.attrValue"
+            placeholder="请输入销售属性值"
             clearable
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="品牌id" prop="brandId"  >
+      <el-form-item label="顺序" prop="attrSort"  >
         <el-input
-            v-model="queryParams.brandId"
-            placeholder="请输入品牌id"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="标题" prop="skuTitle"  >
-        <el-input
-            v-model="queryParams.skuTitle"
-            placeholder="请输入标题"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="价格" prop="price"  >
-        <el-input
-            v-model="queryParams.price"
-            placeholder="请输入价格"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="销量" prop="saleCount"  >
-        <el-input
-            v-model="queryParams.saleCount"
-            placeholder="请输入销量"
+            v-model="queryParams.attrSort"
+            placeholder="请输入顺序"
             clearable
             @keyup.enter.native="handleQuery"
         />
@@ -79,7 +55,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['skuInfo:skuInfo:add']"
+          v-hasPermi="['product:skuAttrValue:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -90,7 +66,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['skuInfo:skuInfo:edit']"
+          v-hasPermi="['product:skuAttrValue:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -101,7 +77,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['skuInfo:skuInfo:remove']"
+          v-hasPermi="['product:skuAttrValue:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -111,29 +87,20 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['skuInfo:skuInfo:export']"
+          v-hasPermi="['product:skuAttrValue:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="skuInfoList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="skuAttrValueList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="skuId" align="center" prop="skuId" />
-      <el-table-column label="spuId" align="center" prop="spuId" />
-      <el-table-column label="sku名称" align="center" prop="skuName" />
-      <el-table-column label="sku介绍描述" align="center" prop="skuDesc" />
-      <el-table-column label="所属分类id" align="center" prop="catalogId" />
-      <el-table-column label="品牌id" align="center" prop="brandId" />
-      <el-table-column label="默认图片" align="center" prop="skuDefaultImg" width="100" >
-        <template slot-scope="scope">
-          <image-preview :src="scope.row.skuDefaultImg" :width="50" :height="50"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="标题" align="center" prop="skuTitle" />
-      <el-table-column label="副标题" align="center" prop="skuSubtitle" />
-      <el-table-column label="价格" align="center" prop="price" />
-      <el-table-column label="销量" align="center" prop="saleCount" />
+      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="sku_id" align="center" prop="skuId" />
+      <el-table-column label="attr_id" align="center" prop="attrId" />
+      <el-table-column label="销售属性名" align="center" prop="attrName" />
+      <el-table-column label="销售属性值" align="center" prop="attrValue" />
+      <el-table-column label="顺序" align="center" prop="attrSort" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -142,14 +109,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['skuInfo:skuInfo:edit']"
+            v-hasPermi="['product:skuAttrValue:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['skuInfo:skuInfo:remove']"
+            v-hasPermi="['product:skuAttrValue:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -163,38 +130,23 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改sku信息对话框 -->
+    <!-- 添加或修改sku销售属性&值对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
-      <el-form-item label="spuId" prop="spuId">
-        <el-input v-model="form.spuId" placeholder="请输入spuId"/>
+      <el-form-item label="sku_id" prop="skuId">
+        <el-input v-model="form.skuId" placeholder="请输入sku_id"/>
       </el-form-item>
-      <el-form-item label="sku名称" prop="skuName">
-        <el-input v-model="form.skuName" placeholder="请输入sku名称"/>
+      <el-form-item label="attr_id" prop="attrId">
+        <el-input v-model="form.attrId" placeholder="请输入attr_id"/>
       </el-form-item>
-        <el-form-item label="sku介绍描述" prop="skuDesc">
-          <el-input v-model="form.skuDesc" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-      <el-form-item label="所属分类id" prop="catalogId">
-        <el-input v-model="form.catalogId" placeholder="请输入所属分类id"/>
+      <el-form-item label="销售属性名" prop="attrName">
+        <el-input v-model="form.attrName" placeholder="请输入销售属性名"/>
       </el-form-item>
-      <el-form-item label="品牌id" prop="brandId">
-        <el-input v-model="form.brandId" placeholder="请输入品牌id"/>
+      <el-form-item label="销售属性值" prop="attrValue">
+        <el-input v-model="form.attrValue" placeholder="请输入销售属性值"/>
       </el-form-item>
-      <el-form-item label="默认图片">
-        <image-upload v-model="form.skuDefaultImg"/>
-      </el-form-item>
-      <el-form-item label="标题" prop="skuTitle">
-        <el-input v-model="form.skuTitle" placeholder="请输入标题"/>
-      </el-form-item>
-        <el-form-item label="副标题" prop="skuSubtitle">
-          <el-input v-model="form.skuSubtitle" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-      <el-form-item label="价格" prop="price">
-        <el-input v-model="form.price" placeholder="请输入价格"/>
-      </el-form-item>
-      <el-form-item label="销量" prop="saleCount">
-        <el-input v-model="form.saleCount" placeholder="请输入销量"/>
+      <el-form-item label="顺序" prop="attrSort">
+        <el-input v-model="form.attrSort" placeholder="请输入顺序"/>
       </el-form-item>
       <el-form-item label="是否删除" prop="deleted">
         <el-input v-model="form.deleted" placeholder="请输入是否删除"/>
@@ -213,24 +165,24 @@
 
 <script>
   import {
-    listSkuInfo,
-    getSkuInfo,
-    delSkuInfo,
-    addSkuInfo,
-    addListSkuInfo,
-    listPageSkuInfo,
-    skuInfoListByIds,
-    skuInfoListAll,
-    deleteSkuInfo,
-    deleteBatchSkuInfo,
-    updateSkuInfo,
-    updateListSkuInfo
+    listSkuAttrValue,
+    getSkuAttrValue,
+    delSkuAttrValue,
+    addSkuAttrValue,
+    addListSkuAttrValue,
+    listPageSkuAttrValue,
+    skuAttrValueListByIds,
+    skuAttrValueListAll,
+    deleteSkuAttrValue,
+    deleteBatchSkuAttrValue,
+    updateSkuAttrValue,
+    updateListSkuAttrValue
   }
     from
-        "@/api/skuInfo/skuInfo";
+      "@/api/product/skuAttrValue";
 
   export default {
-    name: "SkuInfo",
+    name: "SkuAttrValue",
     data() {
       return {
         // 遮罩层
@@ -245,8 +197,8 @@
       showSearch: true,
       // 总条数
       total: 0,
-      // sku信息表格数据
-      skuInfoList: [],
+      // sku销售属性&值表格数据
+      skuAttrValueList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -256,16 +208,10 @@
         pageNum: 1,
         pageSize: 10,
         skuId: null,
-        spuId: null,
-        skuName: null,
-        skuDesc: null,
-        catalogId: null,
-        brandId: null,
-        skuDefaultImg: null,
-        skuTitle: null,
-        skuSubtitle: null,
-        price: null,
-        saleCount: null,
+        attrId: null,
+        attrName: null,
+        attrValue: null,
+        attrSort: null,
       },
       // 表单参数
       form: {},
@@ -287,11 +233,11 @@
     this.getList();
   },
   methods: {
-    /** 查询sku信息列表 */
+    /** 查询sku销售属性&值列表 */
     getList() {
       this.loading = true;
-      listSkuInfo(this.queryParams).then(response => {
-        this.skuInfoList = response.rows;
+      listSkuAttrValue(this.queryParams).then(response => {
+        this.skuAttrValueList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -304,17 +250,12 @@
     // 表单重置
     reset() {
       this.form = {
+        id: null,
         skuId: null,
-        spuId: null,
-        skuName: null,
-        skuDesc: null,
-        catalogId: null,
-        brandId: null,
-        skuDefaultImg: null,
-        skuTitle: null,
-        skuSubtitle: null,
-        price: null,
-        saleCount: null,
+        attrId: null,
+        attrName: null,
+        attrValue: null,
+        attrSort: null,
         deleted: null,
         createBy: null,
         createTime: null,
@@ -336,7 +277,7 @@
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.skuId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -351,30 +292,30 @@
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加sku信息";
+      this.title = "添加sku销售属性&值";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const skuId = row.skuId || this.ids
-      getSkuInfo(skuId).then(response => {
+      const id = row.id || this.ids
+      getSkuAttrValue(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改sku信息";
+        this.title = "修改sku销售属性&值";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.skuId != null) {
-            updateSkuInfo(this.form).then(response => {
+          if (this.form.id != null) {
+            updateSkuAttrValue(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSkuInfo(this.form).then(response => {
+            addSkuAttrValue(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -385,9 +326,9 @@
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const skuIds = row.skuId || this.ids;
-      this.$modal.confirm('是否确认删除sku信息编号为"' + skuIds + '"的数据项？').then(function() {
-        return delSkuInfo(skuIds);
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除sku销售属性&值编号为"' + ids + '"的数据项？').then(function() {
+        return delSkuAttrValue(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -395,9 +336,9 @@
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('skuInfo/skuInfo/export', {
+      this.download('product/skuAttrValue/export', {
         ...this.queryParams
-      }, `skuInfo_${new Date().getTime()}.xlsx`)
+      }, `skuAttrValue_${new Date().getTime()}.xlsx`)
     }
   }
 };

@@ -9,34 +9,10 @@
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="attr_id" prop="attrId"   label-width="110px" >
+      <el-form-item label="排序" prop="imgSort"  >
         <el-input
-            v-model="queryParams.attrId"
-            placeholder="请输入attr_id"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="销售属性名" prop="attrName"  >
-        <el-input
-            v-model="queryParams.attrName"
-            placeholder="请输入销售属性名"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="销售属性值" prop="attrValue"  >
-        <el-input
-            v-model="queryParams.attrValue"
-            placeholder="请输入销售属性值"
-            clearable
-            @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="顺序" prop="attrSort"  >
-        <el-input
-            v-model="queryParams.attrSort"
-            placeholder="请输入顺序"
+            v-model="queryParams.imgSort"
+            placeholder="请输入排序"
             clearable
             @keyup.enter.native="handleQuery"
         />
@@ -55,7 +31,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['skuAttrValue:skuAttrValue:add']"
+          v-hasPermi="['product:skuImages:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -66,7 +42,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['skuAttrValue:skuAttrValue:edit']"
+          v-hasPermi="['product:skuImages:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -77,7 +53,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['skuAttrValue:skuAttrValue:remove']"
+          v-hasPermi="['product:skuImages:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -87,20 +63,30 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['skuAttrValue:skuAttrValue:export']"
+          v-hasPermi="['product:skuImages:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="skuAttrValueList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="skuImagesList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="sku_id" align="center" prop="skuId" />
-      <el-table-column label="attr_id" align="center" prop="attrId" />
-      <el-table-column label="销售属性名" align="center" prop="attrName" />
-      <el-table-column label="销售属性值" align="center" prop="attrValue" />
-      <el-table-column label="顺序" align="center" prop="attrSort" />
+      <el-table-column label="图片地址" align="center" prop="imgUrl" width="100" >
+        <template slot-scope="scope">
+          <image-preview :src="scope.row.imgUrl" :width="50" :height="50"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="排序" align="center" prop="imgSort" />
+      <el-table-column label="是否默认图" align="center" prop="defaultImg" width="100" >
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.defaultImg" :active-value=getActiveValue(true)
+                     :inactive-value=getActiveValue(false)
+                     @change="defaultImgSwitchChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -109,14 +95,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['skuAttrValue:skuAttrValue:edit']"
+            v-hasPermi="['product:skuImages:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['skuAttrValue:skuAttrValue:remove']"
+            v-hasPermi="['product:skuImages:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -130,26 +116,17 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改sku销售属性&值对话框 -->
+    <!-- 添加或修改SKU图片对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" label-position="left">
       <el-form-item label="sku_id" prop="skuId">
         <el-input v-model="form.skuId" placeholder="请输入sku_id"/>
       </el-form-item>
-      <el-form-item label="attr_id" prop="attrId">
-        <el-input v-model="form.attrId" placeholder="请输入attr_id"/>
+      <el-form-item label="图片地址">
+        <image-upload v-model="form.imgUrl"/>
       </el-form-item>
-      <el-form-item label="销售属性名" prop="attrName">
-        <el-input v-model="form.attrName" placeholder="请输入销售属性名"/>
-      </el-form-item>
-      <el-form-item label="销售属性值" prop="attrValue">
-        <el-input v-model="form.attrValue" placeholder="请输入销售属性值"/>
-      </el-form-item>
-      <el-form-item label="顺序" prop="attrSort">
-        <el-input v-model="form.attrSort" placeholder="请输入顺序"/>
-      </el-form-item>
-      <el-form-item label="是否删除" prop="deleted">
-        <el-input v-model="form.deleted" placeholder="请输入是否删除"/>
+      <el-form-item label="排序" prop="imgSort">
+        <el-input v-model="form.imgSort" placeholder="请输入排序"/>
       </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -165,31 +142,33 @@
 
 <script>
   import {
-    listSkuAttrValue,
-    getSkuAttrValue,
-    delSkuAttrValue,
-    addSkuAttrValue,
-    addListSkuAttrValue,
-    listPageSkuAttrValue,
-    skuAttrValueListByIds,
-    skuAttrValueListAll,
-    deleteSkuAttrValue,
-    deleteBatchSkuAttrValue,
-    updateSkuAttrValue,
-    updateListSkuAttrValue
+    listSkuImages,
+    getSkuImages,
+    delSkuImages,
+    addSkuImages,
+    addListSkuImages,
+    listPageSkuImages,
+    skuImagesListByIds,
+    skuImagesListAll,
+    deleteSkuImages,
+    deleteBatchSkuImages,
+    updateSkuImages,
+    updateListSkuImages
   }
     from
-        "@/api/skuAttrValue/skuAttrValue";
+      "@/api/product/skuImages";
+  import {defaultImgSwitchChange} from "@/api/product/skuImages";
+  import {deletedSwitchChange} from "@/api/product/skuImages";
 
   export default {
-    name: "SkuAttrValue",
+    name: "SkuImages",
     data() {
       return {
         // 遮罩层
         loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
+        // 选中数组
+        ids: [],
+        // 非单个禁用
       single: true,
       // 非多个禁用
       multiple: true,
@@ -197,8 +176,8 @@
       showSearch: true,
       // 总条数
       total: 0,
-      // sku销售属性&值表格数据
-      skuAttrValueList: [],
+        // SKU图片表格数据
+      skuImagesList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -208,10 +187,10 @@
         pageNum: 1,
         pageSize: 10,
         skuId: null,
-        attrId: null,
-        attrName: null,
-        attrValue: null,
-        attrSort: null,
+        imgUrl: null,
+        imgSort: null,
+        defaultImg: null,
+        deleted: null,
       },
       // 表单参数
       form: {},
@@ -233,11 +212,11 @@
     this.getList();
   },
   methods: {
-    /** 查询sku销售属性&值列表 */
+    /** 查询SKU图片列表 */
     getList() {
       this.loading = true;
-      listSkuAttrValue(this.queryParams).then(response => {
-        this.skuAttrValueList = response.rows;
+      listSkuImages(this.queryParams).then(response => {
+        this.skuImagesList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -252,10 +231,9 @@
       this.form = {
         id: null,
         skuId: null,
-        attrId: null,
-        attrName: null,
-        attrValue: null,
-        attrSort: null,
+        imgUrl: null,
+        imgSort: null,
+        defaultImg: null,
         deleted: null,
         createBy: null,
         createTime: null,
@@ -281,6 +259,28 @@
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
+            // 状态修改
+                  defaultImgSwitchChange(row) {
+              let text = row.defaultImg === 1 ? '启用' : '停用'
+              this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+                return defaultImgSwitchChange(row.id, row.defaultImg)
+              }).then(() => {
+                this.$modal.msgSuccess ('成功')
+              }).catch(function () {
+                row.defaultImg = row.defaultImg === 1 ? 0 : 1
+              })
+            },
+            // 状态修改
+                  deletedSwitchChange(row) {
+              let text = row.deleted === 1 ? '启用' : '停用'
+              this.$modal.confirm ('确认要"' + text + '""' + row.id + '"吗？').then(function () {
+                return deletedSwitchChange(row.id, row.deleted)
+              }).then(() => {
+                this.$modal.msgSuccess ('成功')
+              }).catch(function () {
+                row.deleted = row.deleted === 1 ? 0 : 1
+              })
+            },
     getActiveValue(value) {
       if (value) {
         return Number("1")
@@ -292,16 +292,16 @@
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加sku销售属性&值";
+      this.title = "添加SKU图片";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getSkuAttrValue(id).then(response => {
+      getSkuImages(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改sku销售属性&值";
+        this.title = "修改SKU图片";
       });
     },
     /** 提交按钮 */
@@ -309,13 +309,13 @@
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateSkuAttrValue(this.form).then(response => {
+            updateSkuImages(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSkuAttrValue(this.form).then(response => {
+            addSkuImages(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -327,8 +327,8 @@
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除sku销售属性&值编号为"' + ids + '"的数据项？').then(function() {
-        return delSkuAttrValue(ids);
+      this.$modal.confirm('是否确认删除SKU图片编号为"' + ids + '"的数据项？').then(function () {
+        return delSkuImages(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -336,9 +336,9 @@
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('skuAttrValue/skuAttrValue/export', {
+      this.download('product/skuImages/export', {
         ...this.queryParams
-      }, `skuAttrValue_${new Date().getTime()}.xlsx`)
+      }, `skuImages_${new Date().getTime()}.xlsx`)
     }
   }
 };
