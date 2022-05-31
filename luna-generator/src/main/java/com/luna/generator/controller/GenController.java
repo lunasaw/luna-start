@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageInfo;
 import com.luna.generator.domain.req.GenTableColumnReq;
 import com.luna.generator.domain.req.GenTableReq;
 import com.luna.generator.domain.vo.GenTableColumnVO;
@@ -59,9 +60,11 @@ public class GenController extends BaseController
     public TableDataInfo genList(GenTable genTable)
     {
         startPage();
-        List<GenTable> list = genTableService.selectGenTableList(genTable);
-        List<GenTableVO> collect = list.stream().map(DO2VOUtils::genTable2GenTableVO).collect(Collectors.toList());
-        return getDataTable(collect);
+        PageInfo pageInfo = genTableService.selectGenTableList(genTable);
+        List<GenTable> list = pageInfo.getList();
+        TableDataInfo dataTable = getDataTable(list);
+        dataTable.setTotal(pageInfo.getTotal());
+        return dataTable;
     }
 
     /**

@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.github.pagehelper.PageInfo;
 import com.luna.generator.domain.req.GenTableColumnReq;
 import com.luna.generator.domain.req.GenTableReq;
-import com.luna.generator.util.Req2DOUtils;
+import com.luna.generator.domain.vo.GenTableVO;
+import com.luna.generator.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -37,9 +39,6 @@ import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.GenTableColumn;
 import com.luna.generator.mapper.GenTableColumnMapper;
 import com.luna.generator.mapper.GenTableMapper;
-import com.luna.generator.util.GenUtils;
-import com.luna.generator.util.VelocityInitializer;
-import com.luna.generator.util.VelocityUtils;
 
 /**
  * 业务 服务层实现
@@ -76,8 +75,12 @@ public class GenTableServiceImpl implements IGenTableService {
      * @return 业务集合
      */
     @Override
-    public List<GenTable> selectGenTableList(GenTable genTable) {
-        return genTableMapper.selectGenTableList(genTable);
+    public PageInfo selectGenTableList(GenTable genTable) {
+        List<GenTable> genTables = genTableMapper.selectGenTableList(genTable);
+        PageInfo pageInfo = new PageInfo<>(genTables);
+        List<GenTableVO> collect = genTables.stream().map(DO2VOUtils::genTable2GenTableVO).collect(Collectors.toList());
+        pageInfo.setList(collect);
+        return pageInfo;
     }
 
     /**

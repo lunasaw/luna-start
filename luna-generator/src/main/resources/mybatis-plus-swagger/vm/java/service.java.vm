@@ -149,7 +149,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
             return list;
         }
         for (${ClassName} record:records) {
-            ${ClassName}VO ${className}VO = DO2VOUtils .${className}2${ClassName}VO(record);
+            ${ClassName}VO ${className}VO = DO2VOUtils.${className}2${ClassName}VO(record);
             list.add(${className}VO);
         }
         return list;

@@ -1,22 +1,22 @@
 package com.luna.product.utils;
 
-import com.luna.product.domain.SkuImages;
-import com.luna.product.domain.vo.SkuImagesVO;
+import com.luna.product.domain.SkuSaleAttrValue;
+import com.luna.product.domain.vo.SkuSaleAttrValueVO;
 
 /**
- * sku图片Controller
+ * sku销售属性&值Controller
  *
  * @author luna
  * @date 2022-05-31
  */
 public class DO2VOUtils {
 
-    public static SkuImagesVO skuImages2SkuImagesVO (SkuImages SkuImages) {
-        if (SkuImages ==null){
+    public static SkuSaleAttrValueVO skuSaleAttrValue2SkuSaleAttrValueVO (SkuSaleAttrValue SkuSaleAttrValue) {
+        if (SkuSaleAttrValue ==null){
             return null;
         }
-            SkuImagesVO skuImagesVO = new SkuImagesVO();
-        return skuImagesVO;
+            SkuSaleAttrValueVO skuSaleAttrValueVO = new SkuSaleAttrValueVO();
+        return skuSaleAttrValueVO;
     }
 
 }

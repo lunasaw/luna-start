@@ -2,6 +2,8 @@ package com.luna.generator.service;
 
 import java.util.List;
 import java.util.Map;
+
+import com.github.pagehelper.PageInfo;
 import com.luna.generator.domain.GenTable;
 import com.luna.generator.domain.req.GenTableReq;
 
@@ -18,7 +20,7 @@ public interface IGenTableService
      * @param genTable 业务信息
      * @return 业务集合
      */
-    public List<GenTable> selectGenTableList(GenTable genTable);
+    public PageInfo selectGenTableList(GenTable genTable);
 
     /**
      * 查询据库列表
